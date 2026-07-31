@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+	title="Build Instructions"
+	description="Internal build reference — setup checklist, intake questionnaire, and stack decision trees."
+	noindex
+>
+	<section class="container section">
+		<div class="delete-notice">
+			<strong>Builder-only page.</strong> This is your reference while building, not client-facing content.
+			Delete <code>src/pages/instructions.astro</code> (and its footer link) before this site goes live for a client —
+			see the "Before Launch" rule in <code>CLAUDE.md</code>.
+		</div>
+
+		<h1>Build Instructions</h1>
+		<p class="intro">Everything needed to take this template from "Use this template" to a launched client site.</p>
+
+		<h2>1. One-time client setup</h2>
+		<p>Send the client <code>SETUP.md</code>, or walk through it together (~10 minutes):</p>
+		<ol>
+			<li>Client creates a free GitHub account.</li>
+			<li>Client clicks <strong>"Use this template"</strong> on the starter repo, creating their own repo under their own account.</li>
+			<li>Client adds you as a collaborator on that new repo.</li>
+			<li>Client creates a free Vercel account and imports the repo — Vercel auto-deploys it.</li>
+			<li>Confirm Deployment Protection is off in Vercel settings, so preview links work without logging in.</li>
+		</ol>
+
+		<h2>2. Intake</h2>
+		<p>Fill out <code>INTAKE.md</code> with the client before writing any code. Covers:</p>
+		<ul>
+			<li>Business basics (name, description, audience, branding, reference sites)</li>
+			<li>Which pages are needed</li>
+			<li>Forms, scheduling, payments, gallery — needed or not, and expected volume/frequency</li>
+			<li>Whether the client will ever self-edit content, and how</li>
+			<li>Domain ownership</li>
+		</ul>
+
+		<h2>3. Build conventions</h2>
+		<p>Full detail lives in <code>CLAUDE.md</code>. Summary:</p>
+		<ul>
+			<li>Fill in <code>src/consts.ts</code> first — real business name, description, contact info, nav.</li>
+			<li>Re-theme <code>src/styles/tokens.css</code> for the client's brand colors — everything else reads from these tokens.</li>
+			<li>Font is DM Sans, loaded in <code>BaseHead.astro</code> — don't add a second typeface without updating both the token and the font link.</li>
+			<li>Accessibility defaults (focus states, skip link, reduced-motion, alt text, label pairing) are baked in — don't strip them out.</li>
+			<li>Every page needs a unique SEO title/description — no copy-pasted meta.</li>
+		</ul>
+
+		<h2>4. Stack decision trees</h2>
+
+		<h3>Forms</h3>
+		<p><strong>Default: Formspree.</strong> Free, no backend code, submissions land in the client's inbox. Switch to Basin only if Formspree's free tier becomes a real limit; build a Vercel Serverless Function only if custom logic (e.g. writing to a database) is required.</p>
+
+		<h3>Scheduling</h3>
+		<p><strong>Default: Calendly</strong> under the client's own account. Use Cal.com only if the client specifically prefers an open-source alternative.</p>
+
+		<h3>Payments</h3>
+		<p><strong>Default: Stripe Payment Links</strong> — no code, hosted checkout. Use embedded Stripe Checkout only if the flow needs to feel fully on-site. Use PayPal Buttons only if the client already strongly prefers PayPal.</p>
+
+		<h3>Gallery / photo uploads</h3>
+		<p><strong>Default: manual upload via GitHub's web UI</strong> (<code>public/images/gallery/</code>), zero new accounts. Only add a dedicated image host (e.g. Cloudinary) if the client updates photos frequently and self-serves without you.</p>
+
+		<p class="note">Every third-party account above belongs to the <strong>client</strong>, not you — it's his inbox, his calendar, his money.</p>
+
+		<h2>5. Google Search Console</h2>
+		<p>Set this up once the site is on its real domain — needed for the site to actually show up in Google search results, not just be reachable by URL.</p>
+		<ol>
+			<li>The property should be verified under the <strong>client's own Google account</strong> (same ownership principle as everything else) — create one for the business if they don't already have one.</li>
+			<li>Go to <a href="https://search.google.com/search-console" target="_blank" rel="noopener">search.google.com/search-console</a> and add a property.</li>
+			<li>Prefer a <strong>Domain property</strong> (covers all subdomains/protocols) — verify via a DNS TXT record at the domain registrar. If DNS access isn't available, use the <strong>URL-prefix</strong> method instead (HTML file upload or meta tag — Astro can serve a verification file from <code>public/</code>).</li>
+			<li>Once verified, submit the sitemap: <code>Sitemaps → Add a new sitemap → sitemap-index.xml</code> (already generated automatically by <code>@astrojs/sitemap</code>).</li>
+			<li>Use <strong>URL Inspection → Request Indexing</strong> on the homepage and any other key pages so Google crawls them sooner rather than waiting for organic discovery.</li>
+		</ol>
+
+		<h2>6. Before launch</h2>
+		<ul>
+			<li>Delete <code>src/pages/how-this-works.astro</code> and <code>src/pages/instructions.astro</code>, plus their footer links.</li>
+			<li>Replace placeholder copy, images, and favicon with the client's real content.</li>
+			<li>Set <code>astro.config.mjs</code>'s <code>site</code> to the real domain.</li>
+			<li>Connect the custom domain in Vercel once DNS is ready.</li>
+			<li>Complete the Google Search Console setup above and request indexing.</li>
+		</ul>
+	</section>
+</BaseLayout>
+
+<style>
+	.section {
+		padding-block: var(--space-2xl);
+		max-width: 720px;
+	}
+
+	.delete-notice {
+		background: var(--color-accent-caution-bg);
+		color: var(--color-text);
+		border: 1px solid var(--color-accent-caution);
+		border-radius: var(--radius-md);
+		padding: var(--space-md);
+		margin-bottom: var(--space-xl);
+		font-size: var(--text-small);
+	}
+
+	.intro {
+		font-size: var(--text-h3);
+		color: var(--color-text-secondary);
+	}
+
+	.note {
+		font-style: italic;
+	}
+
+	code {
+		background: var(--color-bg-subtle);
+		border-radius: 4px;
+		padding: 0.1em 0.4em;
+		font-size: 0.9em;
+	}
+
+	li {
+		margin-bottom: var(--space-xs);
+		color: var(--color-text-secondary);
+	}
+</style>

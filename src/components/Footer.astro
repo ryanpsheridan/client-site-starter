@@ -22,9 +22,13 @@ const year = new Date().getFullYear();
 	</div>
 	<div class="container site-footer-bottom">
 		<p class="site-footer-copy">&copy; {year} {SITE_TITLE}. All rights reserved.</p>
-		{/* Template-only link — delete this <p> alongside how-this-works.astro
-		    once the client no longer needs the live pitch/setup walkthrough. */}
-		<p class="site-footer-copy"><a href="/how-this-works/">How this site works</a></p>
+		{/* Template-only links — delete this <p> alongside how-this-works.astro
+		    and instructions.astro once the client site is ready to launch. */}
+		<p class="site-footer-copy site-footer-template-links">
+			<a href="/how-this-works/">How this site works</a>
+			&nbsp;&middot;&nbsp;
+			<a href="/instructions/">Build instructions</a>
+		</p>
 	</div>
 </footer>
 
