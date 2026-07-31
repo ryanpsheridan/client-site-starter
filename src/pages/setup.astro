@@ -64,6 +64,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 		<h3>Forms</h3>
 		<p><strong>Default: Formspree.</strong> Free, no backend code, submissions land in the client's inbox. Switch to Basin only if Formspree's free tier becomes a real limit; build a Vercel Serverless Function only if custom logic (e.g. writing to a database) is required.</p>
+		<p><strong>Formspree setup</strong> (client's own account, same as every other third-party service here):</p>
+		<ol>
+			<li>Client signs up free at <a href="https://formspree.io/register" target="_blank" rel="noopener">formspree.io/register</a>, using their own business email.</li>
+			<li>In the Formspree dashboard, click <strong>New Form</strong> and give it an internal label (e.g. "Contact Page") — visitors never see this name.</li>
+			<li>Set the notification email to wherever the client wants submissions delivered (defaults to the account email).</li>
+			<li>Formspree shows a form endpoint like <code>https://formspree.io/f/{'{'}form_id{'}'}</code> — paste that into the <code>action</code> attribute of the form in <code>src/pages/contact.astro</code>, replacing the <code>FORMSPREE_ID</code> placeholder.</li>
+			<li>Submit a test entry after deploying to confirm it lands in the client's inbox before considering the form done.</li>
+		</ol>
 
 		<h3>Scheduling</h3>
 		<p><strong>Default: Calendly</strong> under the client's own account. Use Cal.com only if the client specifically prefers an open-source alternative.</p>

@@ -67,6 +67,8 @@ Only reach for something else if:
 
 The Formspree (or equivalent) account belongs to the **client**, not the developer — it's his inbox the submissions land in.
 
+**Setup**: client signs up free at formspree.io using their own email, creates a new form in the dashboard, and copies the resulting `https://formspree.io/f/{form_id}` endpoint. Paste that into the `action` attribute in `src/pages/contact.astro`, replacing the `FORMSPREE_ID` placeholder, then submit a test entry after deploying to confirm delivery before considering the form done.
+
 ## Scheduling — Decision Tree
 
 Default: **Calendly** embed/link, under the client's own account (it's his calendar). Use **Cal.com** instead only if the client specifically prefers an open-source alternative to Calendly's branding/free-tier limits.
