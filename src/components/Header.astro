@@ -214,4 +214,10 @@ const currentPath = Astro.url.pathname;
 	.menu-item:active {
 		transform: scale(0.97);
 	}
+
+	@media (max-width: 480px) {
+		.app-menu ul {
+			gap: var(--space-md);
+		}
+	}
 </style>
