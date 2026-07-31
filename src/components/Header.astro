@@ -7,27 +7,95 @@ const currentPath = Astro.url.pathname;
 <header class="site-header">
 	<div class="container site-header-inner">
 		<a href="/" class="site-logo">{SITE_TITLE}</a>
-		<nav aria-label="Primary">
-			<ul class="site-nav">
-				{NAV_LINKS.map((link) => (
-					<li>
-						<a
-							href={link.href}
-							aria-current={currentPath === link.href ? 'page' : undefined}
-						>
-							{link.label}
-						</a>
-					</li>
-				))}
-			</ul>
-		</nav>
+		<button
+			id="menu-toggle"
+			class="menu-toggle"
+			type="button"
+			aria-haspopup="true"
+			aria-expanded="false"
+			aria-controls="app-menu"
+			aria-label="Menu"
+		>
+			<span class="bar bar-top"></span>
+			<span class="bar bar-bottom"></span>
+		</button>
 	</div>
 </header>
 
+<div id="app-menu" class="app-menu" role="dialog" aria-modal="true" aria-label="Menu">
+	<nav aria-label="Primary">
+		<ul>
+			{NAV_LINKS.map((link) => (
+				<li>
+					<a
+						href={link.href}
+						class="menu-item"
+						aria-current={currentPath === link.href ? 'page' : undefined}
+					>
+						{link.label}
+					</a>
+				</li>
+			))}
+		</ul>
+	</nav>
+</div>
+
+<script>
+	const toggle = document.getElementById('menu-toggle') as HTMLButtonElement;
+	const menu = document.getElementById('app-menu') as HTMLDivElement;
+
+	function openMenu() {
+		menu.classList.add('open');
+		toggle.classList.add('open');
+		toggle.setAttribute('aria-expanded', 'true');
+		document.body.style.overflow = 'hidden';
+		menu.querySelector<HTMLAnchorElement>('.menu-item')?.focus();
+	}
+
+	function closeMenu() {
+		menu.classList.remove('open');
+		toggle.classList.remove('open');
+		toggle.setAttribute('aria-expanded', 'false');
+		document.body.style.overflow = '';
+	}
+
+	function toggleMenu() {
+		if (menu.classList.contains('open')) {
+			closeMenu();
+			toggle.focus();
+		} else {
+			openMenu();
+		}
+	}
+
+	document.addEventListener('click', (e) => {
+		const target = e.target as HTMLElement;
+
+		if (target.closest('#menu-toggle')) {
+			toggleMenu();
+			return;
+		}
+
+		if (target.closest('.app-menu a.menu-item')) {
+			closeMenu();
+		}
+	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && menu.classList.contains('open')) {
+			closeMenu();
+			toggle.focus();
+		}
+	});
+</script>
+
 <style>
 	.site-header {
-		border-bottom: 1px solid var(--color-border);
+		position: relative;
+		z-index: 41;
 		background: var(--color-bg);
+		border-bottom: 1px solid var(--color-border);
+		padding-top: env(safe-area-inset-top);
 	}
 
 	.site-header-inner {
@@ -35,35 +103,115 @@ const currentPath = Astro.url.pathname;
 		align-items: center;
 		justify-content: space-between;
 		padding-block: var(--space-md);
-		flex-wrap: wrap;
-		gap: var(--space-md);
 	}
 
 	.site-logo {
 		font-family: var(--font-heading);
 		font-weight: var(--weight-normal);
 		font-size: var(--text-h3);
+		letter-spacing: -0.01em;
+		text-transform: lowercase;
 		color: var(--color-text);
 		text-decoration: none;
 	}
 
-	.site-nav {
+	/* Hamburger toggle: two bars that animate into an X on open, same
+	   elements in both states so there's no icon swap. */
+	.menu-toggle {
+		position: relative;
+		width: 38px;
+		height: 38px;
+		border: none;
+		background: transparent;
+		padding: 0;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		transition: transform 0.1s ease;
+	}
+
+	.menu-toggle:active {
+		transform: scale(0.94);
+	}
+
+	.menu-toggle .bar {
+		position: absolute;
+		left: 8px;
+		width: 22px;
+		height: 2px;
+		border-radius: 2px;
+		background: var(--color-text);
+		transition: top 0.25s ease, transform 0.25s ease;
+	}
+
+	.menu-toggle .bar-top {
+		top: 14px;
+	}
+
+	.menu-toggle .bar-bottom {
+		top: 22px;
+	}
+
+	.menu-toggle.open .bar-top {
+		top: 18px;
+		transform: rotate(45deg);
+	}
+
+	.menu-toggle.open .bar-bottom {
+		top: 18px;
+		transform: rotate(-45deg);
+	}
+
+	/* Full-screen overlay menu. Sits just below the header in z-index so
+	   the header stays visible with no seam. Visibility is delayed on
+	   close so the hidden panel can't intercept clicks. */
+	.app-menu {
+		position: fixed;
+		inset: 0;
+		z-index: 40;
 		display: flex;
-		gap: var(--space-lg);
+		align-items: center;
+		justify-content: center;
+		background: var(--color-bg);
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(6px);
+		transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+	}
+
+	.app-menu.open {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+		transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0s;
+	}
+
+	.app-menu ul {
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		flex-wrap: wrap;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-xl);
 	}
 
-	.site-nav a {
-		color: var(--color-text-secondary);
-		text-decoration: none;
+	.menu-item {
+		display: inline-block;
+		font-family: var(--font-heading);
+		font-size: 1.6875rem;
 		font-weight: var(--weight-medium);
+		color: var(--color-text);
+		text-decoration: none;
+		-webkit-tap-highlight-color: transparent;
+		transition: transform 0.1s ease, color 0.15s ease;
 	}
 
-	.site-nav a:hover,
-	.site-nav a[aria-current='page'] {
-		color: var(--color-text);
+	.menu-item:hover,
+	.menu-item[aria-current='page'] {
+		color: var(--color-accent);
+	}
+
+	.menu-item:active {
+		transform: scale(0.97);
 	}
 </style>
