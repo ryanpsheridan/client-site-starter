@@ -10,7 +10,7 @@ const initial = (SITE_TITLE.trim().charAt(0) || '?').toUpperCase();
 // Keep this in sync with --color-accent / --color-accent-contrast in
 // tokens.css — this is a static build-time asset, so it can't read CSS
 // custom properties directly.
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#1A8917"/><text x="16" y="22" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="16" fill="#FFFFFF">${initial}</text></svg>`;
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#2952CC"/><text x="16" y="22" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="16" fill="#FFFFFF">${initial}</text></svg>`;
 
 export const GET: APIRoute = () =>
 	new Response(svg, {

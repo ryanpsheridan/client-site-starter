@@ -29,7 +29,7 @@
 	--space-3xl: 7.5rem;
 
 	/* Color — light-only, Medium-inspired: near-black text on white,
-	   a single green accent, hairline gray borders instead of heavy
+	   a single blue accent, hairline gray borders instead of heavy
 	   shadows/cards. Re-theme per client by swapping --color-accent*;
 	   the rest of the site reads from these tokens, not hardcoded hex. */
 	--color-text: #242424;
@@ -38,8 +38,8 @@
 	--color-bg-subtle: #F9F9F9;
 	--color-border: #E5E5E5;
 
-	--color-accent: #1A8917;
-	--color-accent-hover: #156D13;
+	--color-accent: #2952CC;
+	--color-accent-hover: #1F3FA3;
 	--color-accent-contrast: #FFFFFF;
 
 	/* Semantic accents — same intent as SimplySheet's calculator system,
@@ -67,5 +67,5 @@
 
 	/* Layout */
 	--content-width: 1120px;
-	--focus-ring: 0 0 0 3px rgba(26, 137, 23, 0.35);
+	--focus-ring: 0 0 0 3px rgba(41, 82, 204, 0.35);
 }
