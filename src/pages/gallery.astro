@@ -4,11 +4,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 // Placeholder gallery. Real images live in public/images/gallery/ — see
 // CLAUDE.md's "Gallery / Photo Uploads" section for the naming convention
 // and the decision tree for how a given client should add new photos.
-const images = [
-	{ src: '/images/gallery/placeholder-1.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
-	{ src: '/images/gallery/placeholder-2.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
-	{ src: '/images/gallery/placeholder-3.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
+const placeholders = [
+	'/images/gallery/placeholder-1.svg',
+	'/images/gallery/placeholder-2.svg',
+	'/images/gallery/placeholder-3.svg',
 ];
+
+// Repeated to give the page enough scroll length to test Lenis — trim back
+// down to real, unique client photos before launch.
+const images = Array.from({ length: 12 }, (_, i) => ({
+	src: placeholders[i % placeholders.length],
+	alt: 'Replace with a real, descriptive alt text for this photo',
+}));
 ---
 
 <BaseLayout title="Gallery" description="A look at our work.">
