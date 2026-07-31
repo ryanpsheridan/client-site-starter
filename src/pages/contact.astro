@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_EMAIL, SITE_PHONE } from '../consts';
+
+// Default form backend: Formspree. Replace FORMSPREE_ID below with the
+// client's real form ID once their account is set up — see CLAUDE.md's
+// "Forms" section for when to reach for an alternative instead.
+const FORMSPREE_ACTION = 'https://formspree.io/f/FORMSPREE_ID';
+---
+
+<BaseLayout title="Contact" description="Get in touch.">
+	<section class="container section">
+		<h1>Contact</h1>
+		<p>
+			<a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a>
+			&nbsp;&middot;&nbsp;
+			<a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
+		</p>
+
+		<form action={FORMSPREE_ACTION} method="POST" class="contact-form">
+			<div class="field">
+				<label for="name">Name</label>
+				<input type="text" id="name" name="name" required autocomplete="name" />
+			</div>
+			<div class="field">
+				<label for="email">Email</label>
+				<input type="email" id="email" name="email" required autocomplete="email" />
+			</div>
+			<div class="field">
+				<label for="message">Message</label>
+				<textarea id="message" name="message" rows="5" required></textarea>
+			</div>
+			<button type="submit" class="btn btn-primary">Send message</button>
+		</form>
+	</section>
+</BaseLayout>
+
+<style>
+	.section {
+		padding-block: var(--space-2xl);
+		max-width: 560px;
+	}
+
+	.contact-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-lg);
+		margin-top: var(--space-xl);
+	}
+
+	.field {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.field label {
+		font-weight: var(--weight-medium);
+		color: var(--color-text);
+	}
+
+	.field input,
+	.field textarea {
+		font-family: var(--font-sans);
+		font-size: var(--text-body);
+		padding: var(--space-sm);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		color: var(--color-text);
+		background: var(--color-bg);
+	}
+</style>

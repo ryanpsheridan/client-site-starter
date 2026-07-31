@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const services = [
+	{ title: 'Service one', description: 'Replace with a real description of what this includes.' },
+	{ title: 'Service two', description: 'Replace with a real description of what this includes.' },
+	{ title: 'Service three', description: 'Replace with a real description of what this includes.' },
+];
+---
+
+<BaseLayout title="Services" description="What we offer.">
+	<section class="container section">
+		<h1>Services</h1>
+		<ul class="service-grid">
+			{services.map((service) => (
+				<li class="service-card">
+					<h2>{service.title}</h2>
+					<p>{service.description}</p>
+				</li>
+			))}
+		</ul>
+	</section>
+</BaseLayout>
+
+<style>
+	.section {
+		padding-block: var(--space-2xl);
+	}
+
+	.service-grid {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: var(--space-lg);
+	}
+
+	.service-card {
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		padding: var(--space-lg);
+	}
+
+	.service-card h2 {
+		font-size: var(--text-h3);
+	}
+</style>

@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'LocalBusiness', // TODO: swap for the more specific type if one fits (Restaurant, Plumber, ProfessionalService, etc.)
+	name: SITE_TITLE,
+	description: SITE_DESCRIPTION,
+	url: Astro.site,
+};
+---
+
+<BaseLayout title="Home" description={SITE_DESCRIPTION}>
+	<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<section class="hero container">
+		<h1>Headline that says what you do and for whom</h1>
+		<p class="hero-sub">
+			One or two sentences of supporting copy. Lead with the outcome the visitor
+			cares about, not a list of features.
+		</p>
+		<a href="/contact/" class="btn btn-primary">Get in touch</a>
+	</section>
+
+	<section class="container section">
+		<h2>What we do</h2>
+		<p>
+			Short section introducing the core service(s). Replace with real copy —
+			answer the question a visitor is actually asking when they land here.
+		</p>
+	</section>
+</BaseLayout>
+
+<style>
+	.hero {
+		padding-block: var(--space-3xl);
+		max-width: 640px;
+	}
+
+	.hero-sub {
+		font-size: var(--text-h3);
+		margin-bottom: var(--space-lg);
+	}
+
+	.section {
+		padding-block: var(--space-2xl);
+	}
+</style>

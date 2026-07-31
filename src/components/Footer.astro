@@ -1,0 +1,73 @@
+---
+import { SITE_TITLE, SITE_EMAIL, SITE_PHONE, NAV_LINKS } from '../consts';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+	<div class="container site-footer-inner">
+		<div>
+			<p class="site-footer-title">{SITE_TITLE}</p>
+			<p>
+				<a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a><br />
+				<a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a>
+			</p>
+		</div>
+		<nav aria-label="Footer">
+			<ul class="site-footer-nav">
+				{NAV_LINKS.map((link) => (
+					<li><a href={link.href}>{link.label}</a></li>
+				))}
+			</ul>
+		</nav>
+	</div>
+	<div class="container">
+		<p class="site-footer-copy">&copy; {year} {SITE_TITLE}. All rights reserved.</p>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		border-top: 1px solid var(--color-border);
+		background: var(--color-bg-subtle);
+		padding-block: var(--space-2xl) var(--space-lg);
+		margin-top: var(--space-3xl);
+	}
+
+	.site-footer-inner {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: var(--space-xl);
+		margin-bottom: var(--space-xl);
+	}
+
+	.site-footer-title {
+		font-weight: var(--weight-semibold);
+		color: var(--color-text);
+		margin-bottom: var(--space-xs);
+	}
+
+	.site-footer-nav {
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+		margin: 0;
+		padding: 0;
+	}
+
+	.site-footer-nav a {
+		color: var(--color-text-secondary);
+		text-decoration: none;
+	}
+
+	.site-footer-nav a:hover {
+		color: var(--color-text);
+	}
+
+	.site-footer-copy {
+		font-size: var(--text-small);
+		color: var(--color-text-secondary);
+		margin: 0;
+	}
+</style>

@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Placeholder gallery. Real images live in public/images/gallery/ — see
+// CLAUDE.md's "Gallery / Photo Uploads" section for the naming convention
+// and the decision tree for how a given client should add new photos.
+const images = [
+	{ src: '/images/gallery/placeholder-1.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
+	{ src: '/images/gallery/placeholder-2.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
+	{ src: '/images/gallery/placeholder-3.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
+];
+---
+
+<BaseLayout title="Gallery" description="A look at our work.">
+	<section class="container section">
+		<h1>Gallery</h1>
+		<ul class="gallery-grid">
+			{images.map((image) => (
+				<li>
+					<img src={image.src} alt={image.alt} loading="lazy" />
+				</li>
+			))}
+		</ul>
+	</section>
+</BaseLayout>
+
+<style>
+	.section {
+		padding-block: var(--space-2xl);
+	}
+
+	.gallery-grid {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		gap: var(--space-md);
+	}
+
+	.gallery-grid img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--radius-md);
+		background: var(--color-bg-subtle);
+	}
+</style>

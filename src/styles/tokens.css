@@ -1,0 +1,78 @@
+:root {
+	/* Typography */
+	--font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+	--font-heading: 'DM Sans', system-ui, -apple-system, sans-serif;
+
+	--text-small: 0.875rem;
+	--text-body: 1rem;
+	--text-h3: 1.375rem;
+	--text-h2: 1.875rem;
+	--text-h1: 2.75rem;
+	--text-display: 3.5rem;
+
+	--weight-normal: 400;
+	--weight-medium: 500;
+	--weight-semibold: 600;
+	--weight-bold: 700;
+
+	--line-height-tight: 1.2;
+	--line-height-body: 1.6;
+
+	/* Spacing scale */
+	--space-xs: 0.5rem;
+	--space-sm: 0.75rem;
+	--space-md: 1rem;
+	--space-lg: 1.5rem;
+	--space-xl: 2.5rem;
+	--space-2xl: 4rem;
+	--space-3xl: 6rem;
+
+	/* Color — neutral, accessible-contrast default palette.
+	   Re-theme per client by swapping --color-accent* and --color-bg*;
+	   the rest of the site reads from these tokens, not hardcoded hex. */
+	--color-text: #16181D;
+	--color-text-secondary: #52565E;
+	--color-bg: #FFFFFF;
+	--color-bg-subtle: #F5F6F8;
+	--color-border: #E2E4E9;
+
+	--color-accent: #2952CC;
+	--color-accent-hover: #1F3FA3;
+	--color-accent-contrast: #FFFFFF;
+
+	/* Semantic accents — same intent as SimplySheet's calculator system,
+	   kept here so any future client tool/form-state UI stays consistent. */
+	--color-accent-positive: #1B8A5A;
+	--color-accent-positive-bg: #E6F4EC;
+	--color-accent-caution: #B5720A;
+	--color-accent-caution-bg: #FBF0DD;
+	--color-accent-critical: #C23A3A;
+	--color-accent-critical-bg: #FBEAEA;
+	--color-accent-info: #2952CC;
+	--color-accent-info-bg: #EAEFFB;
+
+	/* Radius / shadow */
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--radius-lg: 16px;
+	--shadow-sm: 0 1px 2px rgba(16, 18, 22, 0.06);
+	--shadow-md: 0 4px 16px rgba(16, 18, 22, 0.08);
+
+	/* Layout */
+	--content-width: 1120px;
+	--focus-ring: 0 0 0 3px rgba(41, 82, 204, 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-text: #F2F3F5;
+		--color-text-secondary: #B4B8C0;
+		--color-bg: #101216;
+		--color-bg-subtle: #191B20;
+		--color-border: #2A2D34;
+
+		--color-accent: #6E8FE8;
+		--color-accent-hover: #8AA5EE;
+		--color-accent-contrast: #10131C;
+	}
+}
