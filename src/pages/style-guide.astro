@@ -1,0 +1,405 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const colorSwatches = [
+	{ name: '--color-text', label: 'Text' },
+	{ name: '--color-text-secondary', label: 'Text secondary' },
+	{ name: '--color-bg', label: 'Background', border: true },
+	{ name: '--color-bg-subtle', label: 'Background subtle', border: true },
+	{ name: '--color-border', label: 'Border', border: true },
+	{ name: '--color-accent', label: 'Accent' },
+	{ name: '--color-accent-hover', label: 'Accent hover' },
+];
+
+const semanticSwatches = [
+	{ name: '--color-accent-positive', bg: '--color-accent-positive-bg', label: 'Positive' },
+	{ name: '--color-accent-caution', bg: '--color-accent-caution-bg', label: 'Caution' },
+	{ name: '--color-accent-critical', bg: '--color-accent-critical-bg', label: 'Critical' },
+	{ name: '--color-accent-info', bg: '--color-accent-info-bg', label: 'Info' },
+];
+
+const typeScale = [
+	{ token: '--text-display', label: 'Display', sample: 'Aa' },
+	{ token: '--text-h1', label: 'H1', sample: 'Aa' },
+	{ token: '--text-h2', label: 'H2', sample: 'Aa' },
+	{ token: '--text-h3', label: 'H3', sample: 'Aa' },
+	{ token: '--text-body', label: 'Body', sample: 'The quick brown fox jumps over the lazy dog.' },
+	{ token: '--text-small', label: 'Small', sample: 'The quick brown fox jumps over the lazy dog.' },
+];
+
+const weights = [
+	{ token: '--weight-normal', label: 'Normal (400)' },
+	{ token: '--weight-medium', label: 'Medium (500)' },
+	{ token: '--weight-semibold', label: 'Semibold (600)' },
+	{ token: '--weight-bold', label: 'Bold (700)' },
+];
+
+const spacingScale = [
+	{ token: '--space-xs', label: 'xs' },
+	{ token: '--space-sm', label: 'sm' },
+	{ token: '--space-md', label: 'md' },
+	{ token: '--space-lg', label: 'lg' },
+	{ token: '--space-xl', label: 'xl' },
+	{ token: '--space-2xl', label: '2xl' },
+	{ token: '--space-3xl', label: '3xl' },
+];
+
+const radii = [
+	{ token: '--radius-sm', label: 'sm' },
+	{ token: '--radius-md', label: 'md' },
+	{ token: '--radius-lg', label: 'lg' },
+];
+---
+
+<BaseLayout
+	title="Style Guide"
+	description="Visual reference for this site's design tokens — colors, typography, spacing, and components."
+>
+	<section class="container section">
+		<h1>Style Guide</h1>
+		<p class="intro">
+			A living reference for the design tokens and components this site is built from. Every
+			value below comes from <code>src/styles/tokens.css</code> &mdash; re-theme that one file
+			for a new client and this page updates with it.
+		</p>
+
+		<h2>Colors</h2>
+		<ul class="swatch-grid">
+			{colorSwatches.map((c) => (
+				<li>
+					<div class="swatch" style={`background:var(${c.name});${c.border ? 'border:1px solid var(--color-border);' : ''}`}></div>
+					<p class="swatch-label">{c.label}</p>
+					<code>{c.name}</code>
+				</li>
+			))}
+		</ul>
+
+		<h3>Semantic accents</h3>
+		<p>Reserved for actual state — success, warning, error, informational — never decoration.</p>
+		<ul class="swatch-grid">
+			{semanticSwatches.map((s) => (
+				<li>
+					<div class="swatch semantic" style={`background:var(${s.bg});color:var(${s.name});border:1px solid var(${s.name});`}>Aa</div>
+					<p class="swatch-label">{s.label}</p>
+					<code>{s.name}</code>
+				</li>
+			))}
+		</ul>
+
+		<h2>Typography</h2>
+		<p>
+			<strong>DM Sans</strong> for both body and headings (<code>--font-sans</code> /
+			<code>--font-heading</code>).
+		</p>
+		<ul class="type-scale">
+			{typeScale.map((t) => (
+				<li>
+					<span class="type-sample" style={`font-size:var(${t.token});`}>{t.sample}</span>
+					<code>{t.token}</code>
+				</li>
+			))}
+		</ul>
+
+		<h3>Weights</h3>
+		<ul class="weight-list">
+			{weights.map((w) => (
+				<li style={`font-weight:var(${w.token});`}>
+					{w.label} <code>{w.token}</code>
+				</li>
+			))}
+		</ul>
+
+		<h2>Spacing</h2>
+		<p>Used for all padding, margin, and gap values — never a hardcoded pixel value.</p>
+		<ul class="spacing-list">
+			{spacingScale.map((s) => (
+				<li>
+					<code>{s.token}</code>
+					<span class="spacing-bar" style={`width:var(${s.token});`}></span>
+				</li>
+			))}
+		</ul>
+
+		<h3>Radius &amp; shadow</h3>
+		<ul class="radius-grid">
+			{radii.map((r) => (
+				<li>
+					<div class="radius-box" style={`border-radius:var(${r.token});`}></div>
+					<code>{r.token}</code>
+				</li>
+			))}
+		</ul>
+		<ul class="shadow-grid">
+			<li>
+				<div class="shadow-box" style="box-shadow:var(--shadow-sm);"></div>
+				<code>--shadow-sm</code>
+			</li>
+			<li>
+				<div class="shadow-box" style="box-shadow:var(--shadow-md);"></div>
+				<code>--shadow-md</code>
+			</li>
+		</ul>
+
+		<h2>Components</h2>
+
+		<h3>Buttons</h3>
+		<div class="component-row">
+			<button type="button" class="btn btn-primary">Primary button</button>
+			<button type="button" class="btn btn-secondary">Secondary button</button>
+		</div>
+
+		<h3>Cards</h3>
+		<ul class="card-grid">
+			<li class="demo-card">
+				<h4>Card title</h4>
+				<p>Cards use <code>--color-border</code>, <code>--radius-lg</code>, and <code>--space-lg</code> padding — the same pattern as the service cards on the Services page.</p>
+			</li>
+			<li class="demo-card">
+				<h4>Second card</h4>
+				<p>Grids use <code>repeat(auto-fit, minmax(240px, 1fr))</code> so cards reflow responsively without a media query.</p>
+			</li>
+		</ul>
+
+		<h3>Form fields</h3>
+		<div class="demo-form">
+			<div class="field">
+				<label for="sg-name">Name</label>
+				<input type="text" id="sg-name" name="sg-name" autocomplete="off" />
+			</div>
+			<div class="field">
+				<label for="sg-message">Message</label>
+				<textarea id="sg-message" name="sg-message" rows="3"></textarea>
+			</div>
+		</div>
+
+		<h3>Images</h3>
+		<p>Gallery images use a fixed aspect ratio, <code>object-fit: cover</code>, and rounded corners.</p>
+		<ul class="image-grid">
+			<li><img src="/images/gallery/placeholder-1.svg" alt="Example placeholder image showing the standard image treatment" loading="lazy" /></li>
+			<li><img src="/images/gallery/placeholder-2.svg" alt="Example placeholder image showing the standard image treatment" loading="lazy" /></li>
+		</ul>
+
+		<h3>Links</h3>
+		<p>
+			An <a href="/">inline link</a> in body copy, showing the default and hover accent colors.
+		</p>
+	</section>
+</BaseLayout>
+
+<style>
+	.section {
+		padding-block: var(--space-2xl);
+	}
+
+	.intro {
+		font-size: var(--text-h3);
+		color: var(--color-text-secondary);
+		max-width: 640px;
+	}
+
+	h2 {
+		margin-top: var(--space-2xl);
+		padding-top: var(--space-xl);
+		border-top: 1px solid var(--color-border);
+	}
+
+	h3 {
+		margin-top: var(--space-xl);
+	}
+
+	code {
+		background: var(--color-bg-subtle);
+		border-radius: 4px;
+		padding: 0.1em 0.4em;
+		font-size: 0.85em;
+	}
+
+	/* Colors */
+	.swatch-grid {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+		gap: var(--space-lg);
+	}
+
+	.swatch {
+		height: 64px;
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.swatch.semantic {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: var(--weight-semibold);
+	}
+
+	.swatch-label {
+		margin: var(--space-sm) 0 var(--space-xs);
+		font-weight: var(--weight-medium);
+		color: var(--color-text);
+	}
+
+	/* Typography */
+	.type-scale {
+		list-style: none;
+		margin: var(--space-lg) 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	.type-scale li {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-lg);
+		border-bottom: 1px solid var(--color-border);
+		padding-bottom: var(--space-md);
+	}
+
+	.type-sample {
+		font-family: var(--font-heading);
+		color: var(--color-text);
+		flex: 1;
+	}
+
+	.weight-list {
+		list-style: none;
+		margin: var(--space-lg) 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+	}
+
+	/* Spacing */
+	.spacing-list {
+		list-style: none;
+		margin: var(--space-lg) 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+	}
+
+	.spacing-list li {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+	}
+
+	.spacing-list code {
+		min-width: 6rem;
+	}
+
+	.spacing-bar {
+		height: 1rem;
+		background: var(--color-accent);
+		border-radius: var(--radius-sm);
+		display: block;
+	}
+
+	/* Radius / shadow */
+	.radius-grid,
+	.shadow-grid {
+		list-style: none;
+		margin: var(--space-lg) 0;
+		padding: 0;
+		display: flex;
+		gap: var(--space-lg);
+		flex-wrap: wrap;
+	}
+
+	.radius-box,
+	.shadow-box {
+		width: 80px;
+		height: 80px;
+		background: var(--color-bg-subtle);
+		border: 1px solid var(--color-border);
+		margin-bottom: var(--space-xs);
+	}
+
+	.shadow-box {
+		border-radius: var(--radius-md);
+	}
+
+	/* Components */
+	.component-row {
+		display: flex;
+		gap: var(--space-md);
+		flex-wrap: wrap;
+		margin: var(--space-lg) 0;
+	}
+
+	.card-grid {
+		list-style: none;
+		margin: var(--space-lg) 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: var(--space-lg);
+	}
+
+	.demo-card {
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		padding: var(--space-lg);
+	}
+
+	.demo-card h4 {
+		font-size: var(--text-h3);
+	}
+
+	.demo-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-lg);
+		max-width: 420px;
+		margin: var(--space-lg) 0;
+	}
+
+	.field {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.field label {
+		font-weight: var(--weight-medium);
+		color: var(--color-text);
+	}
+
+	.field input,
+	.field textarea {
+		font-family: var(--font-sans);
+		font-size: var(--text-body);
+		padding: var(--space-sm);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		color: var(--color-text);
+		background: var(--color-bg);
+	}
+
+	.image-grid {
+		list-style: none;
+		margin: var(--space-lg) 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: var(--space-md);
+		max-width: 560px;
+	}
+
+	.image-grid img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--radius-md);
+		background: var(--color-bg-subtle);
+	}
+</style>
