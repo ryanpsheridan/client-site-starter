@@ -20,8 +20,11 @@ const year = new Date().getFullYear();
 			</ul>
 		</nav>
 	</div>
-	<div class="container">
+	<div class="container site-footer-bottom">
 		<p class="site-footer-copy">&copy; {year} {SITE_TITLE}. All rights reserved.</p>
+		{/* Template-only link — delete this <p> alongside how-this-works.astro
+		    once the client no longer needs the live pitch/setup walkthrough. */}
+		<p class="site-footer-copy"><a href="/how-this-works/">How this site works</a></p>
 	</div>
 </footer>
 
@@ -63,6 +66,13 @@ const year = new Date().getFullYear();
 
 	.site-footer-nav a:hover {
 		color: var(--color-text);
+	}
+
+	.site-footer-bottom {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: var(--space-md);
 	}
 
 	.site-footer-copy {
