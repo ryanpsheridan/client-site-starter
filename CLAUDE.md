@@ -8,20 +8,20 @@ Design tokens live in `src/styles/tokens.css`. Site-wide values (business name, 
 
 ## First Steps On A New Client Project
 
-1. Fill in `src/consts.ts` with the real business name, description, phone, email, and nav structure.
+1. Fill in `src/consts.ts` with the real business name, description, phone, email, and nav structure. The favicon (`src/pages/favicon.svg.ts`) auto-derives from `SITE_TITLE`'s first letter, so this alone gives every new project a reasonable default with no manual asset work.
 2. Replace placeholder copy in `src/pages/index.astro`, `about.astro`, `services.astro` with the client's real content.
 3. Update `astro.config.mjs`'s `site` value to the client's real domain once known.
-4. Replace `public/favicon.svg` and `public/images/og-default.png` with the client's real branding.
-5. Re-theme `src/styles/tokens.css` — swap `--color-accent*` and `--color-bg*` for the client's brand colors. Everything else in the site reads from these tokens, so a full re-skin should only require editing this one file.
-6. Delete or repurpose `src/pages/how-this-works.astro` once the client no longer needs the live pitch walkthrough (it's `noindex`, so it's harmless to leave, but it's not meant to be permanent client-facing content).
+4. Once the client has real branding/a logo, replace the auto-generated favicon: delete `src/pages/favicon.svg.ts` and add a real static file at `public/favicon.svg` (or `.ico`/`.png`, updating the `<link>` in `BaseHead.astro` accordingly). Also replace `public/images/og-default.png`.
+5. Re-theme `src/styles/tokens.css` — swap `--color-accent*` and `--color-bg*` for the client's brand colors. Everything else in the site reads from these tokens, so a full re-skin should only require editing this one file (also update the hardcoded fill in `favicon.svg.ts` to match, until it's replaced per step 4).
+6. `src/pages/setup.astro` (`/setup`) is your own reference page — not linked anywhere on the site, not shown to the client. Use it while pitching/building; see "Before Launch" below for when to remove it.
 
 ## Before Launch
 
-Both of these are `noindex` and harmless to leave temporarily, but must not ship to production long-term:
+`src/pages/setup.astro` is `noindex` and unlinked, so it's harmless to leave temporarily, but must not ship to production long-term:
 
-- Delete `src/pages/how-this-works.astro` and `src/pages/instructions.astro`.
-- Remove their footer links in `Footer.astro` (the `.site-footer-template-links` paragraph).
-- See `src/pages/instructions.astro` itself for the full pre-launch checklist (placeholder content, domain, Search Console) while it still exists.
+- Delete `src/pages/setup.astro`.
+- See that page itself for the full pre-launch checklist (placeholder content, domain, Search Console) while it still exists.
+- To hand the client their own setup steps, send `SETUP.md`'s content directly (email/text/shared file) — never point them at `/setup`, which is written for you, not them.
 
 ## Google Search Console
 
