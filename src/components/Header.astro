@@ -206,9 +206,14 @@ const currentPath = Astro.url.pathname;
 		transition: transform 0.1s ease, color 0.15s ease;
 	}
 
-	.menu-item:hover,
+	.menu-item:hover {
+		font-weight: var(--weight-semibold);
+	}
+
 	.menu-item[aria-current='page'] {
-		color: var(--color-accent);
+		font-weight: var(--weight-semibold);
+		text-decoration: underline;
+		text-underline-offset: 0.3em;
 	}
 
 	.menu-item:active {

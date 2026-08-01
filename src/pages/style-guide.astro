@@ -7,7 +7,9 @@ const colorSwatches = [
 	{ name: '--color-bg', label: 'Background', border: true },
 	{ name: '--color-bg-subtle', label: 'Background subtle', border: true },
 	{ name: '--color-border', label: 'Border', border: true },
-	{ name: '--color-accent', label: 'Accent' },
+	{ name: '--color-ink', label: 'Ink (buttons)' },
+	{ name: '--color-ink-hover', label: 'Ink hover' },
+	{ name: '--color-accent', label: 'Accent (links only)' },
 	{ name: '--color-accent-hover', label: 'Accent hover' },
 ];
 
@@ -18,11 +20,17 @@ const semanticSwatches = [
 	{ name: '--color-accent-info', bg: '--color-accent-info-bg', label: 'Info' },
 ];
 
-const typeScale = [
+const headingScale = [
 	{ token: '--text-display', label: 'Display', sample: 'Aa' },
 	{ token: '--text-h1', label: 'H1', sample: 'Aa' },
 	{ token: '--text-h2', label: 'H2', sample: 'Aa' },
 	{ token: '--text-h3', label: 'H3', sample: 'Aa' },
+	{ token: '--text-h4', label: 'H4', sample: 'Aa' },
+	{ token: '--text-h5', label: 'H5', sample: 'Aa' },
+];
+
+const textScale = [
+	{ token: '--text-large', label: 'Large', sample: 'The quick brown fox jumps over the lazy dog.' },
 	{ token: '--text-body', label: 'Body', sample: 'The quick brown fox jumps over the lazy dog.' },
 	{ token: '--text-small', label: 'Small', sample: 'The quick brown fox jumps over the lazy dog.' },
 ];
@@ -30,8 +38,7 @@ const typeScale = [
 const weights = [
 	{ token: '--weight-normal', label: 'Normal (400)' },
 	{ token: '--weight-medium', label: 'Medium (500)' },
-	{ token: '--weight-semibold', label: 'Semibold (600)' },
-	{ token: '--weight-bold', label: 'Bold (700)' },
+	{ token: '--weight-semibold', label: 'Semibold (600) — heaviest weight in the system' },
 ];
 
 const spacingScale = [
@@ -92,8 +99,22 @@ const radii = [
 			<strong>DM Sans</strong> for both body and headings (<code>--font-sans</code> /
 			<code>--font-heading</code>).
 		</p>
+
+		<h3>Headings</h3>
+		<p>H5 intentionally matches the body text size — a heading sized like a paragraph, for tight label-style headings — then steps up through H1. Display sits above H1 for hero headlines only.</p>
 		<ul class="type-scale">
-			{typeScale.map((t) => (
+			{headingScale.map((t) => (
+				<li>
+					<span class="type-sample" style={`font-size:var(${t.token});`}>{t.sample}</span>
+					<code>{t.token}</code>
+				</li>
+			))}
+		</ul>
+
+		<h3>Text sizes</h3>
+		<p>Three sizes for running body copy — large for lead paragraphs/intros, body as the default, small for captions and fine print.</p>
+		<ul class="type-scale">
+			{textScale.map((t) => (
 				<li>
 					<span class="type-sample" style={`font-size:var(${t.token});`}>{t.sample}</span>
 					<code>{t.token}</code>
@@ -156,7 +177,7 @@ const radii = [
 		<ul class="card-grid">
 			<li class="demo-card">
 				<h4>Card title</h4>
-				<p>Cards use <code>--color-border</code>, <code>--radius-lg</code>, and <code>--space-lg</code> padding — the same pattern as the service cards on the Services page.</p>
+				<p>Cards use <code>--color-border</code>, <code>--radius-lg</code>, and <code>--space-lg</code> padding — the same pattern used throughout the Services page.</p>
 			</li>
 			<li class="demo-card">
 				<h4>Second card</h4>
@@ -196,7 +217,7 @@ const radii = [
 	}
 
 	.intro {
-		font-size: var(--text-h3);
+		font-size: var(--text-large);
 		color: var(--color-text-secondary);
 		max-width: 640px;
 	}
@@ -303,7 +324,7 @@ const radii = [
 
 	.spacing-bar {
 		height: 1rem;
-		background: var(--color-accent);
+		background: var(--color-ink);
 		border-radius: var(--radius-sm);
 		display: block;
 	}
@@ -358,10 +379,6 @@ const radii = [
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
 		padding: var(--space-lg);
-	}
-
-	.demo-card h4 {
-		font-size: var(--text-h3);
 	}
 
 	.demo-form {

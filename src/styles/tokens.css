@@ -3,17 +3,28 @@
 	--font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
 	--font-heading: 'DM Sans', system-ui, -apple-system, sans-serif;
 
+	/* Text scale — three sizes for body copy, used for emphasis/hierarchy
+	   within running text (never for headings). */
 	--text-small: 0.875rem;
 	--text-body: 1rem;
-	--text-h3: 1.375rem;
-	--text-h2: 1.875rem;
+	--text-large: 1.125rem;
+
+	/* Heading scale — h5 intentionally matches --text-body (a heading
+	   sized like a paragraph, for tight label-style headings), then
+	   steps up to --text-h1. --text-display is only for the largest
+	   hero headline, layered on top of h1 rather than in place of it. */
+	--text-h5: 1rem;
+	--text-h4: 1.25rem;
+	--text-h3: 1.625rem;
+	--text-h2: 2.125rem;
 	--text-h1: 2.75rem;
 	--text-display: 3.5rem;
 
+	/* Two weights above normal: medium for UI/labels, semibold as the
+	   heaviest weight in the system (no 700/bold — semibold covers it). */
 	--weight-normal: 400;
 	--weight-medium: 500;
 	--weight-semibold: 600;
-	--weight-bold: 700;
 
 	--line-height-tight: 1.2;
 	--line-height-body: 1.6;
@@ -41,6 +52,14 @@
 	--color-accent: #2952CC;
 	--color-accent-hover: #1F3FA3;
 	--color-accent-contrast: #FFFFFF;
+
+	/* Ink — the monochrome black used for primary buttons and other
+	   high-emphasis controls. Kept separate from --color-accent so the
+	   site stays monochromatic outside of hyperlinks, which are the only
+	   place --color-accent (blue) should show up. */
+	--color-ink: #1A1A1A;
+	--color-ink-hover: #000000;
+	--color-ink-contrast: #FFFFFF;
 
 	/* Semantic accents — same intent as SimplySheet's calculator system,
 	   kept here so any future client tool/form-state UI stays consistent. */
