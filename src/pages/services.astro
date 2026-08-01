@@ -464,7 +464,7 @@ const serviceSchema = {
 		margin: var(--space-xl) 0 0;
 		padding: 0;
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 		gap: var(--space-lg);
 	}
 
@@ -502,10 +502,13 @@ const serviceSchema = {
 
 	.faq-item {
 		border-bottom: 1px solid var(--color-border);
-		padding-block: var(--space-md);
 	}
 
+	/* Padding lives on the summary itself, not the wrapping .faq-item, so
+	   the whole tappable row (not just the text line) is a comfortable
+	   touch target on mobile. */
 	.faq-item summary {
+		padding-block: var(--space-md);
 		cursor: pointer;
 		font-weight: var(--weight-semibold);
 		color: var(--color-text);
@@ -529,7 +532,7 @@ const serviceSchema = {
 	}
 
 	.faq-item p {
-		margin: var(--space-sm) 0 0 1.25em;
+		margin: 0 0 var(--space-md) 1.25em;
 	}
 
 	/* Final CTA */

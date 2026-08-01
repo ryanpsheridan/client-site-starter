@@ -12,13 +12,17 @@
 	/* Heading scale — h5 intentionally matches --text-body (a heading
 	   sized like a paragraph, for tight label-style headings), then
 	   steps up to --text-h1. --text-display is only for the largest
-	   hero headline, layered on top of h1 rather than in place of it. */
+	   hero headline, layered on top of h1 rather than in place of it.
+	   H1/H2/H3/display use clamp() so they scale down fluidly on narrow
+	   phones instead of staying at their full desktop size — a fixed
+	   2.75rem/3.5rem headline eats most of a 375px screen otherwise. The
+	   upper bound (desktop size) is unchanged from before. */
 	--text-h5: 1rem;
 	--text-h4: 1.25rem;
-	--text-h3: 1.625rem;
-	--text-h2: 2.125rem;
-	--text-h1: 2.75rem;
-	--text-display: 3.5rem;
+	--text-h3: clamp(1.375rem, 1.2rem + 0.9vw, 1.625rem);
+	--text-h2: clamp(1.625rem, 1.3rem + 1.6vw, 2.125rem);
+	--text-h1: clamp(2rem, 1.5rem + 2.5vw, 2.75rem);
+	--text-display: clamp(2.25rem, 1.4rem + 4.25vw, 3.5rem);
 
 	/* Two weights above normal: medium for UI/labels, semibold as the
 	   heaviest weight in the system (no 700/bold — semibold covers it). */
