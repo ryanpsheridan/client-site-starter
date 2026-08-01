@@ -69,6 +69,20 @@ The Formspree (or equivalent) account belongs to the **client**, not the develop
 
 **Setup**: client signs up free at formspree.io using their own email, creates a new form in the dashboard, and copies the resulting `https://formspree.io/f/{form_id}` endpoint. Paste that into the `action` attribute in `src/pages/contact.astro`, replacing the `FORMSPREE_ID` placeholder, then submit a test entry after deploying to confirm delivery before considering the form done.
 
+### Project intake / questionnaire form (portfolio site, not this template)
+
+`INTAKE.md` in this repo is the developer-filled checklist for a live call. There's also a standing, self-serve version at https://www.ryansheridan.studio/project-questionnaire — a single questionnaire on the developer's own portfolio site (not duplicated per client project) that covers the same ground as `INTAKE.md`. Send that link to a prospective client, their answers land in the developer's inbox via Formspree, and those answers are what get pasted into the first Claude Code prompt on a fresh copy of this template to kick off the actual build.
+
+This playbook documents that questionnaire's design so it can be maintained/rebuilt on the portfolio site if needed — it does not describe anything to build inside this template:
+
+- **Layout**: single column, narrower than the site's normal max-width (~656px) — forms read better narrow. Group into named `<h2>` sections separated by dividers with equal spacing above and below; use uppercase `<h3>` sub-labels for related sub-topics within a section instead of a new divider every time.
+- **Inputs**: stack every radio/checkbox group vertically, never side-by-side. Prefer multiple-choice over free text wherever the answer space is guessable (people often don't know exactly what they want — concrete options to react to beat a blank textarea), and always give an "Other" option a visible follow-up text field. Reserve one open-ended catch-all field for the end (framed as low-pressure, e.g. "want to just rant randomly?") so nothing forces itself into the structured questions.
+- **Progressive disclosure**: hide follow-up questions that only make sense after a Yes/No answer, and reveal them via JS when selected — don't just de-emphasize them, actually hide them, so the form stays short at a glance.
+- **Accessibility**: same non-negotiables as the rest of the site — real `<label for>` on every field, `<fieldset><legend>` around every option group, visible focus states, helper copy in a muted `<p class="field-note">` under the question (never a placeholder, which disappears on focus).
+- **Tone**: reassuring and low-pressure — explicitly tell people it's OK to skip or guess ("Not sure yet? Pick what feels closest").
+- **Submission**: same Formspree pattern as `contact.astro`, but via `fetch()` with `Accept: application/json` instead of a native POST, so a successful submit swaps in an inline "Thanks!" confirmation on the same page instead of redirecting to a third-party thank-you page. Include a honeypot field (`name="_gotcha"`, hidden from sighted and AT users) for basic spam protection.
+- **Indexing**: mark the page `noindex` (it's a link sent directly to specific people, not meant to be discoverable) but leave `robots.txt` alone — blocking it there would also break link-preview bots (iMessage, Slack) from generating a preview card for the URL.
+
 ## Scheduling — Decision Tree
 
 Default: **Calendly** embed/link, under the client's own account (it's his calendar). Use **Cal.com** instead only if the client specifically prefers an open-source alternative to Calendly's branding/free-tier limits.

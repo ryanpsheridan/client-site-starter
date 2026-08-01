@@ -49,6 +49,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			<li>Whether the client will ever self-edit content, and how</li>
 			<li>Domain ownership</li>
 		</ul>
+		<p>
+			Two ways to gather it: fill out <code>INTAKE.md</code> live with the client, or send them
+			<a href="https://www.ryansheridan.studio/project-questionnaire" target="_blank" rel="noopener">ryansheridan.studio/project-questionnaire</a>
+			— the questionnaire on the portfolio site — and let them answer on their own time.
+			Submissions land in your inbox via Formspree; paste the answers into the first Claude Code
+			prompt on a fresh copy of this template to kick off the build. That questionnaire isn't
+			part of this template (it lives on the portfolio site, one instance for all clients) — its
+			design/UX playbook is documented under Forms in <code>CLAUDE.md</code> for reference if it
+			ever needs updating.
+		</p>
 
 		<h2>4. Build conventions</h2>
 		<p>Full detail lives in <code>CLAUDE.md</code>. Summary:</p>
@@ -64,6 +74,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 		<h3>Forms</h3>
 		<p><strong>Default: Formspree.</strong> Free, no backend code, submissions land in the client's inbox. Switch to Basin only if Formspree's free tier becomes a real limit; build a Vercel Serverless Function only if custom logic (e.g. writing to a database) is required.</p>
+		<p>
+			The self-serve project questionnaire mentioned above lives on the portfolio site, not
+			this template — its design (progressive disclosure, honeypot spam protection, the
+			<code>fetch()</code>-based inline "Thanks!" submit pattern) is documented under Forms in
+			<code>CLAUDE.md</code> for reference if it ever needs updating.
+		</p>
 		<p><strong>Formspree setup</strong> (client's own account, same as every other third-party service here):</p>
 		<ol>
 			<li>Client signs up free at <a href="https://formspree.io/register" target="_blank" rel="noopener">formspree.io/register</a>, using their own business email.</li>
