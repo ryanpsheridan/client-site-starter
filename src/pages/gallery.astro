@@ -4,45 +4,401 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 // Placeholder gallery. Real images live in public/images/gallery/ — see
 // CLAUDE.md's "Gallery / Photo Uploads" section for the naming convention
 // and the decision tree for how a given client should add new photos.
+//
+// Three sections show three different ways to lay out the same kind of
+// content (grid / featured carousel / masonry) so this page doubles as a
+// template to pick from per client rather than a single fixed layout.
+// Every photo opens in a shared lightbox dialog on click.
 const images = [
 	{ src: '/images/gallery/placeholder-1.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
 	{ src: '/images/gallery/placeholder-2.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
 	{ src: '/images/gallery/placeholder-3.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
+	{ src: '/images/gallery/placeholder-4.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
+	{ src: '/images/gallery/placeholder-5.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
+	{ src: '/images/gallery/placeholder-6.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
 ];
 ---
 
 <BaseLayout title="Gallery" description="A look at our work.">
 	<section class="container section">
 		<h1>Gallery</h1>
-		<ul class="gallery-grid">
+		<p class="lead">A look at our work — replace this copy and every photo below with the real thing.</p>
+	</section>
+
+	<section class="container section">
+		<h2>Recent work</h2>
+		<ul class="photo-grid">
 			{images.map((image) => (
 				<li>
-					<img src={image.src} alt={image.alt} loading="lazy" />
+					<button type="button" class="gallery-trigger grid-item" data-src={image.src} data-alt={image.alt}>
+						<img src={image.src} alt={image.alt} loading="lazy" />
+					</button>
 				</li>
 			))}
 		</ul>
 	</section>
+
+	<section class="container section bg-subtle">
+		<h2>Featured</h2>
+		<div class="carousel-block">
+			<button type="button" id="featured-trigger" class="gallery-trigger carousel-featured" data-src={images[0].src} data-alt={images[0].alt}>
+				<img id="featured-img" src={images[0].src} alt={images[0].alt} />
+			</button>
+			<div class="carousel-thumbs">
+				<button type="button" class="carousel-nav carousel-prev" aria-label="Scroll thumbnails left">&lsaquo;</button>
+				<div id="carousel-track" class="carousel-track" role="region" aria-label="More photos" tabindex="0">
+					{images.map((image, i) => (
+						<button
+							type="button"
+							class:list={['carousel-thumb', { active: i === 0 }]}
+							data-src={image.src}
+							data-alt={image.alt}
+							aria-pressed={i === 0 ? 'true' : 'false'}
+							aria-label={`Show photo ${i + 1} of ${images.length}`}
+						>
+							<img src={image.src} alt="" loading="lazy" />
+						</button>
+					))}
+				</div>
+				<button type="button" class="carousel-nav carousel-next" aria-label="Scroll thumbnails right">&rsaquo;</button>
+			</div>
+		</div>
+	</section>
+
+	<section class="container section">
+		<h2>More photos</h2>
+		<div class="masonry">
+			{images.map((image) => (
+				<button type="button" class="gallery-trigger masonry-item" data-src={image.src} data-alt={image.alt}>
+					<img src={image.src} alt={image.alt} loading="lazy" />
+				</button>
+			))}
+		</div>
+	</section>
+
+	<dialog id="lightbox" class="lightbox" aria-label="Photo preview">
+		<button type="button" id="lightbox-close" class="lightbox-close" aria-label="Close">&times;</button>
+		<img id="lightbox-img" src="" alt="" />
+	</dialog>
 </BaseLayout>
+
+<script>
+	const dialog = document.getElementById('lightbox') as HTMLDialogElement;
+	const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+	const track = document.getElementById('carousel-track') as HTMLDivElement;
+	const featuredImg = document.getElementById('featured-img') as HTMLImageElement;
+	const featuredTrigger = document.getElementById('featured-trigger') as HTMLButtonElement;
+
+	let lastTrigger: HTMLElement | null = null;
+
+	function openLightbox(trigger: HTMLElement) {
+		const img = trigger.querySelector('img');
+		const src = trigger.dataset.src || img?.src || '';
+		const alt = trigger.dataset.alt || img?.alt || '';
+		if (!src) return;
+		lastTrigger = trigger;
+		lightboxImg.src = src;
+		lightboxImg.alt = alt;
+		dialog.showModal();
+	}
+
+	dialog.addEventListener('close', () => {
+		lastTrigger?.focus();
+	});
+
+	document.addEventListener('click', (e) => {
+		const target = e.target as HTMLElement;
+
+		const thumb = target.closest<HTMLButtonElement>('.carousel-thumb');
+		if (thumb) {
+			track.querySelectorAll('.carousel-thumb').forEach((t) => {
+				t.classList.remove('active');
+				t.setAttribute('aria-pressed', 'false');
+			});
+			thumb.classList.add('active');
+			thumb.setAttribute('aria-pressed', 'true');
+			const { src, alt } = thumb.dataset;
+			if (src) {
+				featuredImg.src = src;
+				featuredImg.alt = alt || '';
+				featuredTrigger.dataset.src = src;
+				featuredTrigger.dataset.alt = alt || '';
+			}
+			return;
+		}
+
+		if (target.closest('.carousel-prev')) {
+			track.scrollBy({ left: -176, behavior: 'smooth' });
+			return;
+		}
+
+		if (target.closest('.carousel-next')) {
+			track.scrollBy({ left: 176, behavior: 'smooth' });
+			return;
+		}
+
+		if (target.closest('#lightbox-close')) {
+			dialog.close();
+			return;
+		}
+
+		if (target === dialog) {
+			dialog.close();
+			return;
+		}
+
+		const trigger = target.closest<HTMLElement>('.gallery-trigger');
+		if (trigger) {
+			openLightbox(trigger);
+		}
+	});
+</script>
 
 <style>
 	.section {
 		padding-block: var(--space-2xl);
 	}
 
-	.gallery-grid {
+	.bg-subtle {
+		background: var(--color-bg-subtle);
+	}
+
+	.lead {
+		font-size: var(--text-large);
+		color: var(--color-text-secondary);
+		max-width: 640px;
+	}
+
+	/* Shared trigger reset — every clickable photo is a plain button so
+	   it's keyboard-focusable and announced correctly, with none of the
+	   default button chrome. */
+	.gallery-trigger {
+		display: block;
+		width: 100%;
+		padding: 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	/* Grid */
+	.photo-grid {
 		list-style: none;
-		margin: 0;
+		margin: var(--space-xl) 0 0;
 		padding: 0;
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		grid-template-columns: repeat(3, 1fr);
 		gap: var(--space-md);
 	}
 
-	.gallery-grid img {
+	.grid-item img {
 		width: 100%;
 		aspect-ratio: 4 / 3;
 		object-fit: cover;
 		border-radius: var(--radius-md);
 		background: var(--color-bg-subtle);
+		transition: transform 0.15s ease;
+	}
+
+	.grid-item:hover img {
+		transform: scale(1.02);
+	}
+
+	@media (max-width: 720px) {
+		.photo-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.photo-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Carousel */
+	.carousel-block {
+		margin-top: var(--space-xl);
+	}
+
+	.carousel-featured {
+		margin-bottom: var(--space-md);
+	}
+
+	.carousel-featured img {
+		width: 100%;
+		height: 420px;
+		object-fit: contain;
+		background: var(--color-bg);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+	}
+
+	@media (max-width: 640px) {
+		.carousel-featured img {
+			height: 260px;
+		}
+	}
+
+	.carousel-thumbs {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+	}
+
+	.carousel-track {
+		display: flex;
+		gap: var(--space-sm);
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		padding-block: 2px;
+	}
+
+	.carousel-track::-webkit-scrollbar {
+		display: none;
+	}
+
+	.carousel-thumb {
+		flex-shrink: 0;
+		scroll-snap-align: start;
+		width: 88px;
+		border-radius: var(--radius-md);
+		overflow: hidden;
+		border: 2px solid transparent;
+		transition: border-color 0.15s ease, transform 0.1s ease;
+	}
+
+	.carousel-thumb:active {
+		transform: scale(0.96);
+	}
+
+	.carousel-thumb img {
+		width: 100%;
+		aspect-ratio: 1 / 1;
+		object-fit: cover;
+		display: block;
+	}
+
+	.carousel-thumb.active {
+		border-color: var(--color-ink);
+	}
+
+	.carousel-nav {
+		flex-shrink: 0;
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: 50%;
+		border: 1px solid var(--color-border);
+		background: var(--color-bg);
+		color: var(--color-text);
+		font-size: 1.25rem;
+		line-height: 1;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.carousel-nav:hover {
+		background: var(--color-bg-subtle);
+	}
+
+	.carousel-nav:active {
+		transform: scale(0.94);
+	}
+
+	/* Masonry */
+	.masonry {
+		margin-top: var(--space-xl);
+		column-count: 3;
+		column-gap: var(--space-md);
+	}
+
+	.masonry-item {
+		display: block;
+		width: 100%;
+		margin-bottom: var(--space-md);
+		break-inside: avoid;
+		border-radius: var(--radius-md);
+		overflow: hidden;
+	}
+
+	.masonry-item img {
+		width: 100%;
+		height: auto;
+		display: block;
+		transition: transform 0.15s ease;
+	}
+
+	.masonry-item:hover img {
+		transform: scale(1.02);
+	}
+
+	@media (max-width: 720px) {
+		.masonry {
+			column-count: 2;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.masonry {
+			column-count: 1;
+		}
+	}
+
+	/* Lightbox — visual/positioning rules only apply while [open], so a
+	   closed <dialog> keeps the UA default display:none instead of
+	   sitting invisibly on top of the page and eating clicks. */
+	.lightbox {
+		margin: 0;
+		padding: var(--space-xl);
+		border: none;
+		background: transparent;
+	}
+
+	.lightbox[open] {
+		position: fixed;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		max-width: none;
+		max-height: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.lightbox::backdrop {
+		background: rgba(20, 20, 20, 0.9);
+	}
+
+	.lightbox img {
+		max-width: 100%;
+		max-height: 100%;
+		object-fit: contain;
+		border-radius: var(--radius-md);
+	}
+
+	.lightbox-close {
+		position: absolute;
+		top: var(--space-lg);
+		right: var(--space-lg);
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 50%;
+		border: none;
+		background: rgba(255, 255, 255, 0.92);
+		color: var(--color-text);
+		font-size: 1.5rem;
+		line-height: 1;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.lightbox-close:hover {
+		background: var(--color-bg);
 	}
 </style>
