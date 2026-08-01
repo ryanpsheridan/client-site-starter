@@ -1,7 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import ContactForm from '../components/ContactForm.astro';
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_PHONE, SITE_EMAIL, SITE_ADDRESS } from '../consts';
 
+// Placeholder content throughout — replace every field before launch.
+// Section order follows the standard small-business homepage pattern:
+// hero → trust signals → services preview → why-us → work preview →
+// testimonials → contact. Services/gallery previews intentionally reuse
+// a few real items from those pages rather than inventing new copy, so
+// there's one source of truth to edit.
 const schema = {
 	'@context': 'https://schema.org',
 	'@type': 'LocalBusiness', // TODO: swap for the more specific type if one fits (Restaurant, Plumber, ProfessionalService, etc.)
@@ -9,6 +16,53 @@ const schema = {
 	description: SITE_DESCRIPTION,
 	url: Astro.site,
 };
+
+const trustSignals = [
+	'Replace with a trust signal (e.g. "Licensed & insured")',
+	'Replace with a trust signal (e.g. "5-star rated")',
+	'Replace with a trust signal (e.g. "Serving [area] since 20XX")',
+];
+
+const services = [
+	{
+		title: 'Service one',
+		description: 'Replace with a real description of what this includes.',
+	},
+	{
+		title: 'Service two',
+		description: 'Replace with a real description of what this includes.',
+	},
+	{
+		title: 'Service three',
+		description: 'Replace with a real description of what this includes.',
+	},
+];
+
+const benefits = [
+	{ title: 'Fast, reliable service', description: 'Replace with what makes response time or turnaround a real advantage.' },
+	{ title: 'Transparent, upfront pricing', description: 'Replace with how you handle quotes — no surprise costs.' },
+	{ title: 'Locally owned and operated', description: 'Replace with real local/community credibility.' },
+	{ title: 'Satisfaction guaranteed', description: 'Replace with the real guarantee or standard you hold work to.' },
+];
+
+const galleryPreview = [
+	{ src: '/images/gallery/placeholder-1.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
+	{ src: '/images/gallery/placeholder-2.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
+	{ src: '/images/gallery/placeholder-3.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
+];
+
+const testimonials = [
+	{
+		quote: 'Replace with a real quote from a client — specific results read as more credible than generic praise.',
+		name: 'Client name',
+		role: 'Replace with their role or company',
+	},
+	{
+		quote: 'Replace with a second real quote, ideally from a different type of client to show range.',
+		name: 'Client name',
+		role: 'Replace with their role or company',
+	},
+];
 ---
 
 <BaseLayout title="Home" description={SITE_DESCRIPTION}>
@@ -20,21 +74,113 @@ const schema = {
 			One or two sentences of supporting copy. Lead with the outcome the visitor
 			cares about, not a list of features.
 		</p>
-		<a href="/contact/" class="btn btn-primary">Get in touch</a>
+		<div class="hero-actions">
+			<a href="/contact/" class="btn btn-primary">Get in touch</a>
+			<a href="/gallery/" class="btn btn-secondary">See our work</a>
+		</div>
+	</section>
+
+	<section class="container trust-bar" aria-label="Why clients trust us">
+		<ul>
+			{trustSignals.map((signal) => (
+				<li>{signal}</li>
+			))}
+		</ul>
 	</section>
 
 	<section class="container section">
 		<h2>What we do</h2>
-		<p>
-			Short section introducing the core service(s). Replace with real copy —
-			answer the question a visitor is actually asking when they land here.
+		<p class="section-intro">
+			Short section introducing the core service(s) — answer the question a visitor is
+			actually asking when they land here. See the full <a href="/services/">list of services</a>,
+			including pricing and how the process works.
 		</p>
+		<ul class="service-grid">
+			{services.map((service) => (
+				<li class="service-card">
+					<h3>{service.title}</h3>
+					<p>{service.description}</p>
+				</li>
+			))}
+		</ul>
+		<a href="/services/" class="btn btn-secondary">View all services</a>
+	</section>
+
+	<section class="container section bg-subtle">
+		<h2>Why choose us</h2>
+		<ul class="benefit-grid">
+			{benefits.map((benefit) => (
+				<li class="benefit-card">
+					<h3>{benefit.title}</h3>
+					<p>{benefit.description}</p>
+				</li>
+			))}
+		</ul>
+	</section>
+
+	<section class="container section">
+		<h2>Our work</h2>
+		<p class="section-intro">
+			A look at recent projects — visit the <a href="/gallery/">full gallery</a> for more.
+		</p>
+		<ul class="work-grid">
+			{galleryPreview.map((image) => (
+				<li>
+					<a href="/gallery/" class="work-item">
+						<img src={image.src} alt={image.alt} loading="lazy" />
+					</a>
+				</li>
+			))}
+		</ul>
+		<a href="/gallery/" class="btn btn-secondary">View full gallery</a>
+	</section>
+
+	<section class="container section bg-subtle">
+		<h2>What clients say</h2>
+		<ul class="testimonial-grid">
+			{testimonials.map((t) => (
+				<li>
+					<blockquote class="testimonial-card">
+						<p>&ldquo;{t.quote}&rdquo;</p>
+						<footer>
+							<cite>{t.name}</cite>{t.role && <>, {t.role}</>}
+						</footer>
+					</blockquote>
+				</li>
+			))}
+		</ul>
+	</section>
+
+	<section class="container section contact-section">
+		<div class="contact-grid">
+			<div class="contact-info">
+				<h2>Get in touch</h2>
+				<p>
+					Replace with a short line inviting the visitor to reach out — restate the outcome
+					one more time before they leave the page.
+				</p>
+				<p class="contact-details">
+					<a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a>
+					<br />
+					<a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
+					{SITE_ADDRESS && (
+						<>
+							<br />
+							{SITE_ADDRESS}
+						</>
+					)}
+				</p>
+			</div>
+			<div class="contact-form-wrap">
+				<ContactForm />
+			</div>
+		</div>
 	</section>
 </BaseLayout>
 
 <style>
 	.hero {
-		padding-block: var(--space-3xl);
+		padding-block: var(--space-3xl) var(--space-2xl);
 		max-width: 640px;
 	}
 
@@ -43,7 +189,174 @@ const schema = {
 		margin-bottom: var(--space-lg);
 	}
 
+	.hero-actions {
+		display: flex;
+		gap: var(--space-md);
+		flex-wrap: wrap;
+	}
+
 	.section {
 		padding-block: var(--space-2xl);
+	}
+
+	.bg-subtle {
+		background: var(--color-bg-subtle);
+	}
+
+	.section-intro {
+		max-width: 640px;
+	}
+
+	/* Trust bar */
+	.trust-bar {
+		padding-block: var(--space-lg);
+		border-block: 1px solid var(--color-border);
+	}
+
+	.trust-bar ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-md) var(--space-xl);
+	}
+
+	.trust-bar li {
+		font-size: var(--text-small);
+		font-weight: var(--weight-medium);
+		color: var(--color-text-secondary);
+	}
+
+	/* Services preview */
+	.service-grid {
+		list-style: none;
+		margin: var(--space-xl) 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: var(--space-lg);
+	}
+
+	.service-card {
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		padding: var(--space-lg);
+	}
+
+	.service-card h3 {
+		font-size: var(--text-h4);
+	}
+
+	.service-card p {
+		margin-bottom: 0;
+	}
+
+	/* Why choose us */
+	.benefit-grid {
+		list-style: none;
+		margin: var(--space-xl) 0 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: var(--space-lg);
+	}
+
+	.benefit-card h3 {
+		font-size: var(--text-h4);
+	}
+
+	.benefit-card p {
+		margin-bottom: 0;
+	}
+
+	/* Work preview */
+	.work-grid {
+		list-style: none;
+		margin: var(--space-xl) 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-md);
+	}
+
+	.work-item img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--radius-md);
+		background: var(--color-bg-subtle);
+		transition: transform 0.15s ease;
+	}
+
+	.work-item:hover img {
+		transform: scale(1.02);
+	}
+
+	@media (max-width: 640px) {
+		.work-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 400px) {
+		.work-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Testimonials */
+	.testimonial-grid {
+		list-style: none;
+		margin: var(--space-xl) 0 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: var(--space-lg);
+	}
+
+	.testimonial-card {
+		margin: 0;
+		background: var(--color-bg);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		padding: var(--space-lg);
+	}
+
+	.testimonial-card p {
+		font-size: var(--text-large);
+		color: var(--color-text);
+		margin-bottom: var(--space-md);
+	}
+
+	.testimonial-card footer {
+		font-size: var(--text-small);
+		color: var(--color-text-secondary);
+	}
+
+	.testimonial-card cite {
+		font-style: normal;
+		font-weight: var(--weight-semibold);
+		color: var(--color-text);
+	}
+
+	/* Contact — two columns, last section before the footer */
+	.contact-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-2xl);
+		align-items: start;
+	}
+
+	.contact-details {
+		margin-top: var(--space-lg);
+		font-size: var(--text-large);
+	}
+
+	@media (max-width: 720px) {
+		.contact-grid {
+			grid-template-columns: 1fr;
+			gap: var(--space-xl);
+		}
 	}
 </style>
