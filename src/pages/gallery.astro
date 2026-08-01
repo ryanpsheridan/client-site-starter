@@ -47,18 +47,20 @@ const images = [
 			<div class="carousel-thumbs">
 				<button type="button" class="carousel-nav carousel-prev" aria-label="Scroll thumbnails left">&lsaquo;</button>
 				<div id="carousel-track" class="carousel-track" role="region" aria-label="More photos" tabindex="0">
-					{images.map((image, i) => (
-						<button
-							type="button"
-							class:list={['carousel-thumb', { active: i === 0 }]}
-							data-src={image.src}
-							data-alt={image.alt}
-							aria-pressed={i === 0 ? 'true' : 'false'}
-							aria-label={`Show photo ${i + 1} of ${images.length}`}
-						>
-							<img src={image.src} alt="" loading="lazy" />
-						</button>
-					))}
+					<div class="carousel-track-inner">
+						{images.map((image, i) => (
+							<button
+								type="button"
+								class:list={['carousel-thumb', { active: i === 0 }]}
+								data-src={image.src}
+								data-alt={image.alt}
+								aria-pressed={i === 0 ? 'true' : 'false'}
+								aria-label={`Show photo ${i + 1} of ${images.length}`}
+							>
+								<img src={image.src} alt="" loading="lazy" />
+							</button>
+						))}
+					</div>
 				</div>
 				<button type="button" class="carousel-nav carousel-next" aria-label="Scroll thumbnails right">&rsaquo;</button>
 			</div>
@@ -244,20 +246,34 @@ const images = [
 	.carousel-thumbs {
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		gap: var(--space-sm);
 	}
 
+	/* The scroll container itself must NOT be a centering flexbox —
+	   justify-content:center on an overflow-x:auto flex row breaks the
+	   scroll-start position, leaving the first items clipped and
+	   unreachable. Instead the container is a plain block and an inner
+	   width:max-content row is centered with auto margins: centered when
+	   it fits, flush left and fully scrollable once it overflows. */
 	.carousel-track {
-		display: flex;
-		gap: var(--space-sm);
 		overflow-x: auto;
 		scroll-snap-type: x mandatory;
 		scrollbar-width: none;
-		padding-block: 2px;
+		min-width: 0;
 	}
 
 	.carousel-track::-webkit-scrollbar {
 		display: none;
+	}
+
+	.carousel-track-inner {
+		display: flex;
+		gap: var(--space-sm);
+		width: max-content;
+		max-width: 100%;
+		margin-inline: auto;
+		padding-block: 2px;
 	}
 
 	.carousel-thumb {
@@ -356,6 +372,12 @@ const images = [
 		background: transparent;
 	}
 
+	@media (max-width: 640px) {
+		.lightbox {
+			padding: var(--space-md);
+		}
+	}
+
 	.lightbox[open] {
 		position: fixed;
 		inset: 0;
@@ -396,6 +418,13 @@ const images = [
 		align-items: center;
 		justify-content: center;
 		-webkit-tap-highlight-color: transparent;
+	}
+
+	@media (max-width: 640px) {
+		.lightbox-close {
+			top: var(--space-sm);
+			right: var(--space-sm);
+		}
 	}
 
 	.lightbox-close:hover {
