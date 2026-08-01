@@ -82,6 +82,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		<h3>Gallery / photo uploads</h3>
 		<p><strong>Default: manual upload via GitHub's web UI</strong> (<code>public/images/gallery/</code>), zero new accounts. Only add a dedicated image host (e.g. Cloudinary) if the client updates photos frequently and self-serves without you.</p>
 
+		<h3>Content editing / light CMS</h3>
+		<p><strong>Default: no CMS.</strong> Most clients don't need one — occasional content changes routed through the developer (or the client describing changes in plain English via Claude Code) covers the large majority of sites. This is opt-in per client, same reasoning as Gallery's "don't default to a dedicated image host."</p>
+		<p><strong>When to reach for it:</strong> the client specifically wants to edit content themselves on an ongoing basis without going through the developer or Claude Code each time — most commonly for a blog they'll post to regularly.</p>
+		<p><strong>Recommended option: Decap CMS</strong> (free, open-source, git-based — formerly Netlify CMS).</p>
+		<ul>
+			<li>It's not a separate content database — it's a form-based UI (<code>/admin</code>) that writes the exact same markdown/frontmatter files this template's content collections already use. A save from the CMS is a git commit, indistinguishable from one made via Claude Code. Both the client (via the CMS) and the developer (via Claude Code) can post to the same blog without conflict.</li>
+			<li>Best fit: blog posts, since Astro content collections (markdown + frontmatter) are exactly the shape Decap CMS expects. Fields can be as detailed as needed — title, slug, author, publish date, featured image, a full markdown rich-text body, tags, SEO meta fields, and repeatable field groups (e.g. FAQ question/answer pairs).</li>
+			<li>Important limitation to set expectations on: Decap CMS only edits content that's been deliberately structured into a content file. Hardcoded copy inside a page's component (e.g. the homepage hero text in <code>index.astro</code>) isn't editable through the CMS out of the box — it would need to be extracted into a small data file (e.g. <code>src/content/home.json</code>) first, a one-time refactor per section made editable. Don't imply to a client that installing this gives them Webflow-style "click anywhere and edit" — it's closer to unlocking specific fields.</li>
+			<li>Custom Astro/MDX components aren't freely composable through the CMS either — each one made available to the client needs its own explicit field definition (e.g. a dropdown to insert a predefined promo), not open-ended authoring.</li>
+			<li>Setup isn't as turnkey as Formspree/Calendly/Stripe: Decap CMS needs an OAuth backend to authenticate the client against GitHub, and since this template deploys to Vercel (not Netlify, where Decap's auth is native), that backend has to be a small serverless function added to the project. Research the current recommended approach for wiring Decap CMS's GitHub OAuth flow on Vercel before implementing this for a real client — the ecosystem around this shifts, so verify rather than assuming the setup is a five-minute account signup like the other decision trees.</li>
+			<li>Access to <code>/admin</code> should be gated to the client (and the developer) — never left open to the public.</li>
+		</ul>
+
 		<p class="note">Every third-party account above belongs to the <strong>client</strong>, not you — it's their inbox, their calendar, their money.</p>
 
 		<h2>6. Google Search Console</h2>
