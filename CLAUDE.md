@@ -6,6 +6,27 @@ This is a starter template for small-business client sites, built with Astro and
 
 Design tokens live in `src/styles/tokens.css`. Site-wide values (business name, description, contact info, nav links) live in `src/consts.ts` — fill these in first for any new client project before touching anything else.
 
+## Build & Handoff Sequence
+
+**Default path**: build the site solo in your own GitHub/Vercel accounts, and only transfer ownership to the client once they've approved a preview link. Assume the client has little to no technical experience — you'll be assisting with every third-party account setup (by call or written instructions), but every account is still created with the client's own email/info, never yours.
+
+1. **Build solo.** Create the repo under your own GitHub account and import it into your own Vercel project. Wire up any forms/scheduling/payments against a temporary/sandbox account of your own during development, so real functionality can be tested before the client is involved at all.
+2. **Share a preview link** with the client for approval. Iterate until approved — no accounts needed on their end yet.
+3. **Once approved, transfer ownership:**
+   - GitHub: repo → Settings → Transfer ownership → client's account (preserves full history). Re-add yourself as a collaborator afterward.
+   - Vercel: transfer the project to the client's account/team.
+4. **Swap in the client's real third-party accounts.** Help the client set up Formspree, Calendly, Stripe, etc. (per the decision trees below) under their own email — via call or a well-structured instructions email — then swap the placeholder/sandbox endpoints from step 1 for their real ones.
+5. **Domain.** Help the client register or point their domain, then connect it in the now-transferred Vercel project.
+6. **Google Search Console.** Help the client set it up under their own Google account, submit the sitemap, request indexing.
+7. **Optional — self-editing setup.** Only if intake indicated the client wants to edit the site themselves going forward:
+   - Editing via Claude Code directly (open-ended, any part of the site) — help them set up their own Claude account (Pro/Max). No further "connection" step is needed: Claude Code just operates on whatever repo is in front of it, so once they own the repo and have their own Claude account, they can start a session against it themselves.
+   - Editing via Decap CMS (structured fields only, no coding knowledge, best for blog-style content) — see "Content Editing / Light CMS" below.
+   - A mix of both, or fully developer-handled with no self-editing at all — the default, no extra setup.
+
+**Important nuance, applies to every account creation step above and everywhere else in this doc**: assisting a client on a call or via instructions is not the same as owning the account on their behalf. Every account (GitHub, Vercel, Formspree, Calendly, Stripe, Google) gets created with the client's own email — never yours — and for anything involving sensitive personal/financial info (Stripe bank/tax details especially), have the client type those fields in themselves even during an assisted screen-share, rather than entering them for them. Recovery emails, phone numbers, and 2FA on every account should be the client's, never yours, so they're never locked out of their own accounts later.
+
+**Alternate path — technical client wants to self-serve immediately**: some clients would rather set up their own GitHub/Vercel from day one instead of receiving a transfer later. This is a fine substitute for steps 1 and 3 above (skip straight to building in the client's own accounts, with the developer added as a collaborator) — the rest of the sequence (forms/scheduling/payments/domain/GSC/self-editing) proceeds the same either way. `SETUP.md` documents this alternate path for a client who wants to follow it directly.
+
 ## First Steps On A New Client Project
 
 1. Fill in `src/consts.ts` with the real business name, description, phone, email, and nav structure. The favicon (`src/pages/favicon.svg.ts`) auto-derives from `SITE_TITLE`'s first letter, so this alone gives every new project a reasonable default with no manual asset work.

@@ -25,12 +25,42 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			Instead of a visual page builder, this site is built with <strong>Claude Code</strong>:
 			you describe what you want in plain English &mdash; "add a testimonials section,"
 			"change the phone number in the footer" &mdash; and it writes the actual code, checks
-			it, and can publish it live. There's no drag-and-drop editor to learn. The client owns
-			the site from day one via two free accounts (GitHub, Vercel), both in their name — you're
-			added as a collaborator, never given their login.
+			it, and can publish it live. There's no drag-and-drop editor to learn. By default the
+			developer builds the site solo in their own GitHub/Vercel accounts and shares a preview
+			link for approval; once approved, ownership transfers to the client's own accounts (the
+			developer is re-added as a collaborator, never given the client's login). A technical
+			client who'd rather self-serve from day one can set up their own GitHub/Vercel accounts
+			immediately instead &mdash; see the alternate path below.
 		</p>
 
-		<h2>2. One-time client setup</h2>
+		<h2>2. Build &amp; handoff sequence (default path)</h2>
+		<p>Assume the client has little to no technical experience &mdash; you'll assist with every account setup below (call or written instructions), but every account is still created with the client's own email, never yours.</p>
+		<ol>
+			<li><strong>Build solo.</strong> Create the repo under your own GitHub account, import it into your own Vercel project. Wire up forms/scheduling/payments against a temporary/sandbox account of your own so real functionality can be tested before the client is involved.</li>
+			<li><strong>Share a preview link</strong> with the client for approval. Iterate until approved &mdash; no accounts needed on their end yet.</li>
+			<li><strong>Once approved, transfer ownership:</strong> GitHub repo via Settings → Transfer ownership (preserves full history; re-add yourself as a collaborator after), and the Vercel project to the client's account/team.</li>
+			<li><strong>Swap in the client's real accounts</strong> &mdash; Formspree, Calendly, Stripe, etc. (see decision trees below), created under their own email, then swap the placeholder/sandbox endpoints from step 1 for their real ones.</li>
+			<li><strong>Domain</strong> &mdash; help the client register or point their domain, then connect it in the now-transferred Vercel project.</li>
+			<li><strong>Google Search Console</strong> &mdash; help the client set it up under their own Google account, submit the sitemap, request indexing (see section 6 below).</li>
+			<li>
+				<strong>Optional &mdash; self-editing setup</strong>, only if intake indicated the client wants to edit the site themselves:
+				<ul>
+					<li>Claude Code (open-ended editing) &mdash; help them set up their own Claude account (Pro/Max); no further connection step needed once they own the repo.</li>
+					<li>Decap CMS (structured fields, blog-style content) &mdash; see "Content editing / light CMS" below.</li>
+					<li>A mix of both, or fully developer-handled with no self-editing &mdash; the default, no extra setup.</li>
+				</ul>
+			</li>
+		</ol>
+		<p class="note">
+			Assisting a client on a call or via instructions is not the same as owning the account
+			for them. Every account (GitHub, Vercel, Formspree, Calendly, Stripe, Google) is created
+			with the client's own email; for anything involving sensitive personal/financial info
+			(Stripe bank/tax details especially), have the client type those fields in themselves
+			even during an assisted screen-share. Recovery emails, phone numbers, and 2FA on every
+			account should be the client's, never yours.
+		</p>
+
+		<h3>Alternate path &mdash; technical client wants to self-serve immediately</h3>
 		<p>Send the client <code>SETUP.md</code>, or walk through it together (~10 minutes):</p>
 		<ol>
 			<li>Client creates a free GitHub account.</li>
@@ -39,6 +69,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			<li>Client creates a free Vercel account and imports the repo — Vercel auto-deploys it.</li>
 			<li>Confirm Deployment Protection is off in Vercel settings, so preview links work without logging in.</li>
 		</ol>
+		<p>The rest of the sequence above (forms/scheduling/payments/domain/GSC/self-editing) proceeds the same either way.</p>
 
 		<h2>3. Intake</h2>
 		<p>Fill out <code>INTAKE.md</code> with the client before writing any code. Covers:</p>
