@@ -7,11 +7,28 @@ const currentPath = Astro.url.pathname;
 <header class="site-header">
 	<div class="container site-header-inner">
 		<a href="/" class="site-logo">{SITE_TITLE}</a>
+
+		<nav class="desktop-nav" aria-label="Primary">
+			<ul>
+				{NAV_LINKS.map((link) => (
+					<li>
+						<a
+							href={link.href}
+							class="nav-link"
+							aria-current={currentPath === link.href ? 'page' : undefined}
+						>
+							{link.label}
+						</a>
+					</li>
+				))}
+			</ul>
+		</nav>
+
 		<button
 			id="menu-toggle"
 			class="menu-toggle"
 			type="button"
-			aria-haspopup="true"
+			aria-haspopup="dialog"
 			aria-expanded="false"
 			aria-controls="app-menu"
 			aria-label="Menu"
@@ -82,19 +99,46 @@ const currentPath = Astro.url.pathname;
 	});
 
 	document.addEventListener('keydown', (e) => {
-		if (e.key === 'Escape' && menu.classList.contains('open')) {
+		if (!menu.classList.contains('open')) return;
+
+		if (e.key === 'Escape') {
 			closeMenu();
 			toggle.focus();
+			return;
+		}
+
+		// Focus trap. The overlay is aria-modal, so focus must not escape it
+		// while it's open — without this, tabbing past the last link lands on
+		// browser chrome or page content the user can't see.
+		if (e.key !== 'Tab') return;
+
+		const items = Array.from(menu.querySelectorAll<HTMLAnchorElement>('.menu-item'));
+		if (items.length === 0) return;
+
+		const first = items[0];
+		const last = items[items.length - 1];
+		const active = document.activeElement;
+
+		if (e.shiftKey && (active === first || !menu.contains(active))) {
+			e.preventDefault();
+			last.focus();
+		} else if (!e.shiftKey && active === last) {
+			e.preventDefault();
+			first.focus();
 		}
 	});
 </script>
 
 <style>
+	/* Sticky so the nav stays reachable on long pages. A hairline bottom
+	   border rather than a shadow — the header sits in the page, it doesn't
+	   float above it. */
 	.site-header {
-		position: relative;
+		position: sticky;
+		top: 0;
 		z-index: 41;
-		background: var(--color-bg);
-		border-bottom: 1px solid var(--color-border);
+		background: var(--surface-page);
+		border-bottom: 1px solid var(--border-hairline);
 		padding-top: env(safe-area-inset-top);
 	}
 
@@ -102,21 +146,80 @@ const currentPath = Astro.url.pathname;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding-block: var(--space-md);
+		gap: var(--space-6);
+		padding-block: var(--space-4);
 	}
 
 	.site-logo {
 		font-family: var(--font-heading);
-		font-weight: var(--weight-normal);
-		font-size: var(--text-h3);
-		letter-spacing: -0.01em;
+		font-weight: var(--weight-medium);
+		font-size: var(--text-h4);
+		letter-spacing: var(--tracking-snug);
 		text-transform: lowercase;
 		color: var(--color-text);
 		text-decoration: none;
+		white-space: nowrap;
 	}
 
-	/* Hamburger toggle: two bars that animate into an X on open, same
-	   elements in both states so there's no icon swap. */
+	/* --- Desktop nav ------------------------------------------------------ */
+
+	/* Hidden by default and revealed at the breakpoint, so the mobile overlay
+	   stays the baseline experience rather than a fallback. */
+	.desktop-nav {
+		display: none;
+	}
+
+	.desktop-nav ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		align-items: center;
+		gap: var(--space-5);
+	}
+
+	.nav-link {
+		position: relative;
+		font-size: var(--text-small);
+		font-weight: var(--weight-medium);
+		color: var(--color-text-secondary);
+		text-decoration: none;
+		padding-block: var(--space-2);
+		transition: color var(--duration-fast) var(--ease-out);
+	}
+
+	.nav-link:hover {
+		color: var(--color-text);
+	}
+
+	/* The underline is a pseudo-element rather than text-decoration so the
+	   current-page state can animate and can't shift the text baseline. */
+	.nav-link::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 1.5px;
+		border-radius: var(--radius-pill);
+		background: var(--color-text);
+		transform: scaleX(0);
+		transform-origin: center;
+		transition: transform var(--duration-base) var(--ease-out);
+	}
+
+	.nav-link[aria-current='page'] {
+		color: var(--color-text);
+	}
+
+	.nav-link[aria-current='page']::after {
+		transform: scaleX(1);
+	}
+
+	/* --- Hamburger toggle ------------------------------------------------- */
+
+	/* Two bars that animate into an X on open — the same elements in both
+	   states, so there's no icon swap. */
 	.menu-toggle {
 		position: relative;
 		width: 38px;
@@ -126,7 +229,7 @@ const currentPath = Astro.url.pathname;
 		padding: 0;
 		cursor: pointer;
 		-webkit-tap-highlight-color: transparent;
-		transition: transform 0.1s ease;
+		transition: transform var(--duration-fast) var(--ease-out);
 	}
 
 	.menu-toggle:active {
@@ -140,7 +243,9 @@ const currentPath = Astro.url.pathname;
 		height: 2px;
 		border-radius: 2px;
 		background: var(--color-text);
-		transition: top 0.25s ease, transform 0.25s ease;
+		transition:
+			top var(--duration-base) var(--ease-out),
+			transform var(--duration-base) var(--ease-out);
 	}
 
 	.menu-toggle .bar-top {
@@ -161,9 +266,11 @@ const currentPath = Astro.url.pathname;
 		transform: rotate(-45deg);
 	}
 
-	/* Full-screen overlay menu. Sits just below the header in z-index so
-	   the header stays visible with no seam. Visibility is delayed on
-	   close so the hidden panel can't intercept clicks. */
+	/* --- Mobile overlay --------------------------------------------------- */
+
+	/* Full-screen overlay menu. Sits just below the header in z-index so the
+	   header stays visible with no seam. Visibility is delayed on close so the
+	   hidden panel can't intercept clicks. */
 	.app-menu {
 		position: fixed;
 		inset: 0;
@@ -171,18 +278,24 @@ const currentPath = Astro.url.pathname;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: var(--color-bg);
+		background: var(--surface-page);
 		opacity: 0;
 		visibility: hidden;
 		transform: translateY(6px);
-		transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+		transition:
+			opacity var(--duration-base) var(--ease-out),
+			transform var(--duration-base) var(--ease-out),
+			visibility 0s linear var(--duration-base);
 	}
 
 	.app-menu.open {
 		opacity: 1;
 		visibility: visible;
 		transform: translateY(0);
-		transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0s;
+		transition:
+			opacity var(--duration-base) var(--ease-out),
+			transform var(--duration-base) var(--ease-out),
+			visibility 0s linear 0s;
 	}
 
 	.app-menu ul {
@@ -192,26 +305,31 @@ const currentPath = Astro.url.pathname;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: var(--space-xl);
+		gap: var(--space-7);
 	}
 
 	.menu-item {
 		display: inline-block;
 		font-family: var(--font-heading);
-		font-size: 1.6875rem;
+		font-size: var(--text-h3);
 		font-weight: var(--weight-medium);
-		color: var(--color-text);
+		letter-spacing: var(--tracking-snug);
+		color: var(--color-text-secondary);
 		text-decoration: none;
 		-webkit-tap-highlight-color: transparent;
-		transition: transform 0.1s ease, color 0.15s ease;
+		transition:
+			color var(--duration-fast) var(--ease-out),
+			transform var(--duration-fast) var(--ease-out);
 	}
 
+	/* Color, not weight. Changing font-weight on hover reflows the text and
+	   nudges every sibling — a layout shift triggered by pointer movement. */
 	.menu-item:hover {
-		font-weight: var(--weight-semibold);
+		color: var(--color-text);
 	}
 
 	.menu-item[aria-current='page'] {
-		font-weight: var(--weight-semibold);
+		color: var(--color-text);
 		text-decoration: underline;
 		text-underline-offset: 0.3em;
 	}
@@ -222,7 +340,25 @@ const currentPath = Astro.url.pathname;
 
 	@media (max-width: 480px) {
 		.app-menu ul {
-			gap: var(--space-md);
+			gap: var(--space-5);
+		}
+	}
+
+	/* Swap the overlay for the inline nav. Both are removed from the
+	   accessibility tree when not in use, so exactly one "Primary" navigation
+	   landmark is ever exposed. */
+	@media (min-width: 860px) {
+		.site-logo {
+			font-size: var(--text-h3);
+		}
+
+		.desktop-nav {
+			display: block;
+		}
+
+		.menu-toggle,
+		.app-menu {
+			display: none;
 		}
 	}
 </style>

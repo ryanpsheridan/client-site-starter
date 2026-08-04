@@ -139,14 +139,39 @@ Recommended option: **Decap CMS** (free, open-source, git-based — formerly Net
 
 ## Design Tokens
 
-Use CSS variables from `src/styles/tokens.css` for all styling — never hardcode a color, spacing value, or font. Key tokens:
+Use CSS variables from `src/styles/tokens.css` for all styling — never hardcode a color, spacing value, duration, or font. `/style-guide` renders every token and component class below; if something isn't on that page, it isn't in the system.
 
-- Colors: `--color-text`, `--color-text-secondary`, `--color-bg`, `--color-bg-subtle`, `--color-border`, `--color-accent` (+ `-hover`/`-contrast`)
+`tokens.css` is layered — a raw palette feeds a semantic layer, and only the semantic names get referenced from components. That indirection is what lets dark mode be added later without renaming anything, so don't reach past it to the `--gray-*` palette from a component.
+
+- Surfaces: `--surface-page`, `--surface-raised`, `--surface-sunken`, `--surface-fill`
+- Borders: `--border-hairline`, `--border-default`, `--border-strong`
+- Text: `--color-text`, `--color-text-secondary`, `--color-text-tertiary`
+- Brand (the per-client re-theme surface): `--color-accent` (+ `-hover`/`-contrast`) for inline links only, `--color-ink` (+ `-hover`/`-contrast`) for primary buttons. `--color-bg` / `--color-bg-subtle` feed the surface tokens.
 - Semantic accents (use sparingly, only for actual state — positive/caution/critical/info): `--color-accent-positive`, `--color-accent-caution`, `--color-accent-critical`, `--color-accent-info` (each with a matching `-bg` variant)
-- Spacing: `--space-xs` through `--space-3xl`
-- Typography: `--text-small`, `--text-body`, `--text-h3`/`--text-h2`/`--text-h1`, `--text-display`
-- Weights: `--weight-normal`, `--weight-medium`, `--weight-semibold`, `--weight-bold`
-- Radius/shadow: `--radius-sm`/`-md`/`-lg`, `--shadow-sm`/`-md`
+- Spacing: `--space-1` through `--space-10`, on a 4px grid. Roughly: 1–4 inside components, 5–7 between components, 8–10 between sections.
+- Typography: `--text-eyebrow`/`-small`/`-body`/`-large`, `--text-h5` through `--text-h1`, `--text-display`
+- Tracking: `--tracking-tight`/`-snug`/`-normal`/`-caps` — large type needs negative tracking, uppercase labels need positive
+- Leading: `--leading-display`/`-tight`/`-snug`/`-body`
+- Weights: `--weight-normal`, `--weight-medium`, `--weight-semibold` (no 700 — semibold is the ceiling)
+- Radius/elevation: `--radius-sm`/`-md`/`-lg`/`-pill`, `--shadow-xs`/`-sm`/`-md`/`-lg`, `--ring`
+- Motion: `--duration-fast`/`-base`/`-slow`, `--ease-out`/`--ease-in-out`
+- Layout: `--content-width`, `--measure-narrow`/`--measure`/`--measure-wide`
+
+## Component Layer
+
+Shared classes live in `src/styles/global.css`. Reach for these before writing anything in a page's scoped `<style>` block — a page block should hold genuinely page-specific layout, never a re-implementation of a shared pattern.
+
+- Layout: `.container` (+ `.container-narrow`), `.section` / `.section-tight` / `.section-loose`, `.section-sunken`, `.grid-auto` (tune with `--grid-min`), `.stack`, `.divider`
+- Components: `.card` (+ `.card-interactive`), `.btn` with `.btn-primary`/`.btn-secondary` and `.btn-sm`/`.btn-lg`, `.field` (+ `.field-hint`, `.field-error`, `.field-invalid`)
+- Text: `.display`, `.eyebrow`, `.lead`, `.text-secondary`, `.text-tertiary`, `.measure` / `.measure-narrow` / `.measure-wide`
+
+A section that needs a background band wraps a `.container` rather than being one, so the band goes full-bleed instead of stopping at the gutter:
+
+```html
+<section class="section section-sunken">
+  <div class="container">…</div>
+</section>
+```
 
 ## Deployment
 

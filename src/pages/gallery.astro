@@ -20,61 +20,70 @@ const images = [
 ---
 
 <BaseLayout title="Gallery" description="A look at our work.">
-	<section class="container section">
-		<h1>Gallery</h1>
-		<p class="lead">A look at our work — replace this copy and every photo below with the real thing.</p>
+	<section class="section-loose">
+		<div class="container">
+			<p class="eyebrow">Gallery</p>
+			<h1>Gallery</h1>
+			<p class="lead">A look at our work — replace this copy and every photo below with the real thing.</p>
+		</div>
 	</section>
 
-	<section class="container section">
-		<h2>Recent work</h2>
-		<ul class="photo-grid">
-			{images.map((image) => (
-				<li>
-					<button type="button" class="gallery-trigger grid-item" data-src={image.src} data-alt={image.alt}>
-						<img src={image.src} alt={image.alt} loading="lazy" />
-					</button>
-				</li>
-			))}
-		</ul>
+	<section class="section-tight">
+		<div class="container">
+			<h2>Recent work</h2>
+			<ul class="photo-grid">
+				{images.map((image) => (
+					<li>
+						<button type="button" class="gallery-trigger grid-item" data-src={image.src} data-alt={image.alt}>
+							<img src={image.src} alt={image.alt} loading="lazy" />
+						</button>
+					</li>
+				))}
+			</ul>
+		</div>
 	</section>
 
-	<section class="container section bg-subtle">
-		<h2>Featured</h2>
-		<div class="carousel-block">
-			<button type="button" id="featured-trigger" class="gallery-trigger carousel-featured" data-src={images[0].src} data-alt={images[0].alt}>
-				<img id="featured-img" src={images[0].src} alt={images[0].alt} />
-			</button>
-			<div class="carousel-thumbs">
-				<button type="button" class="carousel-nav carousel-prev" aria-label="Scroll thumbnails left">&lsaquo;</button>
-				<div id="carousel-track" class="carousel-track" role="region" aria-label="More photos" tabindex="0">
-					<div class="carousel-track-inner">
-						{images.map((image, i) => (
-							<button
-								type="button"
-								class:list={['carousel-thumb', { active: i === 0 }]}
-								data-src={image.src}
-								data-alt={image.alt}
-								aria-pressed={i === 0 ? 'true' : 'false'}
-								aria-label={`Show photo ${i + 1} of ${images.length}`}
-							>
-								<img src={image.src} alt="" loading="lazy" />
-							</button>
-						))}
+	<section class="section section-sunken">
+		<div class="container">
+			<h2>Featured</h2>
+			<div class="carousel-block">
+				<button type="button" id="featured-trigger" class="gallery-trigger carousel-featured" data-src={images[0].src} data-alt={images[0].alt}>
+					<img id="featured-img" src={images[0].src} alt={images[0].alt} />
+				</button>
+				<div class="carousel-thumbs">
+					<button type="button" class="carousel-nav carousel-prev" aria-label="Scroll thumbnails left">&lsaquo;</button>
+					<div id="carousel-track" class="carousel-track" role="region" aria-label="More photos" tabindex="0">
+						<div class="carousel-track-inner">
+							{images.map((image, i) => (
+								<button
+									type="button"
+									class:list={['carousel-thumb', { active: i === 0 }]}
+									data-src={image.src}
+									data-alt={image.alt}
+									aria-pressed={i === 0 ? 'true' : 'false'}
+									aria-label={`Show photo ${i + 1} of ${images.length}`}
+								>
+									<img src={image.src} alt="" loading="lazy" />
+								</button>
+							))}
+						</div>
 					</div>
+					<button type="button" class="carousel-nav carousel-next" aria-label="Scroll thumbnails right">&rsaquo;</button>
 				</div>
-				<button type="button" class="carousel-nav carousel-next" aria-label="Scroll thumbnails right">&rsaquo;</button>
 			</div>
 		</div>
 	</section>
 
-	<section class="container section">
-		<h2>More photos</h2>
-		<div class="masonry">
-			{images.map((image) => (
-				<button type="button" class="gallery-trigger masonry-item" data-src={image.src} data-alt={image.alt}>
-					<img src={image.src} alt={image.alt} loading="lazy" />
-				</button>
-			))}
+	<section class="section">
+		<div class="container">
+			<h2>More photos</h2>
+			<div class="masonry">
+				{images.map((image) => (
+					<button type="button" class="gallery-trigger masonry-item" data-src={image.src} data-alt={image.alt}>
+						<img src={image.src} alt={image.alt} loading="lazy" />
+					</button>
+				))}
+			</div>
 		</div>
 	</section>
 
@@ -157,20 +166,6 @@ const images = [
 </script>
 
 <style>
-	.section {
-		padding-block: var(--space-2xl);
-	}
-
-	.bg-subtle {
-		background: var(--color-bg-subtle);
-	}
-
-	.lead {
-		font-size: var(--text-large);
-		color: var(--color-text-secondary);
-		max-width: 640px;
-	}
-
 	/* Shared trigger reset — every clickable photo is a plain button so
 	   it's keyboard-focusable and announced correctly, with none of the
 	   default button chrome. */
@@ -187,24 +182,28 @@ const images = [
 	/* Grid */
 	.photo-grid {
 		list-style: none;
-		margin: var(--space-xl) 0 0;
+		margin: var(--space-7) 0 0;
 		padding: 0;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		gap: var(--space-md);
+		gap: var(--space-4);
+	}
+
+	.grid-item {
+		border-radius: var(--radius-md);
+		overflow: hidden;
 	}
 
 	.grid-item img {
 		width: 100%;
 		aspect-ratio: 4 / 3;
 		object-fit: cover;
-		border-radius: var(--radius-md);
-		background: var(--color-bg-subtle);
-		transition: transform 0.15s ease;
+		background: var(--surface-sunken);
+		transition: transform var(--duration-slow) var(--ease-out);
 	}
 
 	.grid-item:hover img {
-		transform: scale(1.02);
+		transform: scale(1.03);
 	}
 
 	@media (max-width: 720px) {
@@ -221,19 +220,19 @@ const images = [
 
 	/* Carousel */
 	.carousel-block {
-		margin-top: var(--space-xl);
+		margin-top: var(--space-7);
 	}
 
 	.carousel-featured {
-		margin-bottom: var(--space-md);
+		margin-bottom: var(--space-4);
 	}
 
 	.carousel-featured img {
 		width: 100%;
 		height: 420px;
 		object-fit: contain;
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
+		background: var(--surface-raised);
+		border: 1px solid var(--border-default);
 		border-radius: var(--radius-lg);
 	}
 
@@ -247,7 +246,7 @@ const images = [
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: var(--space-sm);
+		gap: var(--space-3);
 	}
 
 	/* The scroll container itself must NOT be a centering flexbox —
@@ -269,7 +268,7 @@ const images = [
 
 	.carousel-track-inner {
 		display: flex;
-		gap: var(--space-sm);
+		gap: var(--space-3);
 		width: max-content;
 		max-width: 100%;
 		margin-inline: auto;
@@ -280,10 +279,19 @@ const images = [
 		flex-shrink: 0;
 		scroll-snap-align: start;
 		width: 88px;
+		padding: 0;
 		border-radius: var(--radius-md);
 		overflow: hidden;
 		border: 2px solid transparent;
-		transition: border-color 0.15s ease, transform 0.1s ease;
+		background: none;
+		cursor: pointer;
+		transition:
+			border-color var(--duration-fast) var(--ease-out),
+			transform var(--duration-fast) var(--ease-out);
+	}
+
+	.carousel-thumb:hover {
+		border-color: var(--border-strong);
 	}
 
 	.carousel-thumb:active {
@@ -306,17 +314,21 @@ const images = [
 		width: 2.25rem;
 		height: 2.25rem;
 		border-radius: 50%;
-		border: 1px solid var(--color-border);
-		background: var(--color-bg);
+		border: 1px solid var(--border-default);
+		background: var(--surface-raised);
 		color: var(--color-text);
-		font-size: 1.25rem;
+		font-size: var(--text-h4);
 		line-height: 1;
 		cursor: pointer;
 		-webkit-tap-highlight-color: transparent;
+		transition:
+			background-color var(--duration-fast) var(--ease-out),
+			border-color var(--duration-fast) var(--ease-out),
+			transform var(--duration-fast) var(--ease-out);
 	}
 
 	.carousel-nav:hover {
-		background: var(--color-bg-subtle);
+		border-color: var(--border-strong);
 	}
 
 	.carousel-nav:active {
@@ -325,15 +337,15 @@ const images = [
 
 	/* Masonry */
 	.masonry {
-		margin-top: var(--space-xl);
+		margin-top: var(--space-7);
 		column-count: 3;
-		column-gap: var(--space-md);
+		column-gap: var(--space-4);
 	}
 
 	.masonry-item {
 		display: block;
 		width: 100%;
-		margin-bottom: var(--space-md);
+		margin-bottom: var(--space-4);
 		break-inside: avoid;
 		border-radius: var(--radius-md);
 		overflow: hidden;
@@ -343,11 +355,11 @@ const images = [
 		width: 100%;
 		height: auto;
 		display: block;
-		transition: transform 0.15s ease;
+		transition: transform var(--duration-slow) var(--ease-out);
 	}
 
 	.masonry-item:hover img {
-		transform: scale(1.02);
+		transform: scale(1.03);
 	}
 
 	@media (max-width: 720px) {
@@ -367,14 +379,14 @@ const images = [
 	   sitting invisibly on top of the page and eating clicks. */
 	.lightbox {
 		margin: 0;
-		padding: var(--space-xl);
+		padding: var(--space-7);
 		border: none;
 		background: transparent;
 	}
 
 	@media (max-width: 640px) {
 		.lightbox {
-			padding: var(--space-md);
+			padding: var(--space-4);
 		}
 	}
 
@@ -391,7 +403,7 @@ const images = [
 	}
 
 	.lightbox::backdrop {
-		background: rgba(20, 20, 20, 0.9);
+		background: var(--overlay-scrim);
 	}
 
 	.lightbox img {
@@ -403,31 +415,32 @@ const images = [
 
 	.lightbox-close {
 		position: absolute;
-		top: var(--space-lg);
-		right: var(--space-lg);
+		top: var(--space-5);
+		right: var(--space-5);
 		width: 2.5rem;
 		height: 2.5rem;
 		border-radius: 50%;
 		border: none;
-		background: rgba(255, 255, 255, 0.92);
+		background: var(--overlay-chip);
 		color: var(--color-text);
-		font-size: 1.5rem;
+		font-size: var(--text-h3);
 		line-height: 1;
 		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		-webkit-tap-highlight-color: transparent;
+		transition: background-color var(--duration-fast) var(--ease-out);
 	}
 
 	@media (max-width: 640px) {
 		.lightbox-close {
-			top: var(--space-sm);
-			right: var(--space-sm);
+			top: var(--space-3);
+			right: var(--space-3);
 		}
 	}
 
 	.lightbox-close:hover {
-		background: var(--color-bg);
+		background: var(--surface-page);
 	}
 </style>

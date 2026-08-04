@@ -68,111 +68,132 @@ const testimonials = [
 <BaseLayout title="Home" description={SITE_DESCRIPTION}>
 	<script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-	<section class="hero container">
-		<h1>Headline that says what you do and for whom</h1>
-		<p class="hero-sub">
-			One or two sentences of supporting copy. Lead with the outcome the visitor
-			cares about, not a list of features.
-		</p>
-		<div class="hero-actions">
-			<a href="/contact/" class="btn btn-primary">Get in touch</a>
-			<a href="/gallery/" class="btn btn-secondary">See our work</a>
+	<section class="section-loose">
+		<div class="container">
+			<div class="hero">
+				<h1 class="display">Headline that says what you do and for whom</h1>
+				<p class="lead hero-sub">
+					One or two sentences of supporting copy. Lead with the outcome the visitor
+					cares about, not a list of features.
+				</p>
+				<div class="hero-actions">
+					<a href="/contact/" class="btn btn-primary btn-lg">Get in touch</a>
+					<a href="/gallery/" class="btn btn-secondary btn-lg">See our work</a>
+				</div>
+			</div>
 		</div>
 	</section>
 
-	<section class="container trust-bar" aria-label="Why clients trust us">
-		<ul>
-			{trustSignals.map((signal) => (
-				<li>{signal}</li>
-			))}
-		</ul>
+	<section class="trust-bar" aria-label="Why clients trust us">
+		<div class="container">
+			<ul>
+				{trustSignals.map((signal) => (
+					<li>{signal}</li>
+				))}
+			</ul>
+		</div>
 	</section>
 
-	<section class="container section">
-		<h2>What we do</h2>
-		<p class="section-intro">
-			Short section introducing the core service(s) — answer the question a visitor is
-			actually asking when they land here. See the full <a href="/services/">list of services</a>,
-			including pricing and how the process works.
-		</p>
-		<ul class="service-grid">
-			{services.map((service) => (
-				<li class="service-card">
-					<h3>{service.title}</h3>
-					<p>{service.description}</p>
-				</li>
-			))}
-		</ul>
-		<a href="/services/" class="btn btn-secondary">View all services</a>
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">Services</p>
+			<h2>What we do</h2>
+			<p class="lead">
+				Short section introducing the core service(s) — answer the question a visitor is
+				actually asking when they land here. See the full <a href="/services/">list of services</a>,
+				including pricing and how the process works.
+			</p>
+			<ul class="grid-auto section-grid">
+				{services.map((service) => (
+					<li class="card card-interactive">
+						<h3>{service.title}</h3>
+						<p class="text-secondary">{service.description}</p>
+					</li>
+				))}
+			</ul>
+			<a href="/services/" class="btn btn-secondary">View all services</a>
+		</div>
 	</section>
 
-	<section class="container section bg-subtle">
-		<h2>Why choose us</h2>
-		<ul class="benefit-grid">
-			{benefits.map((benefit) => (
-				<li class="benefit-card">
-					<h3>{benefit.title}</h3>
-					<p>{benefit.description}</p>
-				</li>
-			))}
-		</ul>
+	<section class="section section-sunken">
+		<div class="container">
+			<p class="eyebrow">Why us</p>
+			<h2>Why choose us</h2>
+			<ul class="grid-auto section-grid section-grid-last">
+				{benefits.map((benefit) => (
+					<li class="benefit">
+						<h3>{benefit.title}</h3>
+						<p class="text-secondary">{benefit.description}</p>
+					</li>
+				))}
+			</ul>
+		</div>
 	</section>
 
-	<section class="container section">
-		<h2>Our work</h2>
-		<p class="section-intro">
-			A look at recent projects — visit the <a href="/gallery/">full gallery</a> for more.
-		</p>
-		<ul class="work-grid">
-			{galleryPreview.map((image) => (
-				<li>
-					<a href="/gallery/" class="work-item">
-						<img src={image.src} alt={image.alt} loading="lazy" />
-					</a>
-				</li>
-			))}
-		</ul>
-		<a href="/gallery/" class="btn btn-secondary">View full gallery</a>
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">Portfolio</p>
+			<h2>Our work</h2>
+			<p class="lead">
+				A look at recent projects — visit the <a href="/gallery/">full gallery</a> for more.
+			</p>
+			<ul class="work-grid">
+				{galleryPreview.map((image) => (
+					<li>
+						<a href="/gallery/" class="work-item">
+							<img src={image.src} alt={image.alt} loading="lazy" />
+						</a>
+					</li>
+				))}
+			</ul>
+			<a href="/gallery/" class="btn btn-secondary">View full gallery</a>
+		</div>
 	</section>
 
-	<section class="container section bg-subtle">
-		<h2>What clients say</h2>
-		<ul class="testimonial-grid">
-			{testimonials.map((t) => (
-				<li>
-					<blockquote class="testimonial-card">
-						<p>&ldquo;{t.quote}&rdquo;</p>
-						<footer>
-							<cite>{t.name}</cite>{t.role && <>, {t.role}</>}
-						</footer>
-					</blockquote>
-				</li>
-			))}
-		</ul>
+	<section class="section section-sunken">
+		<div class="container">
+			<p class="eyebrow">Testimonials</p>
+			<h2>What clients say</h2>
+			<ul class="grid-auto section-grid section-grid-last">
+				{testimonials.map((t) => (
+					<li>
+						<blockquote class="card testimonial">
+							<p class="testimonial-quote">&ldquo;{t.quote}&rdquo;</p>
+							<footer class="testimonial-attribution">
+								<cite>{t.name}</cite>{t.role && <>, {t.role}</>}
+							</footer>
+						</blockquote>
+					</li>
+				))}
+			</ul>
+		</div>
 	</section>
 
-	<section class="container section contact-section">
-		<div class="contact-grid">
-			<div class="contact-info">
-				<h2>Get in touch</h2>
-				<p>
-					Replace with a short line inviting the visitor to reach out — restate the outcome
-					one more time before they leave the page.
-				</p>
-				<p class="contact-details">
-					<a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a>
-					<br />
-					<a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
-					{SITE_ADDRESS && (
-						<>
-							<br />
-							{SITE_ADDRESS}
-						</>
-					)}
-				</p>
-			</div>
-			<div class="contact-form-wrap">
-				<ContactForm />
+	<section class="section">
+		<div class="container">
+			<div class="contact-grid">
+				<div>
+					<p class="eyebrow">Contact</p>
+					<h2>Get in touch</h2>
+					<p class="text-secondary measure">
+						Replace with a short line inviting the visitor to reach out — restate the outcome
+						one more time before they leave the page.
+					</p>
+					<p class="contact-details">
+						<a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a>
+						<br />
+						<a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
+						{SITE_ADDRESS && (
+							<>
+								<br />
+								{SITE_ADDRESS}
+							</>
+						)}
+					</p>
+				</div>
+				<div>
+					<ContactForm />
+				</div>
 			</div>
 		</div>
 	</section>
@@ -180,37 +201,35 @@ const testimonials = [
 
 <style>
 	.hero {
-		padding-block: var(--space-3xl) var(--space-2xl);
-		max-width: 640px;
+		max-width: var(--measure);
 	}
 
 	.hero-sub {
-		font-size: var(--text-large);
-		margin-bottom: var(--space-lg);
+		margin-bottom: var(--space-6);
 	}
 
 	.hero-actions {
 		display: flex;
-		gap: var(--space-md);
+		gap: var(--space-3);
 		flex-wrap: wrap;
 	}
 
-	.section {
-		padding-block: var(--space-2xl);
+	/* Grid sitting between a section intro and the section's closing CTA. */
+	.section-grid {
+		margin-block: var(--space-7);
 	}
 
-	.bg-subtle {
-		background: var(--color-bg-subtle);
+	/* Last element in its section — no trailing margin to double up on the
+	   section's own padding. */
+	.section-grid-last {
+		margin-bottom: 0;
 	}
 
-	.section-intro {
-		max-width: 640px;
-	}
-
-	/* Trust bar */
+	/* Trust bar — a thin rule between the hero and the first real section,
+	   full-bleed so the hairlines run the whole width. */
 	.trust-bar {
-		padding-block: var(--space-lg);
-		border-block: 1px solid var(--color-border);
+		padding-block: var(--space-5);
+		border-block: 1px solid var(--border-hairline);
 	}
 
 	.trust-bar ul {
@@ -219,7 +238,7 @@ const testimonials = [
 		padding: 0;
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--space-md) var(--space-xl);
+		gap: var(--space-3) var(--space-7);
 	}
 
 	.trust-bar li {
@@ -228,69 +247,47 @@ const testimonials = [
 		color: var(--color-text-secondary);
 	}
 
-	/* Services preview */
-	.service-grid {
-		list-style: none;
-		margin: var(--space-xl) 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: var(--space-lg);
-	}
-
-	.service-card {
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		padding: var(--space-lg);
-	}
-
-	.service-card h3 {
+	/* Benefits are borderless on purpose — the sunken band already separates
+	   them from the page, so adding cards on top would be layering twice for
+	   one level of hierarchy. */
+	.benefit h3 {
 		font-size: var(--text-h4);
 	}
 
-	.service-card p {
+	.benefit p:last-child {
 		margin-bottom: 0;
 	}
 
-	/* Why choose us */
-	.benefit-grid {
-		list-style: none;
-		margin: var(--space-xl) 0 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: var(--space-lg);
-	}
-
-	.benefit-card h3 {
+	.card h3 {
 		font-size: var(--text-h4);
-	}
-
-	.benefit-card p {
-		margin-bottom: 0;
 	}
 
 	/* Work preview */
 	.work-grid {
 		list-style: none;
-		margin: var(--space-xl) 0;
+		margin-block: var(--space-7);
 		padding: 0;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		gap: var(--space-md);
+		gap: var(--space-4);
+	}
+
+	.work-item {
+		display: block;
+		border-radius: var(--radius-md);
+		overflow: hidden;
 	}
 
 	.work-item img {
 		width: 100%;
 		aspect-ratio: 4 / 3;
 		object-fit: cover;
-		border-radius: var(--radius-md);
-		background: var(--color-bg-subtle);
-		transition: transform 0.15s ease;
+		background: var(--surface-sunken);
+		transition: transform var(--duration-slow) var(--ease-out);
 	}
 
 	.work-item:hover img {
-		transform: scale(1.02);
+		transform: scale(1.03);
 	}
 
 	@media (max-width: 640px) {
@@ -306,37 +303,25 @@ const testimonials = [
 	}
 
 	/* Testimonials */
-	.testimonial-grid {
-		list-style: none;
-		margin: var(--space-xl) 0 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: var(--space-lg);
-	}
-
-	.testimonial-card {
+	.testimonial {
 		margin: 0;
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		padding: var(--space-lg);
 	}
 
-	.testimonial-card p {
+	.testimonial-quote {
 		font-size: var(--text-large);
+		line-height: var(--leading-body);
 		color: var(--color-text);
-		margin-bottom: var(--space-md);
+		margin-bottom: var(--space-4);
 	}
 
-	.testimonial-card footer {
+	.testimonial-attribution {
 		font-size: var(--text-small);
-		color: var(--color-text-secondary);
+		color: var(--color-text-tertiary);
 	}
 
-	.testimonial-card cite {
+	.testimonial-attribution cite {
 		font-style: normal;
-		font-weight: var(--weight-semibold);
+		font-weight: var(--weight-medium);
 		color: var(--color-text);
 	}
 
@@ -344,19 +329,20 @@ const testimonials = [
 	.contact-grid {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: var(--space-2xl);
+		gap: var(--space-9);
 		align-items: start;
 	}
 
 	.contact-details {
-		margin-top: var(--space-lg);
+		margin-top: var(--space-5);
+		margin-bottom: 0;
 		font-size: var(--text-large);
 	}
 
 	@media (max-width: 720px) {
 		.contact-grid {
 			grid-template-columns: 1fr;
-			gap: var(--space-xl);
+			gap: var(--space-7);
 		}
 	}
 </style>

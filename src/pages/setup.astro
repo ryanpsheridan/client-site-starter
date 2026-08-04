@@ -7,7 +7,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	description="Internal build reference — not for the client."
 	noindex
 >
-	<section class="container section">
+	<section class="section container container-narrow">
 		<div class="delete-notice">
 			<strong>Builder-only page, not linked anywhere on the site.</strong> This is your own
 			reference while building and pitching &mdash; the client never sees this URL. To hand
@@ -166,18 +166,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <style>
-	.section {
-		padding-block: var(--space-2xl);
-		max-width: 720px;
-	}
-
 	.delete-notice {
 		background: var(--color-accent-caution-bg);
 		color: var(--color-text);
 		border: 1px solid var(--color-accent-caution);
 		border-radius: var(--radius-md);
-		padding: var(--space-md);
-		margin-bottom: var(--space-xl);
+		padding: var(--space-4);
+		margin-bottom: var(--space-7);
 		font-size: var(--text-small);
 	}
 
@@ -191,14 +186,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	}
 
 	code {
-		background: var(--color-bg-subtle);
-		border-radius: 4px;
+		background: var(--surface-fill);
+		border-radius: var(--radius-sm);
 		padding: 0.1em 0.4em;
 		font-size: 0.9em;
+		overflow-wrap: anywhere;
 	}
 
 	li {
-		margin-bottom: var(--space-xs);
+		margin-bottom: var(--space-1);
 		color: var(--color-text-secondary);
+	}
+
+	h2 {
+		margin-top: var(--space-7);
 	}
 </style>

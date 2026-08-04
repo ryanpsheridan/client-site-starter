@@ -1,16 +1,35 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const colorSwatches = [
-	{ name: '--color-text', label: 'Text' },
-	{ name: '--color-text-secondary', label: 'Text secondary' },
-	{ name: '--color-bg', label: 'Background', border: true },
-	{ name: '--color-bg-subtle', label: 'Background subtle', border: true },
-	{ name: '--color-border', label: 'Border', border: true },
-	{ name: '--color-ink', label: 'Ink (buttons)' },
-	{ name: '--color-ink-hover', label: 'Ink hover' },
-	{ name: '--color-accent', label: 'Accent (links only)' },
-	{ name: '--color-accent-hover', label: 'Accent hover' },
+// Living reference for the design system. Every token group and every shared
+// component class in global.css must be represented here — if something isn't
+// on this page, it isn't in the system. When you add a token or a component,
+// add it here in the same commit.
+
+const surfaces = [
+	{ name: '--surface-page', label: 'Page', note: 'Base background' },
+	{ name: '--surface-raised', label: 'Raised', note: 'Cards, popovers' },
+	{ name: '--surface-sunken', label: 'Sunken', note: 'Recessed section bands' },
+	{ name: '--surface-fill', label: 'Fill', note: 'Inline code, subtle fills' },
+];
+
+const borders = [
+	{ name: '--border-hairline', label: 'Hairline', note: 'Dividers, header rule' },
+	{ name: '--border-default', label: 'Default', note: 'Card and field borders' },
+	{ name: '--border-strong', label: 'Strong', note: 'Hover and emphasis' },
+];
+
+const textRoles = [
+	{ name: '--color-text', label: 'Primary', note: '15.5:1 — body copy, headings' },
+	{ name: '--color-text-secondary', label: 'Secondary', note: '6.7:1 — supporting copy' },
+	{ name: '--color-text-tertiary', label: 'Tertiary', note: '5.0:1 — captions, metadata' },
+];
+
+const brand = [
+	{ name: '--color-accent', label: 'Accent', note: 'Inline links only' },
+	{ name: '--color-accent-hover', label: 'Accent hover', note: '' },
+	{ name: '--color-ink', label: 'Ink', note: 'Primary buttons' },
+	{ name: '--color-ink-hover', label: 'Ink hover', note: '' },
 ];
 
 const semanticSwatches = [
@@ -21,34 +40,52 @@ const semanticSwatches = [
 ];
 
 const headingScale = [
-	{ token: '--text-display', label: 'Display', sample: 'Aa' },
-	{ token: '--text-h1', label: 'H1', sample: 'Aa' },
-	{ token: '--text-h2', label: 'H2', sample: 'Aa' },
-	{ token: '--text-h3', label: 'H3', sample: 'Aa' },
-	{ token: '--text-h4', label: 'H4', sample: 'Aa' },
-	{ token: '--text-h5', label: 'H5', sample: 'Aa' },
+	{ token: '--text-display', label: 'Display', cls: 'display' },
+	{ token: '--text-h1', label: 'H1' },
+	{ token: '--text-h2', label: 'H2' },
+	{ token: '--text-h3', label: 'H3' },
+	{ token: '--text-h4', label: 'H4' },
+	{ token: '--text-h5', label: 'H5' },
 ];
 
 const textScale = [
 	{ token: '--text-large', label: 'Large', sample: 'The quick brown fox jumps over the lazy dog.' },
 	{ token: '--text-body', label: 'Body', sample: 'The quick brown fox jumps over the lazy dog.' },
 	{ token: '--text-small', label: 'Small', sample: 'The quick brown fox jumps over the lazy dog.' },
+	{ token: '--text-eyebrow', label: 'Eyebrow', sample: 'The quick brown fox jumps over the lazy dog.' },
 ];
 
 const weights = [
 	{ token: '--weight-normal', label: 'Normal (400)' },
-	{ token: '--weight-medium', label: 'Medium (500)' },
-	{ token: '--weight-semibold', label: 'Semibold (600) — heaviest weight in the system' },
+	{ token: '--weight-medium', label: 'Medium (500) — UI, labels, buttons' },
+	{ token: '--weight-semibold', label: 'Semibold (600) — headings, heaviest in the system' },
+];
+
+const tracking = [
+	{ token: '--tracking-tight', label: '-0.022em', note: 'Display' },
+	{ token: '--tracking-snug', label: '-0.014em', note: 'H1, H2' },
+	{ token: '--tracking-normal', label: '0', note: 'Body and below' },
+	{ token: '--tracking-caps', label: '0.06em', note: 'Uppercase labels' },
+];
+
+const leading = [
+	{ token: '--leading-display', label: '1.05', note: 'Display headlines' },
+	{ token: '--leading-tight', label: '1.15', note: 'H1, H2' },
+	{ token: '--leading-snug', label: '1.3', note: 'H3–H5' },
+	{ token: '--leading-body', label: '1.6', note: 'Running text' },
 ];
 
 const spacingScale = [
-	{ token: '--space-xs', label: 'xs' },
-	{ token: '--space-sm', label: 'sm' },
-	{ token: '--space-md', label: 'md' },
-	{ token: '--space-lg', label: 'lg' },
-	{ token: '--space-xl', label: 'xl' },
-	{ token: '--space-2xl', label: '2xl' },
-	{ token: '--space-3xl', label: '3xl' },
+	{ token: '--space-1', px: '4px' },
+	{ token: '--space-2', px: '8px' },
+	{ token: '--space-3', px: '12px' },
+	{ token: '--space-4', px: '16px' },
+	{ token: '--space-5', px: '24px' },
+	{ token: '--space-6', px: '32px' },
+	{ token: '--space-7', px: '48px' },
+	{ token: '--space-8', px: '64px' },
+	{ token: '--space-9', px: '96px' },
+	{ token: '--space-10', px: '128px' },
 ];
 
 const radii = [
@@ -57,202 +94,476 @@ const radii = [
 	{ token: '--radius-lg', label: 'lg' },
 	{ token: '--radius-pill', label: 'pill' },
 ];
+
+const shadows = [
+	{ token: '--shadow-xs', label: 'xs' },
+	{ token: '--shadow-sm', label: 'sm' },
+	{ token: '--shadow-md', label: 'md' },
+	{ token: '--shadow-lg', label: 'lg' },
+	{ token: '--ring', label: 'ring' },
+];
+
+const durations = [
+	{ token: '--duration-fast', label: '120ms', note: 'Hover, press, color changes' },
+	{ token: '--duration-base', label: '200ms', note: 'Cards, overlays, transforms' },
+	{ token: '--duration-slow', label: '320ms', note: 'Image scale, large movement' },
+];
+
+const measures = [
+	{ token: '--measure-narrow', label: '34rem / 544px', note: 'Forms, tight single-column pages' },
+	{ token: '--measure', label: '40rem / 640px', note: 'Lead paragraphs, section intros' },
+	{ token: '--measure-wide', label: '45rem / 720px', note: 'Long-form body copy, FAQ lists' },
+	{ token: '--content-width', label: '1120px', note: 'Outer page container' },
+];
 ---
 
 <BaseLayout
 	title="Style Guide"
-	description="Visual reference for this site's design tokens — colors, typography, spacing, and components."
+	description="Visual reference for this site's design tokens — colors, typography, spacing, motion, and components."
 >
-	<section class="container section">
-		<h1>Style Guide</h1>
-		<p class="intro">
-			A living reference for the design tokens and components this site is built from. Every
-			value below comes from <code>src/styles/tokens.css</code> &mdash; re-theme that one file
-			for a new client and this page updates with it.
-		</p>
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">Reference</p>
+			<h1>Style Guide</h1>
+			<p class="lead">
+				A living reference for the design tokens and components this site is built from. Every
+				value below comes from <code>src/styles/tokens.css</code> and
+				<code>src/styles/global.css</code> &mdash; re-theme those and this page updates with them.
+			</p>
+			<p class="text-secondary measure">
+				If a token or component class isn't documented here, it isn't part of the system. Add to
+				this page in the same commit that adds to the stylesheet.
+			</p>
 
-		<h2>Colors</h2>
-		<ul class="swatch-grid">
-			{colorSwatches.map((c) => (
-				<li>
-					<div class="swatch" style={`background:var(${c.name});${c.border ? 'border:1px solid var(--color-border);' : ''}`}></div>
-					<p class="swatch-label">{c.label}</p>
-					<code>{c.name}</code>
-				</li>
-			))}
-		</ul>
+			<h2>Color</h2>
+			<p class="text-secondary measure">
+				Tokens are layered: a raw palette feeds a semantic layer, and only the semantic names are
+				referenced from components. That indirection is what lets a dark mode be added later
+				without renaming anything.
+			</p>
 
-		<h3>Semantic accents</h3>
-		<p>Reserved for actual state — success, warning, error, informational — never decoration.</p>
-		<ul class="swatch-grid">
-			{semanticSwatches.map((s) => (
-				<li>
-					<div class="swatch semantic" style={`background:var(${s.bg});color:var(${s.name});border:1px solid var(${s.name});`}>Aa</div>
-					<p class="swatch-label">{s.label}</p>
-					<code>{s.name}</code>
-				</li>
-			))}
-		</ul>
+			<h3>Surfaces</h3>
+			<ul class="grid-auto swatch-grid">
+				{surfaces.map((s) => (
+					<li>
+						<div class="swatch swatch-bordered" style={`background:var(${s.name});`}></div>
+						<p class="swatch-label">{s.label}</p>
+						<code>{s.name}</code>
+						<p class="swatch-note">{s.note}</p>
+					</li>
+				))}
+			</ul>
 
-		<h2>Typography</h2>
-		<p>
-			<strong>DM Sans</strong> for both body and headings (<code>--font-sans</code> /
-			<code>--font-heading</code>).
-		</p>
+			<h3>Borders</h3>
+			<ul class="grid-auto swatch-grid">
+				{borders.map((b) => (
+					<li>
+						<div class="swatch swatch-border-demo" style={`border-color:var(${b.name});`}></div>
+						<p class="swatch-label">{b.label}</p>
+						<code>{b.name}</code>
+						<p class="swatch-note">{b.note}</p>
+					</li>
+				))}
+			</ul>
 
-		<h3>Headings</h3>
-		<p>H5 intentionally matches the body text size — a heading sized like a paragraph, for tight label-style headings — then steps up through H1. Display sits above H1 for hero headlines only.</p>
-		<ul class="type-scale">
-			{headingScale.map((t) => (
-				<li>
-					<span class="type-sample" style={`font-size:var(${t.token});`}>{t.sample}</span>
-					<code>{t.token}</code>
-				</li>
-			))}
-		</ul>
+			<h3>Text roles</h3>
+			<p class="text-secondary measure">
+				All three clear WCAG AA (4.5:1) against both <code>--surface-page</code> and
+				<code>--surface-sunken</code>. That floor is why the ramp has no lighter step — anything
+				paler reads as muted but fails.
+			</p>
+			<ul class="text-role-list">
+				{textRoles.map((t) => (
+					<li>
+						<span class="text-role-sample" style={`color:var(${t.name});`}>
+							The quick brown fox jumps over the lazy dog.
+						</span>
+						<span class="text-role-meta">
+							<code>{t.name}</code>
+							<span class="swatch-note">{t.note}</span>
+						</span>
+					</li>
+				))}
+			</ul>
 
-		<h3>Text sizes</h3>
-		<p>Three sizes for running body copy — large for lead paragraphs/intros, body as the default, small for captions and fine print.</p>
-		<ul class="type-scale">
-			{textScale.map((t) => (
-				<li>
-					<span class="type-sample" style={`font-size:var(${t.token});`}>{t.sample}</span>
-					<code>{t.token}</code>
-				</li>
-			))}
-		</ul>
+			<h3>Brand</h3>
+			<p class="text-secondary measure">
+				The only two tokens a client re-theme should need to touch. Accent is for inline links
+				and nothing else; ink carries primary buttons, which is what keeps the site
+				monochromatic while still showing brand color where it means something.
+			</p>
+			<ul class="grid-auto swatch-grid">
+				{brand.map((c) => (
+					<li>
+						<div class="swatch" style={`background:var(${c.name});`}></div>
+						<p class="swatch-label">{c.label}</p>
+						<code>{c.name}</code>
+						{c.note && <p class="swatch-note">{c.note}</p>}
+					</li>
+				))}
+			</ul>
 
-		<h3>Weights</h3>
-		<ul class="weight-list">
-			{weights.map((w) => (
-				<li style={`font-weight:var(${w.token});`}>
-					{w.label} <code>{w.token}</code>
-				</li>
-			))}
-		</ul>
+			<h3>Semantic accents</h3>
+			<p class="text-secondary measure">
+				Reserved for actual state — success, warning, error, informational — never decoration.
+				Always paired with text or a glyph so color never carries the signal alone.
+			</p>
+			<ul class="grid-auto swatch-grid">
+				{semanticSwatches.map((s) => (
+					<li>
+						<div class="swatch semantic" style={`background:var(${s.bg});color:var(${s.name});border:1px solid var(${s.name});`}>Aa</div>
+						<p class="swatch-label">{s.label}</p>
+						<code>{s.name}</code>
+					</li>
+				))}
+			</ul>
 
-		<h2>Spacing</h2>
-		<p>Used for all padding, margin, and gap values — never a hardcoded pixel value.</p>
-		<ul class="spacing-list">
-			{spacingScale.map((s) => (
-				<li>
-					<code>{s.token}</code>
-					<span class="spacing-bar" style={`width:var(${s.token});`}></span>
-				</li>
-			))}
-		</ul>
+			<h2>Typography</h2>
+			<p class="text-secondary measure">
+				<strong>DM Sans</strong> for both body and headings. Hierarchy comes from size, weight,
+				tracking, and leading — never a second typeface.
+			</p>
 
-		<h3>Radius &amp; shadow</h3>
-		<ul class="radius-grid">
-			{radii.map((r) => (
-				<li>
-					<div
-						class={`radius-box${r.token === '--radius-pill' ? ' radius-box-pill' : ''}`}
-						style={`border-radius:var(${r.token});`}
-					></div>
-					<code>{r.token}</code>
-				</li>
-			))}
-		</ul>
-		<ul class="shadow-grid">
-			<li>
-				<div class="shadow-box" style="box-shadow:var(--shadow-sm);"></div>
-				<code>--shadow-sm</code>
-			</li>
-			<li>
-				<div class="shadow-box" style="box-shadow:var(--shadow-md);"></div>
-				<code>--shadow-md</code>
-			</li>
-		</ul>
+			<h3>Headings</h3>
+			<p class="text-secondary measure">
+				H5 intentionally matches body size — a heading sized like a paragraph, for tight
+				label-style headings — then steps up through H1. Display sits above H1 for hero
+				headlines, layered on an H1 rather than replacing it, so the page keeps exactly one H1.
+			</p>
+			<ul class="type-scale">
+				{headingScale.map((t) => (
+					<li>
+						<span
+							class:list={['type-sample', t.cls]}
+							style={t.cls ? undefined : `font-size:var(${t.token});`}
+						>
+							Aa
+						</span>
+						<code>{t.token}</code>
+					</li>
+				))}
+			</ul>
 
-		<h2>Components</h2>
+			<h3>Text sizes</h3>
+			<ul class="type-scale">
+				{textScale.map((t) => (
+					<li>
+						<span class="type-sample type-sample-body" style={`font-size:var(${t.token});`}>{t.sample}</span>
+						<code>{t.token}</code>
+					</li>
+				))}
+			</ul>
 
-		<h3>Buttons</h3>
-		<div class="component-row">
-			<button type="button" class="btn btn-primary">Primary button</button>
-			<button type="button" class="btn btn-secondary">Secondary button</button>
-		</div>
+			<h3>Weights</h3>
+			<ul class="plain-list">
+				{weights.map((w) => (
+					<li style={`font-weight:var(${w.token});`}>
+						{w.label} <code>{w.token}</code>
+					</li>
+				))}
+			</ul>
 
-		<h3>Cards</h3>
-		<ul class="card-grid">
-			<li class="demo-card">
-				<h4>Card title</h4>
-				<p>Cards use <code>--color-border</code>, <code>--radius-lg</code>, and <code>--space-lg</code> padding — the same pattern used throughout the Services page.</p>
-			</li>
-			<li class="demo-card">
-				<h4>Second card</h4>
-				<p>Grids use <code>repeat(auto-fit, minmax(240px, 1fr))</code> so cards reflow responsively without a media query.</p>
-			</li>
-		</ul>
+			<h3>Tracking</h3>
+			<p class="text-secondary measure">
+				Large type set at default tracking reads loose and generic. Pulling it in is most of what
+				separates a display headline from a big paragraph; small uppercase type needs the
+				opposite treatment.
+			</p>
+			<ul class="type-scale">
+				{tracking.map((t) => (
+					<li>
+						<span class="type-sample tracking-sample" style={`letter-spacing:var(${t.token});`}>
+							Typography
+						</span>
+						<span class="text-role-meta">
+							<code>{t.token}</code>
+							<span class="swatch-note">{t.label} &middot; {t.note}</span>
+						</span>
+					</li>
+				))}
+			</ul>
 
-		<h3>Form fields</h3>
-		<div class="demo-form">
-			<div class="field">
-				<label for="sg-name">Name</label>
-				<input type="text" id="sg-name" name="sg-name" autocomplete="off" />
+			<h3>Leading</h3>
+			<ul class="plain-list">
+				{leading.map((l) => (
+					<li>
+						<code>{l.token}</code>
+						<span class="swatch-note"> {l.label} &middot; {l.note}</span>
+					</li>
+				))}
+			</ul>
+
+			<h3>Eyebrow</h3>
+			<p class="text-secondary measure">
+				Uppercase overline label. Adds a level of hierarchy above a heading without spending
+				another type size — see <code>.eyebrow</code> above every section on this page.
+			</p>
+			<div class="demo-block">
+				<p class="eyebrow">Section label</p>
+				<h4>The heading it sits above</h4>
 			</div>
-			<div class="field">
-				<label for="sg-message">Message</label>
-				<textarea id="sg-message" name="sg-message" rows="3"></textarea>
+
+			<h2>Spacing</h2>
+			<p class="text-secondary measure">
+				A 4px grid, numerically named. Used for every padding, margin, and gap — never a raw
+				pixel value. Rough intent: 1&ndash;4 inside components, 5&ndash;7 between components,
+				8&ndash;10 between sections.
+			</p>
+			<ul class="spacing-list">
+				{spacingScale.map((s) => (
+					<li>
+						<code>{s.token}</code>
+						<span class="spacing-px">{s.px}</span>
+						<span class="spacing-bar" style={`width:var(${s.token});`}></span>
+					</li>
+				))}
+			</ul>
+
+			<h2>Radius &amp; elevation</h2>
+			<ul class="radius-grid">
+				{radii.map((r) => (
+					<li>
+						<div
+							class={`radius-box${r.token === '--radius-pill' ? ' radius-box-pill' : ''}`}
+							style={`border-radius:var(${r.token});`}
+						></div>
+						<code>{r.token}</code>
+					</li>
+				))}
+			</ul>
+
+			<p class="text-secondary measure">
+				Shadows are stacked rather than single-blur: a tight contact shadow for the edge plus a
+				wider ambient one for the lift. <code>--ring</code> is an inset hairline that defines an
+				edge without spending a real border.
+			</p>
+			<ul class="radius-grid">
+				{shadows.map((s) => (
+					<li>
+						<div class="shadow-box" style={`box-shadow:var(${s.token});`}></div>
+						<code>{s.token}</code>
+					</li>
+				))}
+			</ul>
+
+			<h2>Motion</h2>
+			<p class="text-secondary measure">
+				One easing family, three durations. <code>--ease-out</code> is the workhorse for anything
+				entering or responding to input. Everything using these sits behind the
+				<code>prefers-reduced-motion</code> block in <code>global.css</code> — new animation must
+				not bypass it.
+			</p>
+			<ul class="plain-list">
+				{durations.map((d) => (
+					<li>
+						<code>{d.token}</code>
+						<span class="swatch-note"> {d.label} &middot; {d.note}</span>
+					</li>
+				))}
+				<li><code>--ease-out</code><span class="swatch-note"> cubic-bezier(0.16, 1, 0.3, 1)</span></li>
+				<li><code>--ease-in-out</code><span class="swatch-note"> cubic-bezier(0.65, 0, 0.35, 1)</span></li>
+			</ul>
+			<div class="demo-block">
+				<p class="swatch-note">Hover each box to compare the durations.</p>
+				<div class="motion-row">
+					<div class="motion-box motion-fast"><span>fast</span></div>
+					<div class="motion-box motion-base"><span>base</span></div>
+					<div class="motion-box motion-slow"><span>slow</span></div>
+				</div>
 			</div>
+
+			<h2>Layout</h2>
+			<p class="text-secondary measure">
+				<code>.container</code> sets the page gutter; the measure tokens cap line length for
+				running text inside it. Past roughly 75 characters the eye starts losing the line return,
+				so prose gets a measure even when its container is wider.
+			</p>
+			<ul class="plain-list">
+				{measures.map((m) => (
+					<li>
+						<code>{m.token}</code>
+						<span class="swatch-note"> {m.label} &middot; {m.note}</span>
+					</li>
+				))}
+			</ul>
+			<p class="text-secondary measure">
+				Section rhythm has three densities rather than one — <code>.section-tight</code>,
+				<code>.section</code>, and <code>.section-loose</code>. Uniform section padding is a large
+				part of what makes a page read flat, because nothing tells the eye which breaks matter
+				more than others. <code>.section-sunken</code> adds a full-bleed recessed band.
+			</p>
+
+			<h2>Components</h2>
+
+			<h3>Buttons</h3>
+			<div class="component-row">
+				<button type="button" class="btn btn-primary">Primary</button>
+				<button type="button" class="btn btn-secondary">Secondary</button>
+			</div>
+			<div class="component-row">
+				<button type="button" class="btn btn-primary btn-sm">Small</button>
+				<button type="button" class="btn btn-primary">Default</button>
+				<button type="button" class="btn btn-primary btn-lg">Large</button>
+			</div>
+			<p class="swatch-note">
+				Medium weight rather than semibold — at button size on a filled pill, semibold reads
+				heavy, and semibold is also the heading weight. Hover, press, and focus states are all
+				live above.
+			</p>
+
+			<h3>Cards</h3>
+			<p class="text-secondary measure">
+				One class for both contexts: on <code>--surface-page</code> a card reads as raised via its
+				border and shadow, on <code>--surface-sunken</code> via contrast. Add
+				<code>.card-interactive</code> when the whole card is a link or control.
+			</p>
+			<ul class="grid-auto demo-grid">
+				<li class="card">
+					<h4>Static card</h4>
+					<p class="text-secondary">Uses <code>.card</code> — border, radius, and padding from the system. No hover state.</p>
+				</li>
+				<li class="card card-interactive">
+					<h4>Interactive card</h4>
+					<p class="text-secondary">Adds <code>.card-interactive</code>. Hover it: border, shadow, and a 2px lift.</p>
+				</li>
+			</ul>
+
+			<h3>Grid</h3>
+			<p class="text-secondary measure">
+				<code>.grid-auto</code> replaces every hand-rolled <code>auto-fit</code> template. Tune
+				density per instance with the <code>--grid-min</code> custom property instead of
+				redeclaring the template.
+			</p>
+			<ul class="grid-auto demo-grid" style="--grid-min:160px;">
+				<li class="card demo-tile">160px</li>
+				<li class="card demo-tile">160px</li>
+				<li class="card demo-tile">160px</li>
+				<li class="card demo-tile">160px</li>
+			</ul>
+
+			<h3>Form fields</h3>
+			<p class="text-secondary measure">
+				Every field gets a real <code>&lt;label for&gt;</code>, never a placeholder standing in for
+				one. Focus changes the border as well as raising the global ring — the ring alone leaves
+				the field itself looking inert while it's active.
+			</p>
+			<div class="demo-form">
+				<div class="field">
+					<label for="sg-name">Name</label>
+					<input type="text" id="sg-name" name="sg-name" autocomplete="off" />
+				</div>
+				<div class="field">
+					<label for="sg-email">Email</label>
+					<input type="email" id="sg-email" name="sg-email" autocomplete="off" />
+					<p class="field-hint">Helper text uses <code>.field-hint</code>.</p>
+				</div>
+				<div class="field field-invalid">
+					<label for="sg-phone">Phone</label>
+					<input type="tel" id="sg-phone" name="sg-phone" autocomplete="off" aria-describedby="sg-phone-error" />
+					<p class="field-error" id="sg-phone-error">Enter a phone number we can reach you on.</p>
+				</div>
+				<div class="field">
+					<label for="sg-message">Message</label>
+					<textarea id="sg-message" name="sg-message" rows="3"></textarea>
+				</div>
+			</div>
+			<p class="swatch-note">
+				The error state pairs the critical color with a glyph and a sentence, so the signal
+				survives for anyone who can't distinguish the color.
+			</p>
+
+			<h3>Text utilities</h3>
+			<div class="demo-block">
+				<p class="lead">
+					<code>.lead</code> — the sentence directly under a page or section heading. Larger,
+					secondary tone, capped at <code>--measure</code>.
+				</p>
+				<p><code>.text-secondary</code> and <code>.text-tertiary</code> step body copy down:</p>
+				<p class="text-secondary">Secondary — supporting copy inside a card or section.</p>
+				<p class="text-tertiary">Tertiary — captions, metadata, attribution lines.</p>
+				<hr class="divider" />
+				<p class="swatch-note">Above is <code>.divider</code>.</p>
+			</div>
+
+			<h3>Images</h3>
+			<p class="text-secondary measure">
+				Gallery images use a fixed aspect ratio, <code>object-fit: cover</code>, and a
+				<code>--radius-md</code> corner. Every one needs descriptive alt text.
+			</p>
+			<ul class="grid-auto demo-grid image-grid" style="--grid-min:200px;">
+				<li><img src="/images/gallery/placeholder-1.svg" alt="Example placeholder image showing the standard image treatment" loading="lazy" /></li>
+				<li><img src="/images/gallery/placeholder-2.svg" alt="Example placeholder image showing the standard image treatment" loading="lazy" /></li>
+			</ul>
+
+			<h3>Links</h3>
+			<p class="text-secondary">
+				An <a href="/">inline link</a> in body copy, showing the default and hover accent colors.
+				Accent is reserved for these — buttons use ink.
+			</p>
 		</div>
-
-		<h3>Images</h3>
-		<p>Gallery images use a fixed aspect ratio, <code>object-fit: cover</code>, and rounded corners.</p>
-		<ul class="image-grid">
-			<li><img src="/images/gallery/placeholder-1.svg" alt="Example placeholder image showing the standard image treatment" loading="lazy" /></li>
-			<li><img src="/images/gallery/placeholder-2.svg" alt="Example placeholder image showing the standard image treatment" loading="lazy" /></li>
-		</ul>
-
-		<h3>Links</h3>
-		<p>
-			An <a href="/">inline link</a> in body copy, showing the default and hover accent colors.
-		</p>
 	</section>
 </BaseLayout>
 
 <style>
-	.section {
-		padding-block: var(--space-2xl);
-	}
-
-	.intro {
-		font-size: var(--text-large);
-		color: var(--color-text-secondary);
-		max-width: 640px;
-	}
-
 	h2 {
-		margin-top: var(--space-2xl);
-		padding-top: var(--space-xl);
-		border-top: 1px solid var(--color-border);
+		margin-top: var(--space-9);
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--border-default);
 	}
 
 	h3 {
-		margin-top: var(--space-xl);
+		margin-top: var(--space-7);
 	}
 
 	code {
-		background: var(--color-bg-subtle);
-		border-radius: 4px;
+		background: var(--surface-fill);
+		border-radius: var(--radius-sm);
 		padding: 0.1em 0.4em;
 		font-size: 0.85em;
+		overflow-wrap: anywhere;
 	}
 
-	/* Colors */
-	.swatch-grid {
+	.plain-list {
 		list-style: none;
-		margin: 0;
+		margin: var(--space-5) 0;
 		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-		gap: var(--space-lg);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+	}
+
+	.demo-block {
+		margin: var(--space-5) 0;
+		padding: var(--space-6);
+		border: 1px solid var(--border-hairline);
+		border-radius: var(--radius-lg);
+		background: var(--surface-sunken);
+	}
+
+	.demo-block > :last-child {
+		margin-bottom: 0;
+	}
+
+	/* Color */
+	.swatch-grid {
+		--grid-min: 160px;
+		margin: var(--space-5) 0;
 	}
 
 	.swatch {
 		height: 64px;
 		border-radius: var(--radius-md);
-		box-shadow: var(--shadow-sm);
+		box-shadow: var(--ring);
+	}
+
+	.swatch-bordered {
+		border: 1px solid var(--border-default);
+	}
+
+	.swatch-border-demo {
+		background: var(--surface-page);
+		border: 2px solid var(--border-default);
+		box-shadow: none;
 	}
 
 	.swatch.semantic {
@@ -263,80 +574,135 @@ const radii = [
 	}
 
 	.swatch-label {
-		margin: var(--space-sm) 0 var(--space-xs);
+		margin: var(--space-3) 0 var(--space-1);
 		font-weight: var(--weight-medium);
 		color: var(--color-text);
+	}
+
+	.swatch-note {
+		font-size: var(--text-small);
+		color: var(--color-text-tertiary);
+		margin: var(--space-1) 0 0;
+	}
+
+	.text-role-list {
+		list-style: none;
+		margin: var(--space-5) 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+	}
+
+	.text-role-list li {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-4);
+		border-bottom: 1px solid var(--border-hairline);
+		padding-bottom: var(--space-4);
+	}
+
+	.text-role-sample {
+		font-size: var(--text-large);
+	}
+
+	/* Wraps rather than holding its width — at narrow viewports the token
+	   name and its contrast note can't sit on one line beside the sample. */
+	.text-role-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: var(--space-1) var(--space-3);
+		min-width: 0;
+	}
+
+	.text-role-meta .swatch-note {
+		margin: 0;
 	}
 
 	/* Typography */
 	.type-scale {
 		list-style: none;
-		margin: var(--space-lg) 0;
+		margin: var(--space-5) 0;
 		padding: 0;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-md);
+		gap: var(--space-4);
 	}
 
 	.type-scale li {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: baseline;
 		justify-content: space-between;
-		gap: var(--space-lg);
-		border-bottom: 1px solid var(--color-border);
-		padding-bottom: var(--space-md);
+		gap: var(--space-5);
+		border-bottom: 1px solid var(--border-hairline);
+		padding-bottom: var(--space-4);
 	}
 
 	.type-sample {
 		font-family: var(--font-heading);
+		font-weight: var(--weight-semibold);
 		color: var(--color-text);
+		line-height: var(--leading-tight);
 		flex: 1;
+		min-width: 0;
 	}
 
-	.weight-list {
-		list-style: none;
-		margin: var(--space-lg) 0;
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-sm);
+	.type-sample-body {
+		font-weight: var(--weight-normal);
+		line-height: var(--leading-body);
+	}
+
+	.tracking-sample {
+		font-size: var(--text-h2);
 	}
 
 	/* Spacing */
 	.spacing-list {
 		list-style: none;
-		margin: var(--space-lg) 0;
+		margin: var(--space-5) 0;
 		padding: 0;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-sm);
+		gap: var(--space-3);
 	}
 
 	.spacing-list li {
 		display: flex;
 		align-items: center;
-		gap: var(--space-md);
+		gap: var(--space-4);
 	}
 
 	.spacing-list code {
-		min-width: 6rem;
+		min-width: 6.5rem;
+		flex-shrink: 0;
+	}
+
+	.spacing-px {
+		min-width: 3.5rem;
+		flex-shrink: 0;
+		font-size: var(--text-small);
+		color: var(--color-text-tertiary);
 	}
 
 	.spacing-bar {
-		height: 1rem;
+		height: 0.75rem;
 		background: var(--color-ink);
 		border-radius: var(--radius-sm);
 		display: block;
+		flex-shrink: 0;
 	}
 
-	/* Radius / shadow */
-	.radius-grid,
-	.shadow-grid {
+	/* Radius / elevation */
+	.radius-grid {
 		list-style: none;
-		margin: var(--space-lg) 0;
+		margin: var(--space-5) 0;
 		padding: 0;
 		display: flex;
-		gap: var(--space-lg);
+		gap: var(--space-5);
 		flex-wrap: wrap;
 	}
 
@@ -344,9 +710,9 @@ const radii = [
 	.shadow-box {
 		width: 80px;
 		height: 80px;
-		background: var(--color-bg-subtle);
-		border: 1px solid var(--color-border);
-		margin-bottom: var(--space-xs);
+		background: var(--surface-sunken);
+		border: 1px solid var(--border-default);
+		margin-bottom: var(--space-1);
 	}
 
 	.radius-box-pill {
@@ -355,70 +721,94 @@ const radii = [
 	}
 
 	.shadow-box {
+		background: var(--surface-raised);
+		border: none;
 		border-radius: var(--radius-md);
+	}
+
+	/* Motion */
+	.motion-row {
+		display: flex;
+		gap: var(--space-4);
+		flex-wrap: wrap;
+	}
+
+	.motion-box {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 96px;
+		height: 64px;
+		border-radius: var(--radius-md);
+		background: var(--surface-raised);
+		border: 1px solid var(--border-default);
+		font-size: var(--text-small);
+		color: var(--color-text-secondary);
+		cursor: default;
+	}
+
+	.motion-box:hover {
+		background: var(--color-ink);
+		border-color: var(--color-ink);
+		color: var(--color-ink-contrast);
+		transform: translateY(-4px);
+	}
+
+	.motion-fast {
+		transition:
+			background-color var(--duration-fast) var(--ease-out),
+			border-color var(--duration-fast) var(--ease-out),
+			color var(--duration-fast) var(--ease-out),
+			transform var(--duration-fast) var(--ease-out);
+	}
+
+	.motion-base {
+		transition:
+			background-color var(--duration-base) var(--ease-out),
+			border-color var(--duration-base) var(--ease-out),
+			color var(--duration-base) var(--ease-out),
+			transform var(--duration-base) var(--ease-out);
+	}
+
+	.motion-slow {
+		transition:
+			background-color var(--duration-slow) var(--ease-out),
+			border-color var(--duration-slow) var(--ease-out),
+			color var(--duration-slow) var(--ease-out),
+			transform var(--duration-slow) var(--ease-out);
 	}
 
 	/* Components */
 	.component-row {
 		display: flex;
-		gap: var(--space-md);
+		gap: var(--space-4);
 		flex-wrap: wrap;
-		margin: var(--space-lg) 0;
+		align-items: center;
+		margin: var(--space-5) 0;
 	}
 
-	.card-grid {
-		list-style: none;
-		margin: var(--space-lg) 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: var(--space-lg);
+	.demo-grid {
+		margin: var(--space-5) 0;
 	}
 
-	.demo-card {
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		padding: var(--space-lg);
+	.demo-tile {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: var(--text-small);
+		color: var(--color-text-tertiary);
 	}
 
 	.demo-form {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-lg);
-		max-width: 420px;
-		margin: var(--space-lg) 0;
-	}
-
-	.field {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-	}
-
-	.field label {
-		font-weight: var(--weight-medium);
-		color: var(--color-text);
-	}
-
-	.field input,
-	.field textarea {
-		font-family: var(--font-sans);
-		font-size: var(--text-body);
-		padding: var(--space-sm);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-sm);
-		color: var(--color-text);
-		background: var(--color-bg);
+		gap: var(--space-5);
+		max-width: var(--measure-narrow);
+		margin: var(--space-5) 0;
 	}
 
 	.image-grid {
-		list-style: none;
-		margin: var(--space-lg) 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-		gap: var(--space-md);
-		max-width: 560px;
+		max-width: var(--measure);
 	}
 
 	.image-grid img {
@@ -426,6 +816,6 @@ const radii = [
 		aspect-ratio: 4 / 3;
 		object-fit: cover;
 		border-radius: var(--radius-md);
-		background: var(--color-bg-subtle);
+		background: var(--surface-sunken);
 	}
 </style>

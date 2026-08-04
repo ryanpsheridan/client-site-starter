@@ -7,7 +7,7 @@ const year = new Date().getFullYear();
 	<div class="container site-footer-inner">
 		<div>
 			<p class="site-footer-title">{SITE_TITLE}</p>
-			<p>
+			<p class="site-footer-contact">
 				<a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a><br />
 				<a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a>
 			</p>
@@ -27,36 +27,42 @@ const year = new Date().getFullYear();
 
 <style>
 	.site-footer {
-		border-top: 1px solid var(--color-border);
-		background: var(--color-bg-subtle);
-		padding-block: var(--space-2xl) var(--space-lg);
-		margin-top: var(--space-3xl);
+		border-top: 1px solid var(--border-hairline);
+		background: var(--surface-sunken);
+		padding-block: var(--space-8) var(--space-5);
+		margin-top: var(--space-10);
 	}
 
 	.site-footer-inner {
 		display: flex;
 		justify-content: space-between;
 		flex-wrap: wrap;
-		gap: var(--space-xl);
-		margin-bottom: var(--space-xl);
+		gap: var(--space-7);
+		margin-bottom: var(--space-7);
 	}
 
 	.site-footer-title {
 		font-weight: var(--weight-semibold);
 		color: var(--color-text);
-		margin-bottom: var(--space-xs);
+		margin-bottom: var(--space-2);
+	}
+
+	.site-footer-contact {
+		color: var(--color-text-secondary);
+		margin: 0;
 	}
 
 	.site-footer-nav {
 		list-style: none;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-2);
 		margin: 0;
 		padding: 0;
 	}
 
 	.site-footer-nav a {
+		font-size: var(--text-small);
 		color: var(--color-text-secondary);
 		text-decoration: none;
 	}
@@ -67,7 +73,7 @@ const year = new Date().getFullYear();
 
 	.site-footer-copy {
 		font-size: var(--text-small);
-		color: var(--color-text-secondary);
+		color: var(--color-text-tertiary);
 		margin: 0;
 	}
 </style>

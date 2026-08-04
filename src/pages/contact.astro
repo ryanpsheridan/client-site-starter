@@ -5,27 +5,40 @@ import { SITE_EMAIL, SITE_PHONE } from '../consts';
 ---
 
 <BaseLayout title="Contact" description="Get in touch.">
-	<section class="container section">
-		<h1>Contact</h1>
-		<p>
-			<a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a>
-			&nbsp;&middot;&nbsp;
-			<a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
-		</p>
+	<section class="section">
+		<div class="container contact-column">
+			<p class="eyebrow">Contact</p>
+			<h1>Contact</h1>
+			<p class="contact-details">
+				<a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a>
+				<span class="contact-separator" aria-hidden="true">&middot;</span>
+				<a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
+			</p>
 
-		<div class="form-wrap">
-			<ContactForm />
+			<div class="form-wrap">
+				<ContactForm />
+			</div>
 		</div>
 	</section>
 </BaseLayout>
 
 <style>
-	.section {
-		padding-block: var(--space-2xl);
-		max-width: 560px;
+	.contact-column {
+		max-width: calc(var(--measure-narrow) + var(--space-5) * 2);
+	}
+
+	.contact-details {
+		font-size: var(--text-large);
+		margin-bottom: 0;
+	}
+
+	.contact-separator {
+		display: inline-block;
+		margin-inline: var(--space-2);
+		color: var(--color-text-tertiary);
 	}
 
 	.form-wrap {
-		margin-top: var(--space-xl);
+		margin-top: var(--space-7);
 	}
 </style>

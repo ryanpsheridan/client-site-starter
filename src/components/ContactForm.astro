@@ -4,6 +4,9 @@
 // "Forms" section for when to reach for an alternative instead. Shared
 // by contact.astro and the homepage's closing contact section so both
 // stay pointed at the same endpoint.
+//
+// Field styling comes from the shared .field component in global.css —
+// don't re-declare it here.
 const FORMSPREE_ACTION = 'https://formspree.io/f/FORMSPREE_ID';
 ---
 
@@ -15,40 +18,23 @@ const FORMSPREE_ACTION = 'https://formspree.io/f/FORMSPREE_ID';
 	<div class="field">
 		<label for="email">Email</label>
 		<input type="email" id="email" name="email" required autocomplete="email" />
+		<p class="field-hint">We'll only use this to reply to your message.</p>
 	</div>
 	<div class="field">
 		<label for="message">Message</label>
 		<textarea id="message" name="message" rows="5" required></textarea>
 	</div>
-	<button type="submit" class="btn btn-primary">Send message</button>
+	<button type="submit" class="btn btn-primary contact-submit">Send message</button>
 </form>
 
 <style>
 	.contact-form {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-lg);
+		gap: var(--space-5);
 	}
 
-	.field {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-	}
-
-	.field label {
-		font-weight: var(--weight-medium);
-		color: var(--color-text);
-	}
-
-	.field input,
-	.field textarea {
-		font-family: var(--font-sans);
-		font-size: var(--text-body);
-		padding: var(--space-sm);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-sm);
-		color: var(--color-text);
-		background: var(--color-bg);
+	.contact-submit {
+		align-self: flex-start;
 	}
 </style>

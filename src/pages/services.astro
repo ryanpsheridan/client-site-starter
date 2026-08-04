@@ -148,187 +148,184 @@ const serviceSchema = {
 	<script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
 	<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
-	<section class="container section hero">
-		<h1>Services</h1>
-		<p class="lead">
-			One or two sentences summarizing the range of services and the outcome a client gets —
-			lead with the result, the same way the homepage headline does.
-		</p>
-		<a href="/contact/" class="btn btn-primary">Get a free quote</a>
-	</section>
-
-	<section class="container section">
-		<h2>Common problems we solve</h2>
-		<ul class="problem-grid">
-			{problems.map((problem) => (
-				<li class="problem-card">
-					<h3>{problem.title}</h3>
-					<p>{problem.description}</p>
-				</li>
-			))}
-		</ul>
-	</section>
-
-	<section class="container section bg-subtle">
-		<h2>What we offer</h2>
-		<ul class="service-grid">
-			{services.map((service) => (
-				<li class="service-card">
-					<h3>{service.title}</h3>
-					<p>{service.description}</p>
-					<ul class="includes-list">
-						{service.includes.map((item) => (
-							<li>{item}</li>
-						))}
-					</ul>
-				</li>
-			))}
-		</ul>
-	</section>
-
-	<section class="container section">
-		<h2>How it works</h2>
-		<ol class="step-list">
-			{steps.map((step, i) => (
-				<li class="step">
-					<span class="step-number" aria-hidden="true">{i + 1}</span>
-					<h3>{step.title}</h3>
-					<p>{step.description}</p>
-				</li>
-			))}
-		</ol>
-	</section>
-
-	<section class="container section bg-subtle">
-		<h2>Pricing</h2>
-		<p class="section-note">Starting prices below — every project is a little different, so treat these as a guide and reach out for an exact quote.</p>
-		<ul class="pricing-grid">
-			{pricingTiers.map((tier) => (
-				<li class:list={['pricing-card', { featured: tier.featured }]}>
-					{tier.featured && <p class="pricing-badge">Most popular</p>}
-					<h3>{tier.name}</h3>
-					<p class="pricing-price">{tier.price}<span class="pricing-unit">{tier.unit}</span></p>
-					<p class="pricing-description">{tier.description}</p>
-					<ul class="pricing-features">
-						{tier.features.map((feature) => (
-							<li>{feature}</li>
-						))}
-					</ul>
-					<a href="/contact/" class={`btn ${tier.featured ? 'btn-primary' : 'btn-secondary'} pricing-cta`}>Get started</a>
-				</li>
-			))}
-		</ul>
-	</section>
-
-	<section class="container section">
-		<h2>What clients say</h2>
-		<ul class="testimonial-grid">
-			{testimonials.map((t) => (
-				<li>
-					<blockquote class="testimonial-card">
-						<p>&ldquo;{t.quote}&rdquo;</p>
-						<footer>
-							<cite>{t.name}</cite>{t.role && <>, {t.role}</>}
-						</footer>
-					</blockquote>
-				</li>
-			))}
-		</ul>
-	</section>
-
-	<section class="container section bg-subtle">
-		<h2>Frequently asked questions</h2>
-		<div class="faq-list">
-			{faqs.map((faq) => (
-				<details class="faq-item">
-					<summary>{faq.question}</summary>
-					<p>{faq.answer}</p>
-				</details>
-			))}
+	<section class="section-loose">
+		<div class="container">
+			<div class="page-hero">
+				<h1>Services</h1>
+				<p class="lead">
+					One or two sentences summarizing the range of services and the outcome a client gets —
+					lead with the result, the same way the homepage headline does.
+				</p>
+				<a href="/contact/" class="btn btn-primary btn-lg">Get a free quote</a>
+			</div>
 		</div>
 	</section>
 
-	<section class="container section cta-section">
-		<h2>Ready to get started?</h2>
-		<p class="lead">Replace with a closing line that restates the outcome and makes the next step obvious.</p>
-		<a href="/contact/" class="btn btn-primary">Get in touch</a>
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">The problem</p>
+			<h2>Common problems we solve</h2>
+			<ul class="grid-auto section-grid section-grid-last">
+				{problems.map((problem) => (
+					<li class="problem">
+						<h3>{problem.title}</h3>
+						<p class="text-secondary">{problem.description}</p>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<section class="section section-sunken">
+		<div class="container">
+			<p class="eyebrow">The offer</p>
+			<h2>What we offer</h2>
+			<ul class="grid-auto section-grid section-grid-last">
+				{services.map((service) => (
+					<li class="card card-interactive">
+						<h3>{service.title}</h3>
+						<p class="text-secondary">{service.description}</p>
+						<ul class="includes-list">
+							{service.includes.map((item) => (
+								<li>{item}</li>
+							))}
+						</ul>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">The process</p>
+			<h2>How it works</h2>
+			<ol class="grid-auto step-list section-grid section-grid-last">
+				{steps.map((step, i) => (
+					<li class="step">
+						<span class="step-number" aria-hidden="true">{i + 1}</span>
+						<h3>{step.title}</h3>
+						<p class="text-secondary">{step.description}</p>
+					</li>
+				))}
+			</ol>
+		</div>
+	</section>
+
+	<section class="section section-sunken">
+		<div class="container">
+			<p class="eyebrow">Pricing</p>
+			<h2>Pricing</h2>
+			<p class="lead">Starting prices below — every project is a little different, so treat these as a guide and reach out for an exact quote.</p>
+			<ul class="grid-auto pricing-grid section-grid section-grid-last">
+				{pricingTiers.map((tier) => (
+					<li class:list={['card', 'pricing-card', { featured: tier.featured }]}>
+						{tier.featured && <p class="pricing-badge">Most popular</p>}
+						<h3>{tier.name}</h3>
+						<p class="pricing-price">{tier.price}<span class="pricing-unit">{tier.unit}</span></p>
+						<p class="pricing-description text-secondary">{tier.description}</p>
+						<ul class="pricing-features">
+							{tier.features.map((feature) => (
+								<li>{feature}</li>
+							))}
+						</ul>
+						<a href="/contact/" class={`btn ${tier.featured ? 'btn-primary' : 'btn-secondary'} pricing-cta`}>Get started</a>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<p class="eyebrow">Social proof</p>
+			<h2>What clients say</h2>
+			<ul class="grid-auto section-grid section-grid-last">
+				{testimonials.map((t) => (
+					<li>
+						<blockquote class="card testimonial">
+							<p class="testimonial-quote">&ldquo;{t.quote}&rdquo;</p>
+							<footer class="testimonial-attribution">
+								<cite>{t.name}</cite>{t.role && <>, {t.role}</>}
+							</footer>
+						</blockquote>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<section class="section section-sunken">
+		<div class="container">
+			<p class="eyebrow">Questions</p>
+			<h2>Frequently asked questions</h2>
+			<div class="faq-list">
+				{faqs.map((faq) => (
+					<details class="faq-item">
+						<summary>{faq.question}</summary>
+						<p class="text-secondary">{faq.answer}</p>
+					</details>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<div class="cta-section">
+				<h2>Ready to get started?</h2>
+				<p class="lead">Replace with a closing line that restates the outcome and makes the next step obvious.</p>
+				<a href="/contact/" class="btn btn-primary btn-lg">Get in touch</a>
+			</div>
+		</div>
 	</section>
 </BaseLayout>
 
 <style>
-	.section {
-		padding-block: var(--space-2xl);
+	.page-hero {
+		max-width: var(--measure);
 	}
 
-	.bg-subtle {
-		background: var(--color-bg-subtle);
+	.page-hero .lead {
+		margin-bottom: var(--space-6);
 	}
 
-	.lead {
-		font-size: var(--text-large);
-		max-width: 640px;
+	.section-grid {
+		margin-block: var(--space-7);
 	}
 
-	.hero {
-		padding-bottom: var(--space-xl);
-	}
-
-	.section-note {
-		max-width: 640px;
-	}
-
-	/* Problems */
-	.problem-grid {
-		list-style: none;
-		margin: var(--space-xl) 0 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: var(--space-lg);
-	}
-
-	.problem-card h3 {
-		font-size: var(--text-h4);
-	}
-
-	.problem-card p {
+	.section-grid-last {
 		margin-bottom: 0;
 	}
 
-	/* Services */
-	.service-grid {
-		list-style: none;
-		margin: var(--space-xl) 0 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: var(--space-lg);
-	}
-
-	.service-card {
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		padding: var(--space-lg);
-	}
-
-	.service-card h3 {
+	/* Problems are borderless — the section reads as a list of statements,
+	   not a set of objects, so cards would over-structure it. */
+	.problem h3 {
 		font-size: var(--text-h4);
 	}
 
+	.problem p:last-child {
+		margin-bottom: 0;
+	}
+
+	.card h3 {
+		font-size: var(--text-h4);
+	}
+
+	/* Services */
 	.includes-list {
-		margin: var(--space-md) 0 0;
+		margin: var(--space-4) 0 0;
 		padding: 0;
 		list-style: none;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-xs);
+		gap: var(--space-2);
 	}
 
 	.includes-list li {
 		font-size: var(--text-small);
 		color: var(--color-text-secondary);
-		padding-left: var(--space-md);
+		padding-left: var(--space-4);
 		position: relative;
 	}
 
@@ -337,20 +334,16 @@ const serviceSchema = {
 		position: absolute;
 		left: 0;
 		top: 0.6em;
-		width: 6px;
-		height: 6px;
+		width: 5px;
+		height: 5px;
 		border-radius: 50%;
-		background: var(--color-text-secondary);
+		background: var(--border-strong);
 	}
 
 	/* How it works */
 	.step-list {
-		list-style: none;
-		margin: var(--space-xl) 0 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-		gap: var(--space-xl);
+		--grid-min: 200px;
+		gap: var(--space-7);
 	}
 
 	.step-number {
@@ -362,83 +355,79 @@ const serviceSchema = {
 		border-radius: 50%;
 		background: var(--color-ink);
 		color: var(--color-ink-contrast);
-		font-weight: var(--weight-semibold);
-		margin-bottom: var(--space-sm);
+		font-size: var(--text-small);
+		font-weight: var(--weight-medium);
+		margin-bottom: var(--space-4);
 	}
 
 	.step h3 {
 		font-size: var(--text-h4);
 	}
 
-	.step p {
+	.step p:last-child {
 		margin-bottom: 0;
 	}
 
 	/* Pricing */
 	.pricing-grid {
-		list-style: none;
-		margin: var(--space-xl) 0 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: var(--space-lg);
 		align-items: start;
 	}
 
 	.pricing-card {
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		padding: var(--space-lg);
 		display: flex;
 		flex-direction: column;
 	}
 
+	/* Ring rather than a 2px border, so the featured tier doesn't sit 1px
+	   taller than its neighbours and break the row's baseline. */
 	.pricing-card.featured {
-		border: 2px solid var(--color-ink);
+		border-color: var(--color-ink);
+		box-shadow: inset 0 0 0 1px var(--color-ink), var(--shadow-md);
 	}
 
 	.pricing-badge {
-		font-size: var(--text-small);
-		font-weight: var(--weight-semibold);
+		font-size: var(--text-eyebrow);
+		font-weight: var(--weight-medium);
+		letter-spacing: var(--tracking-caps);
+		text-transform: uppercase;
 		color: var(--color-text);
-		margin: 0 0 var(--space-sm);
+		margin: 0 0 var(--space-3);
 	}
 
 	.pricing-card h3 {
 		font-size: var(--text-h4);
-		margin-bottom: var(--space-xs);
+		margin-bottom: var(--space-1);
 	}
 
 	.pricing-price {
 		font-size: var(--text-h2);
 		font-weight: var(--weight-semibold);
-		margin: 0 0 var(--space-sm);
+		letter-spacing: var(--tracking-snug);
+		line-height: var(--leading-tight);
+		margin: 0 0 var(--space-3);
 	}
 
 	.pricing-unit {
 		font-size: var(--text-small);
 		font-weight: var(--weight-normal);
-		color: var(--color-text-secondary);
-	}
-
-	.pricing-description {
-		color: var(--color-text-secondary);
+		letter-spacing: var(--tracking-normal);
+		color: var(--color-text-tertiary);
+		margin-left: var(--space-1);
 	}
 
 	.pricing-features {
 		list-style: none;
-		margin: 0 0 var(--space-lg);
+		margin: 0 0 var(--space-6);
 		padding: 0;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-sm);
+		gap: var(--space-3);
 		flex-grow: 1;
 	}
 
 	.pricing-features li {
 		font-size: var(--text-small);
-		padding-left: var(--space-md);
+		padding-left: var(--space-4);
 		position: relative;
 	}
 
@@ -447,70 +436,59 @@ const serviceSchema = {
 		position: absolute;
 		left: 0;
 		top: 0.55em;
-		width: 6px;
-		height: 6px;
+		width: 5px;
+		height: 5px;
 		border-radius: 50%;
-		background: var(--color-text-secondary);
+		background: var(--border-strong);
 	}
 
 	.pricing-cta {
-		text-align: center;
 		margin-top: auto;
 	}
 
 	/* Testimonials */
-	.testimonial-grid {
-		list-style: none;
-		margin: var(--space-xl) 0 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: var(--space-lg);
-	}
-
-	.testimonial-card {
+	.testimonial {
 		margin: 0;
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		padding: var(--space-lg);
 	}
 
-	.testimonial-card p {
+	.testimonial-quote {
 		font-size: var(--text-large);
+		line-height: var(--leading-body);
 		color: var(--color-text);
-		margin-bottom: var(--space-md);
+		margin-bottom: var(--space-4);
 	}
 
-	.testimonial-card footer {
+	.testimonial-attribution {
 		font-size: var(--text-small);
-		color: var(--color-text-secondary);
+		color: var(--color-text-tertiary);
 	}
 
-	.testimonial-card cite {
+	.testimonial-attribution cite {
 		font-style: normal;
-		font-weight: var(--weight-semibold);
+		font-weight: var(--weight-medium);
 		color: var(--color-text);
 	}
 
 	/* FAQ */
 	.faq-list {
-		margin-top: var(--space-xl);
-		max-width: 720px;
-		display: flex;
-		flex-direction: column;
+		margin-top: var(--space-7);
+		max-width: var(--measure-wide);
+		border-top: 1px solid var(--border-default);
 	}
 
 	.faq-item {
-		border-bottom: 1px solid var(--color-border);
+		border-bottom: 1px solid var(--border-default);
 	}
 
 	/* Padding lives on the summary itself, not the wrapping .faq-item, so
 	   the whole tappable row (not just the text line) is a comfortable
 	   touch target on mobile. */
 	.faq-item summary {
-		padding-block: var(--space-md);
+		display: flex;
+		gap: var(--space-3);
+		padding-block: var(--space-4);
 		cursor: pointer;
-		font-weight: var(--weight-semibold);
+		font-weight: var(--weight-medium);
 		color: var(--color-text);
 		list-style: none;
 	}
@@ -521,10 +499,10 @@ const serviceSchema = {
 
 	.faq-item summary::before {
 		content: '+';
-		display: inline-block;
-		width: 1.25em;
+		flex-shrink: 0;
+		width: 1em;
 		font-weight: var(--weight-normal);
-		color: var(--color-text-secondary);
+		color: var(--color-text-tertiary);
 	}
 
 	.faq-item[open] summary::before {
@@ -532,7 +510,9 @@ const serviceSchema = {
 	}
 
 	.faq-item p {
-		margin: 0 0 var(--space-md) 1.25em;
+		margin: 0 0 var(--space-4);
+		padding-left: calc(1em + var(--space-3));
+		max-width: var(--measure);
 	}
 
 	/* Final CTA */
@@ -542,5 +522,6 @@ const serviceSchema = {
 
 	.cta-section .lead {
 		margin-inline: auto;
+		margin-bottom: var(--space-6);
 	}
 </style>
