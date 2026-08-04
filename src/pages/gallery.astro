@@ -1,21 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 
-// Placeholder gallery. Real images live in public/images/gallery/ — see
-// CLAUDE.md's "Gallery / Photo Uploads" section for the naming convention
-// and the decision tree for how a given client should add new photos.
+// ---------------------------------------------------------------------------
+// PAGE CONTENT — everything a client edit touches lives in this block.
 //
-// Three sections show three different ways to lay out the same kind of
-// content (grid / featured carousel / masonry) so this page doubles as a
-// template to pick from per client rather than a single fixed layout.
-// Every photo opens in a shared lightbox dialog on click.
+// Real images live in public/images/gallery/ — see CLAUDE.md's "Gallery /
+// Photo Uploads" section for the naming convention and the decision tree for
+// how a given client should add new photos.
+//
+// `alt` describes the image for anyone who can't see it. `caption` is shown
+// on screen under the carousel — they serve different jobs, so write both
+// rather than duplicating one into the other.
+//
+// Three sections show three ways to lay out the same content (grid /
+// carousel / masonry) so this page doubles as a menu to pick from per client
+// rather than a single fixed layout. Delete the two you don't use.
+// ---------------------------------------------------------------------------
+
 const images = [
-	{ src: '/images/gallery/placeholder-1.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
-	{ src: '/images/gallery/placeholder-2.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
-	{ src: '/images/gallery/placeholder-3.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
-	{ src: '/images/gallery/placeholder-4.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
-	{ src: '/images/gallery/placeholder-5.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
-	{ src: '/images/gallery/placeholder-6.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
+	{ src: '/images/gallery/placeholder-1.svg', alt: 'Replace with a real, descriptive alt text for this photo', caption: 'Replace with a short caption — what this is, and where.' },
+	{ src: '/images/gallery/placeholder-2.svg', alt: 'Replace with a real, descriptive alt text for this photo', caption: 'Replace with a short caption — what this is, and where.' },
+	{ src: '/images/gallery/placeholder-3.svg', alt: 'Replace with a real, descriptive alt text for this photo', caption: 'Replace with a short caption — what this is, and where.' },
+	{ src: '/images/gallery/placeholder-4.svg', alt: 'Replace with a real, descriptive alt text for this photo', caption: 'Replace with a short caption — what this is, and where.' },
+	{ src: '/images/gallery/placeholder-5.svg', alt: 'Replace with a real, descriptive alt text for this photo', caption: 'Replace with a short caption — what this is, and where.' },
+	{ src: '/images/gallery/placeholder-6.svg', alt: 'Replace with a real, descriptive alt text for this photo', caption: 'Replace with a short caption — what this is, and where.' },
 ];
 ---
 
@@ -36,9 +45,9 @@ const images = [
 				</div>
 			</div>
 			<ul class="photo-grid">
-				{images.map((image) => (
+				{images.map((image, i) => (
 					<li>
-						<button type="button" class="gallery-trigger grid-item" data-src={image.src} data-alt={image.alt}>
+						<button type="button" class="gallery-trigger grid-item media-frame" data-index={i}>
 							<img src={image.src} alt={image.alt} loading="lazy" />
 						</button>
 					</li>
@@ -55,29 +64,50 @@ const images = [
 					<h2>Featured</h2>
 				</div>
 			</div>
-			<div class="carousel-block">
-				<button type="button" id="featured-trigger" class="gallery-trigger carousel-featured" data-src={images[0].src} data-alt={images[0].alt}>
-					<img id="featured-img" src={images[0].src} alt={images[0].alt} />
-				</button>
-				<div class="carousel-thumbs">
-					<button type="button" class="carousel-nav carousel-prev" aria-label="Scroll thumbnails left">&lsaquo;</button>
-					<div id="carousel-track" class="carousel-track" role="region" aria-label="More photos" tabindex="0">
-						<div class="carousel-track-inner">
-							{images.map((image, i) => (
-								<button
-									type="button"
-									class:list={['carousel-thumb', { active: i === 0 }]}
-									data-src={image.src}
-									data-alt={image.alt}
-									aria-pressed={i === 0 ? 'true' : 'false'}
-									aria-label={`Show photo ${i + 1} of ${images.length}`}
-								>
-									<img src={image.src} alt="" loading="lazy" />
-								</button>
-							))}
-						</div>
+
+			<div class="carousel" id="carousel">
+				<div class="carousel-stage media-frame" style="--media-ratio: 16 / 10;">
+					<button
+						type="button"
+						id="featured-trigger"
+						class="gallery-trigger carousel-open"
+						data-index="0"
+						aria-label="Open this photo full size"
+					>
+						<img id="featured-img" src={images[0].src} alt={images[0].alt} />
+						<span class="carousel-expand"><Icon name="expand" size={18} /></span>
+					</button>
+
+					<button type="button" class="carousel-arrow carousel-prev" aria-label="Previous photo">
+						<Icon name="arrowLeft" size={20} />
+					</button>
+					<button type="button" class="carousel-arrow carousel-next" aria-label="Next photo">
+						<Icon name="arrowRight" size={20} />
+					</button>
+
+					<p class="carousel-counter" id="carousel-counter" aria-hidden="true">1 / {images.length}</p>
+				</div>
+
+				<p class="carousel-caption" id="carousel-caption">{images[0].caption}</p>
+
+				{/* Slide changes are visual only, so they're announced here for
+				    anyone not seeing the stage update. */}
+				<p class="visually-hidden" aria-live="polite" id="carousel-live"></p>
+
+				<div class="carousel-track" id="carousel-track" role="group" aria-label="Choose a photo">
+					<div class="carousel-track-inner">
+						{images.map((image, i) => (
+							<button
+								type="button"
+								class:list={['carousel-thumb', { active: i === 0 }]}
+								data-index={i}
+								aria-pressed={i === 0 ? 'true' : 'false'}
+								aria-label={`Show photo ${i + 1} of ${images.length}`}
+							>
+								<img src={image.src} alt="" loading="lazy" />
+							</button>
+						))}
 					</div>
-					<button type="button" class="carousel-nav carousel-next" aria-label="Scroll thumbnails right">&rsaquo;</button>
 				</div>
 			</div>
 		</div>
@@ -92,8 +122,8 @@ const images = [
 				</div>
 			</div>
 			<div class="masonry">
-				{images.map((image) => (
-					<button type="button" class="gallery-trigger masonry-item" data-src={image.src} data-alt={image.alt}>
+				{images.map((image, i) => (
+					<button type="button" class="gallery-trigger masonry-item" data-index={i}>
 						<img src={image.src} alt={image.alt} loading="lazy" />
 					</button>
 				))}
@@ -102,81 +132,130 @@ const images = [
 	</section>
 
 	<dialog id="lightbox" class="lightbox" aria-label="Photo preview">
+		<div class="lightbox-inner">
+			<img id="lightbox-img" src="" alt="" />
+			<p class="lightbox-caption" id="lightbox-caption"></p>
+		</div>
+		<button type="button" id="lightbox-prev" class="lightbox-nav lightbox-prev" aria-label="Previous photo">
+			<Icon name="arrowLeft" size={20} />
+		</button>
+		<button type="button" id="lightbox-next" class="lightbox-nav lightbox-next" aria-label="Next photo">
+			<Icon name="arrowRight" size={20} />
+		</button>
 		<button type="button" id="lightbox-close" class="lightbox-close" aria-label="Close">&times;</button>
-		<img id="lightbox-img" src="" alt="" />
 	</dialog>
+
+	<script type="application/json" id="gallery-data" set:html={JSON.stringify(images)} />
 </BaseLayout>
 
 <script>
+	type GalleryImage = { src: string; alt: string; caption: string };
+
+	const data: GalleryImage[] = JSON.parse(
+		document.getElementById('gallery-data')?.textContent || '[]'
+	);
+
 	const dialog = document.getElementById('lightbox') as HTMLDialogElement;
 	const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
-	const track = document.getElementById('carousel-track') as HTMLDivElement;
-	const featuredImg = document.getElementById('featured-img') as HTMLImageElement;
-	const featuredTrigger = document.getElementById('featured-trigger') as HTMLButtonElement;
+	const lightboxCaption = document.getElementById('lightbox-caption') as HTMLParagraphElement;
 
+	const carousel = document.getElementById('carousel') as HTMLDivElement | null;
+	const track = document.getElementById('carousel-track') as HTMLDivElement | null;
+	const featuredImg = document.getElementById('featured-img') as HTMLImageElement | null;
+	const featuredTrigger = document.getElementById('featured-trigger') as HTMLButtonElement | null;
+	const counter = document.getElementById('carousel-counter') as HTMLParagraphElement | null;
+	const caption = document.getElementById('carousel-caption') as HTMLParagraphElement | null;
+	const live = document.getElementById('carousel-live') as HTMLParagraphElement | null;
+
+	let slide = 0;
+	let lightboxIndex = 0;
 	let lastTrigger: HTMLElement | null = null;
 
-	function openLightbox(trigger: HTMLElement) {
-		const img = trigger.querySelector('img');
-		const src = trigger.dataset.src || img?.src || '';
-		const alt = trigger.dataset.alt || img?.alt || '';
-		if (!src) return;
+	const wrap = (i: number) => (i + data.length) % data.length;
+
+	/** Point the carousel at a photo and keep every dependent control in sync. */
+	function setSlide(next: number, announce = true) {
+		if (!data.length) return;
+		slide = wrap(next);
+		const image = data[slide];
+
+		if (featuredImg) {
+			featuredImg.src = image.src;
+			featuredImg.alt = image.alt;
+		}
+		if (featuredTrigger) featuredTrigger.dataset.index = String(slide);
+		if (caption) caption.textContent = image.caption;
+		if (counter) counter.textContent = `${slide + 1} / ${data.length}`;
+		if (live && announce) live.textContent = `Photo ${slide + 1} of ${data.length}. ${image.caption}`;
+
+		track?.querySelectorAll<HTMLButtonElement>('.carousel-thumb').forEach((thumb, i) => {
+			const isActive = i === slide;
+			thumb.classList.toggle('active', isActive);
+			thumb.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+			// Keep the active thumb reachable without the user hunting for it.
+			if (isActive) thumb.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+		});
+	}
+
+	function setLightbox(index: number) {
+		lightboxIndex = wrap(index);
+		const image = data[lightboxIndex];
+		lightboxImg.src = image.src;
+		lightboxImg.alt = image.alt;
+		lightboxCaption.textContent = `${lightboxIndex + 1} / ${data.length} — ${image.caption}`;
+	}
+
+	function openLightbox(index: number, trigger: HTMLElement) {
+		if (!data.length) return;
 		lastTrigger = trigger;
-		lightboxImg.src = src;
-		lightboxImg.alt = alt;
+		setLightbox(index);
 		dialog.showModal();
 	}
 
-	dialog.addEventListener('close', () => {
-		lastTrigger?.focus();
-	});
+	dialog.addEventListener('close', () => lastTrigger?.focus());
 
 	document.addEventListener('click', (e) => {
 		const target = e.target as HTMLElement;
 
 		const thumb = target.closest<HTMLButtonElement>('.carousel-thumb');
 		if (thumb) {
-			track.querySelectorAll('.carousel-thumb').forEach((t) => {
-				t.classList.remove('active');
-				t.setAttribute('aria-pressed', 'false');
-			});
-			thumb.classList.add('active');
-			thumb.setAttribute('aria-pressed', 'true');
-			const { src, alt } = thumb.dataset;
-			if (src) {
-				featuredImg.src = src;
-				featuredImg.alt = alt || '';
-				featuredTrigger.dataset.src = src;
-				featuredTrigger.dataset.alt = alt || '';
-			}
+			setSlide(Number(thumb.dataset.index || 0));
 			return;
 		}
 
-		if (target.closest('.carousel-prev')) {
-			track.scrollBy({ left: -176, behavior: 'smooth' });
-			return;
-		}
+		if (target.closest('.carousel-prev')) return setSlide(slide - 1);
+		if (target.closest('.carousel-next')) return setSlide(slide + 1);
 
-		if (target.closest('.carousel-next')) {
-			track.scrollBy({ left: 176, behavior: 'smooth' });
-			return;
-		}
+		if (target.closest('#lightbox-prev')) return setLightbox(lightboxIndex - 1);
+		if (target.closest('#lightbox-next')) return setLightbox(lightboxIndex + 1);
 
-		if (target.closest('#lightbox-close')) {
-			dialog.close();
-			return;
-		}
-
-		if (target === dialog) {
-			dialog.close();
-			return;
-		}
+		if (target.closest('#lightbox-close')) return dialog.close();
+		// Clicking the backdrop closes; clicking the image itself must not.
+		if (target === dialog) return dialog.close();
 
 		const trigger = target.closest<HTMLElement>('.gallery-trigger');
-		if (trigger) {
-			openLightbox(trigger);
+		if (trigger) openLightbox(Number(trigger.dataset.index || 0), trigger);
+	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+		const delta = e.key === 'ArrowLeft' ? -1 : 1;
+
+		if (dialog.open) {
+			e.preventDefault();
+			setLightbox(lightboxIndex + delta);
+			return;
+		}
+
+		// Only steal the arrow keys while focus is actually inside the carousel,
+		// so they still scroll the page everywhere else.
+		if (carousel && carousel.contains(document.activeElement)) {
+			e.preventDefault();
+			setSlide(slide + delta);
 		}
 	});
+
+	setSlide(0, false);
 </script>
 
 <style>
@@ -203,16 +282,7 @@ const images = [
 		gap: var(--space-4);
 	}
 
-	.grid-item {
-		border-radius: var(--radius-md);
-		overflow: hidden;
-	}
-
 	.grid-item img {
-		width: 100%;
-		aspect-ratio: 4 / 3;
-		object-fit: cover;
-		background: var(--surface-sunken);
 		transition: transform var(--duration-slow) var(--ease-out);
 	}
 
@@ -232,46 +302,135 @@ const images = [
 		}
 	}
 
-	/* Carousel */
-	.carousel-block {
-		margin-top: 0;
-	}
-
-	.carousel-featured {
-		margin-bottom: var(--space-4);
-	}
-
-	.carousel-featured img {
-		width: 100%;
-		height: 420px;
-		object-fit: contain;
+	/* --- Carousel ---------------------------------------------------------
+	   The stage crops to a fixed ratio with object-fit:cover rather than
+	   letterboxing a contained image inside a taller box. A "contain" stage
+	   has to be tall enough for the tallest photo, so every other photo sits
+	   in a field of empty white — which is what made this read as a
+	   placeholder rather than a gallery. Uncropped viewing is one click away
+	   in the lightbox, which is where it belongs. */
+	/* Raised rather than inheriting .media-frame's sunken fill — the stage sits
+	   on a sunken band, so a sunken surface on a sunken surface has no edge to
+	   read against and the whole carousel dissolves into the section. */
+	.carousel-stage {
+		position: relative;
 		background: var(--surface-raised);
-		border: 1px solid var(--border-default);
-		border-radius: var(--radius-lg);
+		border-color: var(--border-default);
+		box-shadow: var(--shadow-sm);
 	}
 
-	@media (max-width: 640px) {
-		.carousel-featured img {
-			height: 260px;
-		}
+	.carousel-open {
+		height: 100%;
 	}
 
-	.carousel-thumbs {
+	.carousel-open img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform var(--duration-slow) var(--ease-out);
+	}
+
+	.carousel-open:hover img {
+		transform: scale(1.02);
+	}
+
+	/* Arrows sit on the stage rather than under it, so the control is where
+	   the thing it controls is. They're siblings of the open-trigger, not
+	   children — a button inside a button is invalid and breaks both. */
+	.carousel-arrow {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		z-index: 2;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: var(--space-3);
+		width: 2.75rem;
+		height: 2.75rem;
+		border-radius: 50%;
+		border: none;
+		background: var(--overlay-chip);
+		color: var(--color-text);
+		box-shadow: var(--shadow-sm);
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		transition: background-color var(--duration-fast) var(--ease-out);
+	}
+
+	.carousel-arrow:hover {
+		background: var(--surface-page);
+	}
+
+	.carousel-prev {
+		left: var(--space-4);
+	}
+
+	.carousel-next {
+		right: var(--space-4);
+	}
+
+	.carousel-counter {
+		position: absolute;
+		left: var(--space-4);
+		bottom: var(--space-4);
+		z-index: 2;
+		margin: 0;
+		padding: var(--space-1) var(--space-3);
+		border-radius: var(--radius-pill);
+		background: var(--overlay-chip);
+		box-shadow: var(--shadow-sm);
+		font-size: var(--text-small);
+		font-weight: var(--weight-medium);
+		font-variant-numeric: tabular-nums;
+		color: var(--color-text);
+	}
+
+	/* Hints that the photo opens full size, so the stage doesn't look like a
+	   dead image. */
+	.carousel-expand {
+		position: absolute;
+		right: var(--space-4);
+		bottom: var(--space-4);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: 50%;
+		background: var(--overlay-chip);
+		box-shadow: var(--shadow-sm);
+		color: var(--color-text);
+		opacity: 0;
+		transition: opacity var(--duration-base) var(--ease-out);
+	}
+
+	.carousel-open:hover .carousel-expand,
+	.carousel-open:focus-visible .carousel-expand {
+		opacity: 1;
+	}
+
+	/* Touch devices get no hover, so the affordance is always visible there. */
+	@media (hover: none) {
+		.carousel-expand {
+			opacity: 1;
+		}
+	}
+
+	.carousel-caption {
+		margin: var(--space-4) 0 0;
+		font-size: var(--text-small);
+		color: var(--color-text-secondary);
+		max-width: var(--measure);
 	}
 
 	/* The scroll container itself must NOT be a centering flexbox —
 	   justify-content:center on an overflow-x:auto flex row breaks the
 	   scroll-start position, leaving the first items clipped and
 	   unreachable. Instead the container is a plain block and an inner
-	   width:max-content row is centered with auto margins: centered when
-	   it fits, flush left and fully scrollable once it overflows. */
+	   width:max-content row is centered with auto margins. */
 	.carousel-track {
+		margin-top: var(--space-5);
 		overflow-x: auto;
-		scroll-snap-type: x mandatory;
 		scrollbar-width: none;
 		min-width: 0;
 	}
@@ -286,26 +445,32 @@ const images = [
 		width: max-content;
 		max-width: 100%;
 		margin-inline: auto;
-		padding-block: 2px;
+		padding: 2px;
 	}
 
 	.carousel-thumb {
 		flex-shrink: 0;
-		scroll-snap-align: start;
-		width: 88px;
+		width: 5.5rem;
 		padding: 0;
+		border: 0;
 		border-radius: var(--radius-md);
 		overflow: hidden;
-		border: 2px solid transparent;
 		background: none;
 		cursor: pointer;
+		opacity: 0.6;
+		/* A real border, not just the faint inset ring: with pale photography
+		   an unbordered thumbnail at reduced opacity disappears entirely. */
+		box-shadow: 0 0 0 1px var(--border-default);
+		-webkit-tap-highlight-color: transparent;
 		transition:
-			border-color var(--duration-fast) var(--ease-out),
+			opacity var(--duration-base) var(--ease-out),
+			box-shadow var(--duration-base) var(--ease-out),
 			transform var(--duration-fast) var(--ease-out);
 	}
 
 	.carousel-thumb:hover {
-		border-color: var(--border-strong);
+		opacity: 0.9;
+		box-shadow: 0 0 0 1px var(--border-strong);
 	}
 
 	.carousel-thumb:active {
@@ -316,37 +481,32 @@ const images = [
 		width: 100%;
 		aspect-ratio: 1 / 1;
 		object-fit: cover;
-		display: block;
 	}
 
+	/* Active state is opacity plus a ring, not color alone — the thumbnails
+	   are photographs, so a color-only cue can vanish against the image. */
 	.carousel-thumb.active {
-		border-color: var(--color-ink);
+		opacity: 1;
+		box-shadow: 0 0 0 2px var(--color-ink);
 	}
 
-	.carousel-nav {
-		flex-shrink: 0;
-		width: 2.25rem;
-		height: 2.25rem;
-		border-radius: 50%;
-		border: 1px solid var(--border-default);
-		background: var(--surface-raised);
-		color: var(--color-text);
-		font-size: var(--text-h4);
-		line-height: 1;
-		cursor: pointer;
-		-webkit-tap-highlight-color: transparent;
-		transition:
-			background-color var(--duration-fast) var(--ease-out),
-			border-color var(--duration-fast) var(--ease-out),
-			transform var(--duration-fast) var(--ease-out);
-	}
+	@media (max-width: 640px) {
+		.carousel-arrow {
+			width: 2.25rem;
+			height: 2.25rem;
+		}
 
-	.carousel-nav:hover {
-		border-color: var(--border-strong);
-	}
+		.carousel-prev {
+			left: var(--space-2);
+		}
 
-	.carousel-nav:active {
-		transform: scale(0.94);
+		.carousel-next {
+			right: var(--space-2);
+		}
+
+		.carousel-thumb {
+			width: 4rem;
+		}
 	}
 
 	/* Masonry */
@@ -388,20 +548,17 @@ const images = [
 		}
 	}
 
-	/* Lightbox — visual/positioning rules only apply while [open], so a
-	   closed <dialog> keeps the UA default display:none instead of
-	   sitting invisibly on top of the page and eating clicks. */
+	/* --- Lightbox ---------------------------------------------------------
+	   Visual/positioning rules only apply while [open], so a closed <dialog>
+	   keeps the UA default display:none instead of sitting invisibly on top
+	   of the page and eating clicks. */
 	.lightbox {
 		margin: 0;
 		padding: var(--space-7);
 		border: none;
 		background: transparent;
-	}
-
-	@media (max-width: 640px) {
-		.lightbox {
-			padding: var(--space-4);
-		}
+		max-width: none;
+		max-height: none;
 	}
 
 	.lightbox[open] {
@@ -409,8 +566,6 @@ const images = [
 		inset: 0;
 		width: 100%;
 		height: 100%;
-		max-width: none;
-		max-height: none;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -420,41 +575,91 @@ const images = [
 		background: var(--overlay-scrim);
 	}
 
+	.lightbox-inner {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-4);
+		max-height: 100%;
+		min-width: 0;
+	}
+
 	.lightbox img {
 		max-width: 100%;
-		max-height: 100%;
+		min-height: 0;
 		object-fit: contain;
 		border-radius: var(--radius-md);
 	}
 
+	.lightbox-caption {
+		margin: 0;
+		font-size: var(--text-small);
+		color: var(--color-ink-contrast-muted);
+		text-align: center;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.lightbox-nav,
 	.lightbox-close {
 		position: absolute;
-		top: var(--space-5);
-		right: var(--space-5);
-		width: 2.5rem;
-		height: 2.5rem;
-		border-radius: 50%;
-		border: none;
-		background: var(--overlay-chip);
-		color: var(--color-text);
-		font-size: var(--text-h3);
-		line-height: 1;
-		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		border: none;
+		border-radius: 50%;
+		background: var(--overlay-chip);
+		color: var(--color-text);
+		cursor: pointer;
+		box-shadow: var(--shadow-sm);
 		-webkit-tap-highlight-color: transparent;
 		transition: background-color var(--duration-fast) var(--ease-out);
 	}
 
-	@media (max-width: 640px) {
-		.lightbox-close {
-			top: var(--space-3);
-			right: var(--space-3);
-		}
-	}
-
+	.lightbox-nav:hover,
 	.lightbox-close:hover {
 		background: var(--surface-page);
+	}
+
+	.lightbox-nav {
+		top: 50%;
+		transform: translateY(-50%);
+		width: 2.75rem;
+		height: 2.75rem;
+	}
+
+	.lightbox-prev {
+		left: var(--space-5);
+	}
+
+	.lightbox-next {
+		right: var(--space-5);
+	}
+
+	.lightbox-close {
+		top: var(--space-5);
+		right: var(--space-5);
+		width: 2.5rem;
+		height: 2.5rem;
+		font-size: var(--text-h3);
+		line-height: 1;
+	}
+
+	@media (max-width: 640px) {
+		.lightbox {
+			padding: var(--space-4);
+		}
+
+		.lightbox-prev {
+			left: var(--space-2);
+		}
+
+		.lightbox-next {
+			right: var(--space-2);
+		}
+
+		.lightbox-close {
+			top: var(--space-2);
+			right: var(--space-2);
+		}
 	}
 </style>

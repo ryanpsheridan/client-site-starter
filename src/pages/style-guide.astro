@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Testimonial from '../components/Testimonial.astro';
 
 // Living reference for the design system. Every token group and every shared
 // component class in global.css must be represented here — if something isn't
@@ -108,6 +110,12 @@ const durations = [
 	{ token: '--duration-base', label: '200ms', note: 'Cards, overlays, transforms' },
 	{ token: '--duration-slow', label: '320ms', note: 'Image scale, large movement' },
 ];
+
+const iconNames = [
+	'check', 'shield', 'star', 'pin', 'clock', 'award', 'users',
+	'phone', 'mail', 'wrench', 'truck', 'calendar', 'leaf',
+	'arrowLeft', 'arrowRight', 'expand',
+] as const;
 
 const measures = [
 	{ token: '--measure-narrow', label: '34rem / 544px', note: 'Forms, tight single-column pages' },
@@ -530,6 +538,36 @@ const measures = [
 				<span class="tag">New</span>
 			</div>
 
+			<h3>Icons</h3>
+			<p class="text-secondary measure">
+				Drawn on a 24px grid at 1.5 stroke, so an icon sits at the same optical weight as
+				<code>--weight-medium</code> text beside it. Icons inherit <code>currentColor</code> and
+				scale with the <code>size</code> prop — set the color on the parent and the icon follows.
+				Decorative by default; pass a <code>title</code> only when the icon is the sole carrier of
+				meaning, which it should almost never be. Add new icons to
+				<code>src/components/Icon.astro</code> rather than inlining SVG in a page.
+			</p>
+			<ul class="icon-grid">
+				{iconNames.map((name) => (
+					<li>
+						<span class="icon-chip"><Icon name={name} size={20} /></span>
+						<code>{name}</code>
+					</li>
+				))}
+			</ul>
+
+			<h3>Testimonial</h3>
+			<p class="text-secondary measure">
+				Deliberately not a giant decorative quote mark over a slab of italic text — that reads as
+				stock. Credibility comes from the concrete parts: a rating, a real name, a role, and a
+				face. Every optional part degrades cleanly, so a client with only a quote still gets a
+				card that looks finished.
+			</p>
+			<ul class="grid-auto demo-grid testimonial-demo" style="--grid-min: 300px;">
+				<li><Testimonial quote="With a rating and a role — the fullest version." name="Dana Whitfield" role="Operations lead, Northgate" rating={5} /></li>
+				<li><Testimonial quote="No rating and no role. Still reads as finished rather than broken." name="Sam Ortiz" /></li>
+			</ul>
+
 			<h3>Quote</h3>
 			<p class="text-secondary measure">
 				A rule instead of quotation marks — the attribution already signals that it's a quote, so
@@ -913,6 +951,38 @@ const measures = [
 		justify-content: center;
 		font-size: var(--text-small);
 		color: var(--color-text-tertiary);
+	}
+
+	.icon-grid {
+		list-style: none;
+		margin: var(--space-5) 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(120px, 100%), 1fr));
+		gap: var(--space-4);
+	}
+
+	.icon-grid li {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+		min-width: 0;
+	}
+
+	.icon-chip {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: var(--radius-md);
+		background: var(--surface-fill);
+		color: var(--color-text);
+	}
+
+	.testimonial-demo > li {
+		display: flex;
 	}
 
 	.demo-frame {

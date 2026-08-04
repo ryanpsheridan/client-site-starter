@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactForm from '../components/ContactForm.astro';
+import Testimonial from '../components/Testimonial.astro';
+import Icon from '../components/Icon.astro';
 import { SITE_TITLE, SITE_DESCRIPTION, SITE_PHONE, SITE_EMAIL, SITE_ADDRESS } from '../consts';
 
 // ---------------------------------------------------------------------------
@@ -20,10 +22,13 @@ const hero = {
 	image: { src: '/images/gallery/placeholder-1.svg', alt: 'Replace with a real, descriptive alt text for this photo' },
 };
 
+// Icon names come from src/components/Icon.astro — swap for whichever of that
+// set fits the client's actual credentials. Three is the right number: a fourth
+// starts reading as a list rather than a set of proof points.
 const trustSignals = [
-	'Replace with a trust signal (e.g. "Licensed & insured")',
-	'Replace with a trust signal (e.g. "5-star rated")',
-	'Replace with a trust signal (e.g. "Serving [area] since 20XX")',
+	{ icon: 'shield', label: 'Licensed & insured', detail: 'Replace with the real license number or coverage detail.' },
+	{ icon: 'star', label: '5-star rated', detail: 'Replace with a real review count and where the reviews live.' },
+	{ icon: 'pin', label: 'Serving [area] since 20XX', detail: 'Replace with the real service area and the year they started.' },
 ];
 
 const servicesSection = {
@@ -70,11 +75,13 @@ const testimonials = [
 		quote: 'Replace with a real quote from a client — specific results read as more credible than generic praise.',
 		name: 'Client name',
 		role: 'Replace with their role or company',
+		rating: 5,
 	},
 	{
 		quote: 'Replace with a second real quote, ideally from a different type of client to show range.',
 		name: 'Client name',
 		role: 'Replace with their role or company',
+		rating: 5,
 	},
 ];
 
@@ -116,9 +123,15 @@ const schema = {
 
 	<section class="trust-bar" aria-label="Why clients trust us">
 		<div class="container">
-			<ul>
+			<ul class="trust-list">
 				{trustSignals.map((signal) => (
-					<li>{signal}</li>
+					<li class="trust-item">
+						<span class="trust-icon"><Icon name={signal.icon} size={20} /></span>
+						<span class="trust-text">
+							<span class="trust-label">{signal.label}</span>
+							<span class="trust-detail">{signal.detail}</span>
+						</span>
+					</li>
 				))}
 			</ul>
 		</div>
@@ -192,12 +205,7 @@ const schema = {
 			<ul class="grid-auto testimonial-grid">
 				{testimonials.map((t) => (
 					<li>
-						<blockquote class="quote">
-							<p>{t.quote}</p>
-							<footer>
-								<cite>{t.name}</cite>{t.role && <>, {t.role}</>}
-							</footer>
-						</blockquote>
+						<Testimonial quote={t.quote} name={t.name} role={t.role} rating={t.rating} />
 					</li>
 				))}
 			</ul>
@@ -253,26 +261,78 @@ const schema = {
 		box-shadow: var(--shadow-lg);
 	}
 
-	/* Trust bar — a thin rule between the hero and the first real section,
-	   full-bleed so the hairlines run the whole width. */
+	/* Trust bar — proof points between the hero and the first real section,
+	   full-bleed so the hairlines run the whole width.
+
+	   Each item is an icon plus a two-level text block rather than a single
+	   grey string: the claim carries weight, the detail behind it carries the
+	   evidence. A row of same-weight grey text reads as boilerplate nobody
+	   is meant to actually check. */
 	.trust-bar {
-		padding-block: var(--space-5);
+		padding-block: var(--space-6);
 		border-block: 1px solid var(--border-hairline);
 	}
 
-	.trust-bar ul {
+	.trust-list {
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-3) var(--space-7);
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-5);
 	}
 
-	.trust-bar li {
-		font-size: var(--text-small);
+	.trust-item {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-3);
+	}
+
+	.trust-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: var(--radius-md);
+		background: var(--surface-fill);
+		color: var(--color-text);
+	}
+
+	.trust-text {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+		min-width: 0;
+	}
+
+	.trust-label {
+		font-size: var(--text-body);
 		font-weight: var(--weight-medium);
-		color: var(--color-text-secondary);
+		line-height: var(--leading-snug);
+		color: var(--color-text);
+	}
+
+	.trust-detail {
+		font-size: var(--text-small);
+		line-height: var(--leading-snug);
+		color: var(--color-text-tertiary);
+	}
+
+	@media (min-width: 720px) {
+		.trust-list {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 0;
+		}
+
+		/* Hairline separators reinforce that these are three distinct claims
+		   rather than one run-on sentence. */
+		.trust-item + .trust-item {
+			border-left: 1px solid var(--border-hairline);
+			padding-left: var(--space-6);
+			margin-left: var(--space-6);
+		}
 	}
 
 	.card h3,
@@ -325,7 +385,11 @@ const schema = {
 	   the quotes are the first thing read rather than a label about quotes. */
 	.testimonial-grid {
 		--grid-min: 340px;
-		gap: var(--space-7);
+		gap: var(--space-5);
+	}
+
+	.testimonial-grid > li {
+		display: flex;
 	}
 
 	/* Contact */

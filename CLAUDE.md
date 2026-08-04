@@ -167,6 +167,11 @@ Shared classes live in `src/styles/global.css`. Reach for these before writing a
 - Inverted CTA: `.cta-band` for a full-bleed closing call to action, with `.btn-inverse` inside it. One per page at most — its whole job is to be the only thing that inverts.
 - Text: `.display`, `.eyebrow`, `.lead`, `.text-secondary`, `.text-tertiary`, `.measure` / `.measure-narrow` / `.measure-wide`
 
+Two shared Astro components sit alongside the CSS layer:
+
+- `Icon.astro` — small stroke-icon set on a 24px grid at 1.5 stroke, so icons match `--weight-medium` text optically. Icons inherit `currentColor` and are decorative by default; pass `title` only when the icon is the sole carrier of meaning. **Add new icons to this file rather than inlining SVG in a page.**
+- `Testimonial.astro` — testimonial card taking `quote`, `name`, and optional `role`, `rating`, `image`. Every optional part degrades cleanly, so a client with only a quote still gets a finished card. Use this rather than hand-rolling a quote card; `.quote` in `global.css` is for pull quotes in running content, which is a different job.
+
 ## Page Content Blocks
 
 Every page keeps its editable copy in a single clearly-marked block at the top of the file (`// PAGE CONTENT`), with the markup below reading from it. Content changes should mean editing that block, never hunting through markup. When adding a new section to a page, add its copy to that block rather than inlining strings — it's also what makes a later Decap CMS extraction cheap (see "Content Editing / Light CMS").

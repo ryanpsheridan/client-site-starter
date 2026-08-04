@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Testimonial from '../components/Testimonial.astro';
 import { SITE_TITLE } from '../consts';
 
 // Placeholder content throughout this page — replace every field with the
@@ -79,11 +80,13 @@ const testimonials = [
 		quote: 'Replace with a real quote from a client — specific results read as more credible than generic praise.',
 		name: 'Client name',
 		role: 'Replace with their role or company',
+		rating: 5,
 	},
 	{
 		quote: 'Replace with a second real quote, ideally from a different type of client to show range.',
 		name: 'Client name',
 		role: 'Replace with their role or company',
+		rating: 5,
 	},
 ];
 
@@ -258,12 +261,7 @@ const serviceSchema = {
 			<ul class="grid-auto testimonial-grid">
 				{testimonials.map((t) => (
 					<li>
-						<blockquote class="quote">
-							<p>{t.quote}</p>
-							<footer>
-								<cite>{t.name}</cite>{t.role && <>, {t.role}</>}
-							</footer>
-						</blockquote>
+						<Testimonial quote={t.quote} name={t.name} role={t.role} rating={t.rating} />
 					</li>
 				))}
 			</ul>
@@ -456,7 +454,11 @@ const serviceSchema = {
 	/* Testimonials */
 	.testimonial-grid {
 		--grid-min: 340px;
-		gap: var(--space-7);
+		gap: var(--space-5);
+	}
+
+	.testimonial-grid > li {
+		display: flex;
 	}
 
 	/* FAQ */

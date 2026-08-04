@@ -1,0 +1,146 @@
+---
+import Icon from './Icon.astro';
+
+// Testimonial card. Deliberately not a giant decorative quote mark on a slab
+// of italic text — that reads as stock. The credibility here comes from the
+// concrete parts: a rating, a real name, a role, and a face. Everything
+// optional degrades cleanly, so a client with only a quote still gets a card
+// that looks finished.
+
+interface Props {
+	quote: string;
+	name: string;
+	role?: string;
+	/** 1–5. Omit to hide the rating row entirely rather than showing zero stars. */
+	rating?: number;
+	/** Optional headshot. Falls back to initials when absent. */
+	image?: string;
+}
+
+const { quote, name, role, rating, image } = Astro.props;
+
+const initials = name
+	.split(/\s+/)
+	.filter(Boolean)
+	.slice(0, 2)
+	.map((word) => word[0])
+	.join('')
+	.toUpperCase();
+
+const stars = rating ? Math.max(0, Math.min(5, Math.round(rating))) : 0;
+---
+
+<figure class="testimonial card">
+	{rating && (
+		<div class="rating" role="img" aria-label={`Rated ${stars} out of 5`}>
+			{Array.from({ length: 5 }).map((_, i) => (
+				<span class:list={['star', { filled: i < stars }]}>
+					<Icon name="star" size={16} />
+				</span>
+			))}
+		</div>
+	)}
+
+	<blockquote class="testimonial-quote">
+		<p>{quote}</p>
+	</blockquote>
+
+	<figcaption class="testimonial-author">
+		{image ? (
+			<img class="avatar" src={image} alt="" width="44" height="44" loading="lazy" />
+		) : (
+			<span class="avatar avatar-initials" aria-hidden="true">{initials}</span>
+		)}
+		<span class="author-text">
+			<cite class="author-name">{name}</cite>
+			{role && <span class="author-role">{role}</span>}
+		</span>
+	</figcaption>
+</figure>
+
+<style>
+	.testimonial {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		margin: 0;
+		padding: var(--space-6);
+	}
+
+	/* Stars are stroked when empty and filled when earned, so a 4-of-5 rating
+	   is legible as a shape rather than only as a color difference. */
+	.rating {
+		display: flex;
+		gap: var(--space-1);
+		margin-bottom: var(--space-5);
+		color: var(--border-strong);
+	}
+
+	.star.filled {
+		color: var(--color-ink);
+	}
+
+	.star.filled :global(svg) {
+		fill: currentColor;
+	}
+
+	.testimonial-quote {
+		margin: 0 0 var(--space-6);
+		flex-grow: 1;
+	}
+
+	.testimonial-quote p {
+		font-size: var(--text-large);
+		line-height: var(--leading-snug);
+		letter-spacing: var(--tracking-snug);
+		color: var(--color-text);
+		margin: 0;
+	}
+
+	/* Hairline above the attribution separates the claim from who made it —
+	   the part a skeptical visitor actually checks. */
+	.testimonial-author {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+		padding-top: var(--space-5);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.avatar {
+		flex-shrink: 0;
+		width: 2.75rem;
+		height: 2.75rem;
+		border-radius: 50%;
+		object-fit: cover;
+		background: var(--surface-sunken);
+	}
+
+	.avatar-initials {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--color-ink);
+		color: var(--color-ink-contrast);
+		font-size: var(--text-small);
+		font-weight: var(--weight-medium);
+		letter-spacing: var(--tracking-normal);
+	}
+
+	.author-text {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.author-name {
+		font-style: normal;
+		font-weight: var(--weight-medium);
+		color: var(--color-text);
+	}
+
+	.author-role {
+		font-size: var(--text-small);
+		color: var(--color-text-tertiary);
+	}
+</style>
