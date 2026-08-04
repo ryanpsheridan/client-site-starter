@@ -161,9 +161,15 @@ Use CSS variables from `src/styles/tokens.css` for all styling — never hardcod
 
 Shared classes live in `src/styles/global.css`. Reach for these before writing anything in a page's scoped `<style>` block — a page block should hold genuinely page-specific layout, never a re-implementation of a shared pattern.
 
-- Layout: `.container` (+ `.container-narrow`), `.section` / `.section-tight` / `.section-loose`, `.section-sunken`, `.grid-auto` (tune with `--grid-min`), `.stack`, `.divider`
-- Components: `.card` (+ `.card-interactive`), `.btn` with `.btn-primary`/`.btn-secondary` and `.btn-sm`/`.btn-lg`, `.field` (+ `.field-hint`, `.field-error`, `.field-invalid`)
+- Layout: `.container` (+ `.container-narrow`), `.section` / `.section-tight` / `.section-loose` / `.section-hero`, `.section-sunken`, `.grid-auto` (tune with `--grid-min`), `.split` (+ `.split-reverse`, `.split-top`, tune with `--split-cols`), `.stack`, `.divider`
+- Components: `.card` (+ `.card-interactive`), `.btn` with `.btn-primary`/`.btn-secondary`/`.btn-inverse` and `.btn-sm`/`.btn-lg`, `.field` (+ `.field-hint`, `.field-error`, `.field-invalid`), `.media-frame` (tune with `--media-ratio`), `.topline`, `.tag`, `.quote`, `.stat-value`/`.stat-label`
+- Section headers: `.section-header` wrapping a `.section-header-text` (eyebrow + heading + lead), with an optional `.link-arrow` action pinned to the opposite end. Use this rather than stranding a button under the grid.
+- Inverted CTA: `.cta-band` for a full-bleed closing call to action, with `.btn-inverse` inside it. One per page at most — its whole job is to be the only thing that inverts.
 - Text: `.display`, `.eyebrow`, `.lead`, `.text-secondary`, `.text-tertiary`, `.measure` / `.measure-narrow` / `.measure-wide`
+
+## Page Content Blocks
+
+Every page keeps its editable copy in a single clearly-marked block at the top of the file (`// PAGE CONTENT`), with the markup below reading from it. Content changes should mean editing that block, never hunting through markup. When adding a new section to a page, add its copy to that block rather than inlining strings — it's also what makes a later Decap CMS extraction cheap (see "Content Editing / Light CMS").
 
 A section that needs a background band wraps a `.container` rather than being one, so the band goes full-bleed instead of stopping at the gutter:
 

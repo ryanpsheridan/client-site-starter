@@ -63,6 +63,9 @@
 	--color-ink: var(--ink-900);
 	--color-ink-hover: var(--ink-950);
 	--color-ink-contrast: #FFFFFF;
+	/* Secondary text on an ink surface — ~9:1, so it still clears AA while
+	   reading as a step down from full white. */
+	--color-ink-contrast-muted: rgba(255, 255, 255, 0.72);
 
 	/* ------------------------------------------------------------------------
 	   3. SEMANTIC — what a value means, not what it looks like.

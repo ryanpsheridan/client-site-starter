@@ -20,7 +20,7 @@ const images = [
 ---
 
 <BaseLayout title="Gallery" description="A look at our work.">
-	<section class="section-loose">
+	<section class="section-hero">
 		<div class="container">
 			<h1>Gallery</h1>
 			<p class="lead">A look at our work — replace this copy and every photo below with the real thing.</p>
@@ -29,7 +29,12 @@ const images = [
 
 	<section class="section-tight">
 		<div class="container">
-			<h2>Recent work</h2>
+			<div class="section-header">
+				<div class="section-header-text">
+					<p class="eyebrow">Grid</p>
+					<h2>Recent work</h2>
+				</div>
+			</div>
 			<ul class="photo-grid">
 				{images.map((image) => (
 					<li>
@@ -44,7 +49,12 @@ const images = [
 
 	<section class="section section-sunken">
 		<div class="container">
-			<h2>Featured</h2>
+			<div class="section-header">
+				<div class="section-header-text">
+					<p class="eyebrow">Carousel</p>
+					<h2>Featured</h2>
+				</div>
+			</div>
 			<div class="carousel-block">
 				<button type="button" id="featured-trigger" class="gallery-trigger carousel-featured" data-src={images[0].src} data-alt={images[0].alt}>
 					<img id="featured-img" src={images[0].src} alt={images[0].alt} />
@@ -75,7 +85,12 @@ const images = [
 
 	<section class="section">
 		<div class="container">
-			<h2>More photos</h2>
+			<div class="section-header">
+				<div class="section-header-text">
+					<p class="eyebrow">Masonry</p>
+					<h2>More photos</h2>
+				</div>
+			</div>
 			<div class="masonry">
 				{images.map((image) => (
 					<button type="button" class="gallery-trigger masonry-item" data-src={image.src} data-alt={image.alt}>
@@ -181,7 +196,7 @@ const images = [
 	/* Grid */
 	.photo-grid {
 		list-style: none;
-		margin: var(--space-7) 0 0;
+		margin: 0;
 		padding: 0;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
@@ -219,7 +234,7 @@ const images = [
 
 	/* Carousel */
 	.carousel-block {
-		margin-top: var(--space-7);
+		margin-top: 0;
 	}
 
 	.carousel-featured {
@@ -336,7 +351,7 @@ const images = [
 
 	/* Masonry */
 	.masonry {
-		margin-top: var(--space-7);
+		margin-top: 0;
 		column-count: 3;
 		column-gap: var(--space-4);
 	}

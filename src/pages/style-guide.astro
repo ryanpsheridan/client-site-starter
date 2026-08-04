@@ -440,6 +440,123 @@ const measures = [
 				<li class="card demo-tile">160px</li>
 			</ul>
 
+			<h3>Section header</h3>
+			<p class="text-secondary measure">
+				Groups the eyebrow, heading, and lead into one unit, with an optional action link
+				pinned to the opposite end. Pairing a section's "see everything" link with its heading —
+				rather than stranding a button under the grid — is what keeps a long page from reading
+				as a stack of loose blocks.
+			</p>
+			<div class="demo-block">
+				<div class="section-header">
+					<div class="section-header-text">
+						<p class="eyebrow">Eyebrow</p>
+						<h4>The section heading</h4>
+						<p class="lead">The lead paragraph, capped at <code>--measure</code>.</p>
+					</div>
+					<a href="/style-guide/" class="link-arrow">Action link</a>
+				</div>
+			</div>
+
+			<h3>Split</h3>
+			<p class="text-secondary measure">
+				Two-column content/media layout. Single column until there's room for both, so the media
+				never gets squeezed into a letterbox on a tablet. Tune the ratio with
+				<code>--split-cols</code>; add <code>.split-reverse</code> to flip the visual order at
+				desktop only, so stacked reading order stays correct on mobile.
+			</p>
+			<div class="demo-block">
+				<div class="split" style="--split-cols: 1.1fr 1fr;">
+					<div>
+						<h4>Content column</h4>
+						<p class="text-secondary">Capped at a readable measure while the media carries the rest of the width.</p>
+					</div>
+					<div class="media-frame" style="--media-ratio: 4 / 3;">
+						<img src="/images/gallery/placeholder-1.svg" alt="Example placeholder image inside a media frame" loading="lazy" />
+					</div>
+				</div>
+			</div>
+
+			<h3>Media frame</h3>
+			<p class="text-secondary measure">
+				Image container with a reserved aspect ratio, so the page doesn't reflow as photos load.
+				Override per instance with <code>--media-ratio</code>.
+			</p>
+			<div class="component-row">
+				<div class="media-frame demo-frame" style="--media-ratio: 1 / 1;">
+					<img src="/images/gallery/placeholder-2.svg" alt="Square media frame example" loading="lazy" />
+				</div>
+				<div class="media-frame demo-frame" style="--media-ratio: 4 / 3;">
+					<img src="/images/gallery/placeholder-3.svg" alt="Four by three media frame example" loading="lazy" />
+				</div>
+			</div>
+
+			<h3>Topline</h3>
+			<p class="text-secondary measure">
+				Borderless grid item with a rule above it. Gives a list of features structure without the
+				weight of a card — useful inside a sunken band, where a card would be layering twice for
+				one level of hierarchy.
+			</p>
+			<ul class="grid-auto demo-grid" style="--grid-min: 220px;">
+				<li class="topline">
+					<h4>With a rule</h4>
+					<p class="text-secondary">Structure without a box around it.</p>
+				</li>
+				<li class="topline">
+					<h4>Second item</h4>
+					<p class="text-secondary">Reads as a list, not a set of objects.</p>
+				</li>
+			</ul>
+
+			<h3>Stats</h3>
+			<ul class="grid-auto demo-grid" style="--grid-min: 180px;">
+				<li>
+					<span class="stat-value">20+</span>
+					<span class="stat-label">Years in business</span>
+				</li>
+				<li>
+					<span class="stat-value">500+</span>
+					<span class="stat-label">Projects completed</span>
+				</li>
+				<li>
+					<span class="stat-value">4.9</span>
+					<span class="stat-label">Average rating</span>
+				</li>
+			</ul>
+
+			<h3>Tag</h3>
+			<div class="component-row">
+				<span class="tag">Most popular</span>
+				<span class="tag">New</span>
+			</div>
+
+			<h3>Quote</h3>
+			<p class="text-secondary measure">
+				A rule instead of quotation marks — the attribution already signals that it's a quote, so
+				the marks are redundant weight.
+			</p>
+			<div class="demo-block">
+				<blockquote class="quote">
+					<p>Specific results read as more credible than generic praise.</p>
+					<footer><cite>Client name</cite>, their role or company</footer>
+				</blockquote>
+			</div>
+
+			<h3>CTA band</h3>
+			<p class="text-secondary measure">
+				Full-bleed inverted section for a closing call to action. One per page at most — its whole
+				job is to be the only thing that inverts, so a second one costs the first its impact. The
+				focus ring goes white inside it, since the accent-derived ring can fall too close to ink.
+			</p>
+			<div class="cta-band demo-cta">
+				<h4>Ready to get started?</h4>
+				<p>Uses <code>.cta-band</code> with <code>.btn-inverse</code>.</p>
+				<div class="component-row">
+					<a href="/style-guide/" class="btn btn-inverse">Primary action</a>
+					<a href="/style-guide/" class="link-arrow demo-cta-link">Secondary</a>
+				</div>
+			</div>
+
 			<h3>Form fields</h3>
 			<p class="text-secondary measure">
 				Every field gets a real <code>&lt;label for&gt;</code>, never a placeholder standing in for
@@ -796,6 +913,25 @@ const measures = [
 		justify-content: center;
 		font-size: var(--text-small);
 		color: var(--color-text-tertiary);
+	}
+
+	.demo-frame {
+		width: 160px;
+	}
+
+	.demo-cta {
+		margin: var(--space-5) 0;
+		padding: var(--space-7);
+		border-radius: var(--radius-lg);
+	}
+
+	.demo-cta > :last-child {
+		margin-bottom: 0;
+	}
+
+	.demo-cta-link,
+	.demo-cta-link:hover {
+		color: var(--color-ink-contrast);
 	}
 
 	.demo-form {

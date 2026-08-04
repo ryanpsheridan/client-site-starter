@@ -1,43 +1,170 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactForm from '../components/ContactForm.astro';
-import { SITE_EMAIL, SITE_PHONE } from '../consts';
+import { SITE_TITLE, SITE_EMAIL, SITE_PHONE, SITE_ADDRESS } from '../consts';
+
+// ---------------------------------------------------------------------------
+// PAGE CONTENT — everything a client edit touches lives in this block.
+//
+// Hours and the response-time line are the two things visitors look for after
+// the phone number. Delete either if it doesn't apply rather than guessing.
+// ---------------------------------------------------------------------------
+
+const intro = {
+	eyebrow: 'Contact',
+	heading: 'Get in touch',
+	lead: 'Replace with a line telling the visitor what happens after they send this — how fast someone replies, and what they should include.',
+};
+
+const hours = [
+	{ days: 'Monday – Friday', time: 'Replace with real hours' },
+	{ days: 'Saturday', time: 'Replace with real hours' },
+	{ days: 'Sunday', time: 'Closed' },
+];
+
+const responseNote = 'Replace with a real response-time commitment (e.g. "We reply to every message within one business day").';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'ContactPage',
+	name: `Contact ${SITE_TITLE}`,
+	description: intro.lead,
+	url: Astro.site ? new URL('/contact/', Astro.site).toString() : undefined,
+};
 ---
 
-<BaseLayout title="Contact" description="Get in touch.">
-	<section class="section">
-		<div class="container contact-column">
-			<h1>Contact</h1>
-			<p class="contact-details">
-				<a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a>
-				<span class="contact-separator" aria-hidden="true">&middot;</span>
-				<a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
-			</p>
+<BaseLayout
+	title="Contact"
+	description="Phone, email, and hours — plus a form that reaches us directly."
+>
+	<script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-			<div class="form-wrap">
-				<ContactForm />
+	<section class="section">
+		<div class="container">
+			<div class="split split-top" style="--split-cols: 1fr 1.15fr;">
+				<div class="contact-info">
+					<p class="eyebrow">{intro.eyebrow}</p>
+					<h1>{intro.heading}</h1>
+					<p class="lead">{intro.lead}</p>
+
+					<dl class="contact-list">
+						<dt>Phone</dt>
+						<dd><a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a></dd>
+
+						<dt>Email</dt>
+						<dd><a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a></dd>
+
+						{SITE_ADDRESS && (
+							<>
+								<dt>Address</dt>
+								<dd>{SITE_ADDRESS}</dd>
+							</>
+						)}
+					</dl>
+
+					<div class="hours">
+						<h2 class="hours-heading">Hours</h2>
+						<ul>
+							{hours.map((row) => (
+								<li>
+									<span class="hours-days">{row.days}</span>
+									<span class="hours-time">{row.time}</span>
+								</li>
+							))}
+						</ul>
+					</div>
+				</div>
+
+				<div class="card form-card">
+					<h2 class="form-heading">Send a message</h2>
+					<p class="text-secondary form-note">{responseNote}</p>
+					<ContactForm />
+				</div>
 			</div>
 		</div>
 	</section>
 </BaseLayout>
 
 <style>
-	.contact-column {
-		max-width: calc(var(--measure-narrow) + var(--space-5) * 2);
+	.contact-info {
+		max-width: var(--measure);
 	}
 
-	.contact-details {
-		font-size: var(--text-large);
-		margin-bottom: 0;
+	/* Definition list rather than paragraphs — phone/email/address are labelled
+	   pairs, and the markup should say so for anyone using a screen reader. */
+	.contact-list {
+		margin: var(--space-7) 0 0;
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: var(--space-3) var(--space-6);
+		align-items: baseline;
 	}
 
-	.contact-separator {
-		display: inline-block;
-		margin-inline: var(--space-2);
+	.contact-list dt {
+		font-size: var(--text-small);
+		font-weight: var(--weight-medium);
 		color: var(--color-text-tertiary);
 	}
 
-	.form-wrap {
+	.contact-list dd {
+		margin: 0;
+		font-size: var(--text-large);
+	}
+
+	.hours {
 		margin-top: var(--space-7);
+		padding-top: var(--space-5);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.hours-heading {
+		font-size: var(--text-h5);
+		font-weight: var(--weight-medium);
+		color: var(--color-text-tertiary);
+		margin-bottom: var(--space-3);
+	}
+
+	.hours ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+		max-width: 22rem;
+	}
+
+	.hours li {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--space-5);
+		font-size: var(--text-small);
+	}
+
+	.hours-days {
+		color: var(--color-text);
+	}
+
+	.hours-time {
+		color: var(--color-text-secondary);
+	}
+
+	/* Form */
+	.form-card {
+		padding: var(--space-7);
+	}
+
+	.form-heading {
+		font-size: var(--text-h3);
+	}
+
+	.form-note {
+		margin-bottom: var(--space-6);
+	}
+
+	@media (max-width: 560px) {
+		.form-card {
+			padding: var(--space-5);
+		}
 	}
 </style>

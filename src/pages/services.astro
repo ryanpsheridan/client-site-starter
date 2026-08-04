@@ -148,7 +148,7 @@ const serviceSchema = {
 	<script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
 	<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
-	<section class="section-loose">
+	<section class="section-hero">
 		<div class="container">
 			<div class="page-hero">
 				<h1>Services</h1>
@@ -163,11 +163,15 @@ const serviceSchema = {
 
 	<section class="section">
 		<div class="container">
-			<p class="eyebrow">The problem</p>
-			<h2>Common problems we solve</h2>
-			<ul class="grid-auto section-grid section-grid-last">
+			<div class="section-header">
+				<div class="section-header-text">
+					<p class="eyebrow">The problem</p>
+					<h2>Common problems we solve</h2>
+				</div>
+			</div>
+			<ul class="grid-auto">
 				{problems.map((problem) => (
-					<li class="problem">
+					<li class="topline">
 						<h3>{problem.title}</h3>
 						<p class="text-secondary">{problem.description}</p>
 					</li>
@@ -178,9 +182,14 @@ const serviceSchema = {
 
 	<section class="section section-sunken">
 		<div class="container">
-			<p class="eyebrow">The offer</p>
-			<h2>What we offer</h2>
-			<ul class="grid-auto section-grid section-grid-last">
+			<div class="section-header">
+				<div class="section-header-text">
+					<p class="eyebrow">The offer</p>
+					<h2>What we offer</h2>
+				</div>
+				<a href="/contact/" class="link-arrow">Get a quote</a>
+			</div>
+			<ul class="grid-auto">
 				{services.map((service) => (
 					<li class="card card-interactive">
 						<h3>{service.title}</h3>
@@ -198,9 +207,13 @@ const serviceSchema = {
 
 	<section class="section">
 		<div class="container">
-			<p class="eyebrow">The process</p>
-			<h2>How it works</h2>
-			<ol class="grid-auto step-list section-grid section-grid-last">
+			<div class="section-header">
+				<div class="section-header-text">
+					<p class="eyebrow">The process</p>
+					<h2>How it works</h2>
+				</div>
+			</div>
+			<ol class="grid-auto step-list">
 				{steps.map((step, i) => (
 					<li class="step">
 						<span class="step-number" aria-hidden="true">{i + 1}</span>
@@ -214,10 +227,14 @@ const serviceSchema = {
 
 	<section class="section section-sunken">
 		<div class="container">
-			<p class="eyebrow">Pricing</p>
-			<h2>What it costs</h2>
-			<p class="lead">Starting prices below — every project is a little different, so treat these as a guide and reach out for an exact quote.</p>
-			<ul class="grid-auto pricing-grid section-grid section-grid-last">
+			<div class="section-header">
+				<div class="section-header-text">
+					<p class="eyebrow">Pricing</p>
+					<h2>What it costs</h2>
+					<p class="lead">Starting prices below — every project is a little different, so treat these as a guide and reach out for an exact quote.</p>
+				</div>
+			</div>
+			<ul class="grid-auto pricing-grid">
 				{pricingTiers.map((tier) => (
 					<li class:list={['card', 'pricing-card', { featured: tier.featured }]}>
 						{tier.featured && <p class="pricing-badge">Most popular</p>}
@@ -238,14 +255,12 @@ const serviceSchema = {
 
 	<section class="section">
 		<div class="container">
-			<p class="eyebrow">Social proof</p>
-			<h2>What clients say</h2>
-			<ul class="grid-auto section-grid section-grid-last">
+			<ul class="grid-auto testimonial-grid">
 				{testimonials.map((t) => (
 					<li>
-						<blockquote class="card testimonial">
-							<p class="testimonial-quote">&ldquo;{t.quote}&rdquo;</p>
-							<footer class="testimonial-attribution">
+						<blockquote class="quote">
+							<p>{t.quote}</p>
+							<footer>
 								<cite>{t.name}</cite>{t.role && <>, {t.role}</>}
 							</footer>
 						</blockquote>
@@ -257,8 +272,12 @@ const serviceSchema = {
 
 	<section class="section section-sunken">
 		<div class="container">
-			<p class="eyebrow">Questions</p>
-			<h2>Frequently asked questions</h2>
+			<div class="section-header">
+				<div class="section-header-text">
+					<p class="eyebrow">Questions</p>
+					<h2>Frequently asked questions</h2>
+				</div>
+			</div>
 			<div class="faq-list">
 				{faqs.map((faq) => (
 					<details class="faq-item">
@@ -270,12 +289,15 @@ const serviceSchema = {
 		</div>
 	</section>
 
-	<section class="section">
+	<section class="section cta-band">
 		<div class="container">
-			<div class="cta-section">
+			<div class="cta-inner">
 				<h2>Ready to get started?</h2>
-				<p class="lead">Replace with a closing line that restates the outcome and makes the next step obvious.</p>
-				<a href="/contact/" class="btn btn-primary btn-lg">Get in touch</a>
+				<p class="cta-lead">Replace with a closing line that restates the outcome and makes the next step obvious.</p>
+				<div class="cta-actions">
+					<a href="/contact/" class="btn btn-inverse btn-lg">Get in touch</a>
+					<a href="/gallery/" class="link-arrow cta-link">See our work</a>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -290,25 +312,10 @@ const serviceSchema = {
 		margin-bottom: var(--space-6);
 	}
 
-	.section-grid {
-		margin-block: var(--space-7);
-	}
-
-	.section-grid-last {
-		margin-bottom: 0;
-	}
-
 	/* Problems are borderless — the section reads as a list of statements,
 	   not a set of objects, so cards would over-structure it. */
-	.problem h3 {
-		font-size: var(--text-h4);
-	}
-
-	.problem p:last-child {
-		margin-bottom: 0;
-	}
-
-	.card h3 {
+	.card h3,
+	.topline h3 {
 		font-size: var(--text-h4);
 	}
 
@@ -447,31 +454,13 @@ const serviceSchema = {
 	}
 
 	/* Testimonials */
-	.testimonial {
-		margin: 0;
-	}
-
-	.testimonial-quote {
-		font-size: var(--text-large);
-		line-height: var(--leading-body);
-		color: var(--color-text);
-		margin-bottom: var(--space-4);
-	}
-
-	.testimonial-attribution {
-		font-size: var(--text-small);
-		color: var(--color-text-tertiary);
-	}
-
-	.testimonial-attribution cite {
-		font-style: normal;
-		font-weight: var(--weight-medium);
-		color: var(--color-text);
+	.testimonial-grid {
+		--grid-min: 340px;
+		gap: var(--space-7);
 	}
 
 	/* FAQ */
 	.faq-list {
-		margin-top: var(--space-7);
 		max-width: var(--measure-wide);
 		border-top: 1px solid var(--border-default);
 	}
@@ -516,12 +505,24 @@ const serviceSchema = {
 	}
 
 	/* Final CTA */
-	.cta-section {
-		text-align: center;
+	.cta-inner {
+		max-width: var(--measure);
 	}
 
-	.cta-section .lead {
-		margin-inline: auto;
+	.cta-lead {
+		font-size: var(--text-large);
 		margin-bottom: var(--space-6);
+	}
+
+	.cta-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--space-5);
+		flex-wrap: wrap;
+	}
+
+	.cta-link,
+	.cta-link:hover {
+		color: var(--color-ink-contrast);
 	}
 </style>

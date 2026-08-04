@@ -1,16 +1,217 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE } from '../consts';
+
+// ---------------------------------------------------------------------------
+// PAGE CONTENT — everything a client edit touches lives in this block.
+//
+// Structure: intro → credibility stats → story → values → quote → CTA.
+// Delete any section that doesn't apply to a given client rather than
+// filling it with filler; a short honest page beats a padded one.
+// ---------------------------------------------------------------------------
+
+const intro = {
+	eyebrow: 'About us',
+	heading: 'The people behind the work',
+	lead: "Replace with the client's real story — who they are, how long they've been doing this, and why a visitor should trust them. This page should read like a person wrote it, not a template.",
+	image: { src: '/images/gallery/placeholder-2.svg', alt: 'Replace with a real photo of the team, owner, or workspace' },
+};
+
+const stats = [
+	{ value: '20+', label: 'Replace with a real number (years in business)' },
+	{ value: '500+', label: 'Replace with a real number (projects completed)' },
+	{ value: '4.9', label: 'Replace with a real number (average rating)' },
+];
+
+const story = {
+	eyebrow: 'Our story',
+	heading: 'How we got here',
+	paragraphs: [
+		'Replace with the origin — why this business exists and what the founder was trying to fix. Concrete beginnings read as credible; mission statements read as filler.',
+		'Replace with what changed along the way, and what the business looks like today. One or two paragraphs is plenty — a visitor is skimming for reasons to trust, not reading a memoir.',
+	],
+	image: { src: '/images/gallery/placeholder-3.svg', alt: 'Replace with a real photo showing the work being done' },
+};
+
+const values = {
+	eyebrow: 'What we stand for',
+	heading: 'How we work',
+	items: [
+		{ title: 'Replace with a real value', description: 'Describe how this actually shows up in the work — a value nobody could disagree with says nothing.' },
+		{ title: 'Replace with a second value', description: 'Tie it to something a client would notice, not something internal.' },
+		{ title: 'Replace with a third value', description: 'Three is usually enough. Six reads as a wall nobody finishes.' },
+	],
+};
+
+const quote = {
+	text: 'Replace with a quote from the owner, or a client line that captures what the business is about.',
+	name: 'Owner name',
+	role: 'Founder',
+};
+
+const cta = {
+	heading: 'Ready to work together?',
+	lead: 'Replace with a closing line that makes the next step obvious.',
+	primary: { label: 'Get in touch', href: '/contact/' },
+	secondary: { label: 'See our services', href: '/services/' },
+};
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'AboutPage',
+	name: `About ${SITE_TITLE}`,
+	description: intro.lead,
+	url: Astro.site ? new URL('/about/', Astro.site).toString() : undefined,
+};
 ---
 
-<BaseLayout title="About" description="Who we are and what we're about.">
+<BaseLayout
+	title="About"
+	description="Who we are, how long we've been doing this, and why clients keep coming back."
+>
+	<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<section class="section-loose">
+		<div class="container">
+			<div class="split" style="--split-cols: 1.1fr 1fr;">
+				<div class="intro-copy">
+					<p class="eyebrow">{intro.eyebrow}</p>
+					<h1>{intro.heading}</h1>
+					<p class="lead">{intro.lead}</p>
+				</div>
+				<div class="media-frame" style="--media-ratio: 4 / 5;">
+					<img src={intro.image.src} alt={intro.image.alt} fetchpriority="high" />
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="stat-bar" aria-label="By the numbers">
+		<div class="container">
+			<ul class="grid-auto stat-grid">
+				{stats.map((stat) => (
+					<li>
+						<span class="stat-value">{stat.value}</span>
+						<span class="stat-label">{stat.label}</span>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
 	<section class="section">
-		<div class="container container-narrow">
-			<h1>About</h1>
-			<p class="lead">
-				Replace with the client's real story — who they are, how long they've been
-				doing this, and why a visitor should trust them. This page should read
-				like a person wrote it, not a template.
-			</p>
+		<div class="container">
+			<div class="split split-reverse split-top">
+				<div class="media-frame" style="--media-ratio: 4 / 3;">
+					<img src={story.image.src} alt={story.image.alt} loading="lazy" />
+				</div>
+				<div>
+					<p class="eyebrow">{story.eyebrow}</p>
+					<h2>{story.heading}</h2>
+					{story.paragraphs.map((text) => (
+						<p class="text-secondary">{text}</p>
+					))}
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-sunken">
+		<div class="container">
+			<div class="section-header">
+				<div class="section-header-text">
+					<p class="eyebrow">{values.eyebrow}</p>
+					<h2>{values.heading}</h2>
+				</div>
+			</div>
+			<ul class="grid-auto">
+				{values.items.map((item) => (
+					<li class="topline">
+						<h3>{item.title}</h3>
+						<p class="text-secondary">{item.description}</p>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<blockquote class="quote quote-feature">
+				<p>{quote.text}</p>
+				<footer>
+					<cite>{quote.name}</cite>, {quote.role}
+				</footer>
+			</blockquote>
+		</div>
+	</section>
+
+	<section class="section cta-band">
+		<div class="container">
+			<div class="cta-inner">
+				<h2>{cta.heading}</h2>
+				<p class="cta-lead">{cta.lead}</p>
+				<div class="cta-actions">
+					<a href={cta.primary.href} class="btn btn-inverse btn-lg">{cta.primary.label}</a>
+					<a href={cta.secondary.href} class="link-arrow cta-link">{cta.secondary.label}</a>
+				</div>
+			</div>
 		</div>
 	</section>
 </BaseLayout>
+
+<style>
+	.intro-copy {
+		max-width: var(--measure);
+	}
+
+	/* Stats sit in a full-bleed rule between the intro and the story, the same
+	   device the homepage uses for its trust bar — one pattern, two pages. */
+	.stat-bar {
+		padding-block: var(--space-7);
+		border-block: 1px solid var(--border-hairline);
+	}
+
+	.stat-grid {
+		--grid-min: 200px;
+		gap: var(--space-6) var(--space-7);
+	}
+
+	.topline h3 {
+		font-size: var(--text-h4);
+	}
+
+	.quote-feature {
+		max-width: var(--measure-wide);
+	}
+
+	.quote-feature p {
+		font-size: var(--text-h2);
+		line-height: var(--leading-tight);
+	}
+
+	/* CTA band */
+	.cta-inner {
+		max-width: var(--measure);
+	}
+
+	.cta-lead {
+		font-size: var(--text-large);
+		margin-bottom: var(--space-6);
+	}
+
+	.cta-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--space-5);
+		flex-wrap: wrap;
+	}
+
+	.cta-link {
+		color: var(--color-ink-contrast);
+	}
+
+	.cta-link:hover {
+		color: var(--color-ink-contrast);
+	}
+</style>
