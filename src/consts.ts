@@ -10,6 +10,11 @@ export const SITE_PHONE = '(555) 555-5555';
 export const SITE_EMAIL = 'hello@example.com';
 export const SITE_ADDRESS = ''; // optional — leave blank if the client has no public storefront address
 
+// The header's call to action, pinned opposite the nav links. Kept separate
+// from NAV_LINKS because it isn't a peer of them — it's the one action the
+// header is asking for, and it stays visible on mobile where the links don't.
+export const NAV_CTA = { label: 'Get in touch', href: '/contact/' };
+
 export const NAV_LINKS = [
 	{ label: 'Home', href: '/' },
 	{ label: 'About', href: '/about/' },

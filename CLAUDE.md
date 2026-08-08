@@ -29,7 +29,7 @@ Design tokens live in `src/styles/tokens.css`. Site-wide values (business name, 
 
 ## First Steps On A New Client Project
 
-1. Fill in `src/consts.ts` with the real business name, description, phone, email, and nav structure. The favicon (`src/pages/favicon.svg.ts`) auto-derives from `SITE_TITLE`'s first letter, so this alone gives every new project a reasonable default with no manual asset work.
+1. Fill in `src/consts.ts` with the real business name, description, phone, email, nav structure, and `NAV_CTA` (the header's call-to-action button — kept separate from `NAV_LINKS` because it isn't a peer of them). The favicon (`src/pages/favicon.svg.ts`) auto-derives from `SITE_TITLE`'s first letter, so this alone gives every new project a reasonable default with no manual asset work.
 2. Replace placeholder copy in `src/pages/index.astro`, `about.astro`, `services.astro` with the client's real content.
 3. Update `astro.config.mjs`'s `site` value to the client's real domain once known.
 4. Once the client has real branding/a logo, replace the auto-generated favicon: delete `src/pages/favicon.svg.ts` and add a real static file at `public/favicon.svg` (or `.ico`/`.png`, updating the `<link>` in `BaseHead.astro` accordingly). Also replace `public/images/og-default.png`.
@@ -186,10 +186,20 @@ Shared classes live in `src/styles/global.css`. Reach for these before writing a
 - `.card-tint` and `.section-brand` re-point `--color-text-secondary` / `--color-text-tertiary` (and `--color-text`, on the brand band) to tint-safe tones on themselves. So a page's scoped CSS can keep referencing those tokens normally inside either one — don't add per-page color overrides for muted text on a tint, and don't reach for a raw palette value to work around it.
 - Text: `.display`, `.eyebrow` (a tinted pill, tuned with `--eyebrow-tint`; `.eyebrow-plain` drops the pill), `.lead`, `.text-secondary`, `.text-tertiary`, `.measure` / `.measure-narrow` / `.measure-wide`
 
-Two shared Astro components sit alongside the CSS layer:
+### Navigation
+
+`Header.astro` is a floating pill that sticks below the top edge — frosted (`backdrop-filter`) over a cream fill, with the logo, links, and `NAV_CTA` on one row. A few constraints worth keeping:
+
+- The shell stays **in normal flow and sticks**; it is not `position: fixed`. Fixed would make every page responsible for reserving matching top padding, and any page that forgot would hide its own first heading under the bar.
+- Every direct child of the bar sets an explicit `grid-row: 1`. With only `grid-column` set, an item asking for column 1 after one already placed in column 2 wraps to a second row instead of moving the cursor backwards.
+- On mobile the links become a floating panel hung under the bar (not a full-screen takeover), over a blurred backdrop. The panel is `aria-modal` with a focus trap, closes on Escape, on a backdrop click, and on any link click.
+- The bar carries `view-transition-name: site-header` so it doesn't cross-fade on navigation.
+
+Three shared Astro components sit alongside the CSS layer:
 
 - `Icon.astro` — small stroke-icon set on a 24px grid at 1.5 stroke, so icons match `--weight-medium` text optically. Icons inherit `currentColor` and are decorative by default; pass `title` only when the icon is the sole carrier of meaning. **Add new icons to this file rather than inlining SVG in a page.**
 - `Testimonial.astro` — testimonial card taking `quote`, `name`, and optional `role`, `rating`, `image`. Every optional part degrades cleanly, so a client with only a quote still gets a finished card. Use this rather than hand-rolling a quote card; `.quote` in `global.css` is for pull quotes in running content, which is a different job.
+- `StatBand.astro` — row of headline figures taking `stats` and an optional `cols`. Carries the count-up behaviour, so use it rather than hand-writing `.stat-band` markup.
 
 ## Page Content Blocks
 

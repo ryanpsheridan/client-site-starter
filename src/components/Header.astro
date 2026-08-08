@@ -1,71 +1,105 @@
 ---
-import { NAV_LINKS, SITE_TITLE } from '../consts';
+import { NAV_LINKS, NAV_CTA, SITE_TITLE, SITE_PHONE, SITE_EMAIL } from '../consts';
 
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="site-header">
-	<div class="container site-header-inner">
-		<a href="/" class="site-logo">{SITE_TITLE}</a>
+{/*
+	Floating navigation. The shell stays in normal flow and sticks, rather than
+	being fixed and overlaying — fixed positioning would need every page to
+	reserve matching top padding by hand, and any page that forgot would hide
+	its own first heading under the bar.
 
-		<nav class="desktop-nav" aria-label="Primary">
-			<ul>
-				{NAV_LINKS.map((link) => (
-					<li>
-						<a
-							href={link.href}
-							class="nav-link"
-							aria-current={currentPath === link.href ? 'page' : undefined}
-						>
-							{link.label}
-						</a>
-					</li>
-				))}
-			</ul>
-		</nav>
+	DOM order is logo → links → menu button → CTA, which is the order they
+	should be read in. Visual placement is done with explicit grid columns per
+	breakpoint, so the mobile layout can centre the logo between the button and
+	the CTA without reordering the markup underneath it.
+*/}
+<div class="header-shell">
+	<div class="header-inner">
+		<header class="site-header">
+			<a href="/" class="site-logo">{SITE_TITLE}</a>
 
-		<button
-			id="menu-toggle"
-			class="menu-toggle"
-			type="button"
-			aria-haspopup="dialog"
-			aria-expanded="false"
-			aria-controls="app-menu"
-			aria-label="Menu"
-		>
-			<span class="bar bar-top"></span>
-			<span class="bar bar-bottom"></span>
-		</button>
+			<nav class="desktop-nav" aria-label="Primary">
+				<ul>
+					{NAV_LINKS.map((link) => (
+						<li>
+							<a
+								href={link.href}
+								class="nav-link"
+								aria-current={currentPath === link.href ? 'page' : undefined}
+							>
+								{link.label}
+							</a>
+						</li>
+					))}
+				</ul>
+			</nav>
+
+			<button
+				id="menu-toggle"
+				class="menu-toggle"
+				type="button"
+				aria-haspopup="dialog"
+				aria-expanded="false"
+				aria-controls="app-menu"
+				aria-label="Menu"
+			>
+				<span class="bar bar-top"></span>
+				<span class="bar bar-bottom"></span>
+			</button>
+
+			<a href={NAV_CTA.href} class="btn btn-brand btn-sm header-cta">{NAV_CTA.label}</a>
+		</header>
+
+		<div id="app-menu" class="app-menu" role="dialog" aria-modal="true" aria-label="Menu">
+			<nav aria-label="Primary">
+				<ul>
+					{NAV_LINKS.map((link, i) => (
+						<li style={`--i: ${i};`}>
+							<a
+								href={link.href}
+								class="menu-item"
+								aria-current={currentPath === link.href ? 'page' : undefined}
+							>
+								{link.label}
+							</a>
+						</li>
+					))}
+				</ul>
+			</nav>
+
+			{/*
+				The reference puts a promotional card here. A small business has
+				nothing to promote in its own nav, but it does have a phone number
+				people are hunting for — so the same slot carries contact details.
+			*/}
+			<div class="menu-footer">
+				<a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`} class="menu-contact">{SITE_PHONE}</a>
+				<a href={`mailto:${SITE_EMAIL}`} class="menu-contact">{SITE_EMAIL}</a>
+			</div>
+		</div>
 	</div>
-</header>
-
-<div id="app-menu" class="app-menu" role="dialog" aria-modal="true" aria-label="Menu">
-	<nav aria-label="Primary">
-		<ul>
-			{NAV_LINKS.map((link, i) => (
-				<li style={`--i: ${i};`}>
-					<a
-						href={link.href}
-						class="menu-item"
-						aria-current={currentPath === link.href ? 'page' : undefined}
-					>
-						{link.label}
-					</a>
-				</li>
-			))}
-		</ul>
-	</nav>
 </div>
+
+<div class="menu-backdrop" hidden></div>
 
 <script>
 	const toggle = document.getElementById('menu-toggle') as HTMLButtonElement;
 	const menu = document.getElementById('app-menu') as HTMLDivElement;
+	const backdrop = document.querySelector<HTMLDivElement>('.menu-backdrop');
 
 	function openMenu() {
 		menu.classList.add('open');
 		toggle.classList.add('open');
 		toggle.setAttribute('aria-expanded', 'true');
 		document.body.style.overflow = 'hidden';
+		if (backdrop) {
+			backdrop.hidden = false;
+			// Next frame, so the element is in the layout before the class that
+			// transitions it — setting both in one frame skips the animation.
+			requestAnimationFrame(() => backdrop.classList.add('open'));
+		}
 		menu.querySelector<HTMLAnchorElement>('.menu-item')?.focus();
 	}
 
@@ -74,6 +108,7 @@ const currentPath = Astro.url.pathname;
 		toggle.classList.remove('open');
 		toggle.setAttribute('aria-expanded', 'false');
 		document.body.style.overflow = '';
+		backdrop?.classList.remove('open');
 	}
 
 	function toggleMenu() {
@@ -85,6 +120,14 @@ const currentPath = Astro.url.pathname;
 		}
 	}
 
+	// Hide the backdrop from hit-testing only once it has finished fading, so a
+	// click during the close animation can't land on the page underneath.
+	backdrop?.addEventListener('transitionend', (e) => {
+		if (e.propertyName === 'opacity' && !backdrop.classList.contains('open')) {
+			backdrop.hidden = true;
+		}
+	});
+
 	document.addEventListener('click', (e) => {
 		const target = e.target as HTMLElement;
 
@@ -93,7 +136,14 @@ const currentPath = Astro.url.pathname;
 			return;
 		}
 
-		if (target.closest('.app-menu a.menu-item')) {
+		if (target.closest('.app-menu a')) {
+			closeMenu();
+			return;
+		}
+
+		// Tapping the dimmed page outside the panel closes it, which is what
+		// the backdrop looks like it should do.
+		if (menu.classList.contains('open') && !target.closest('.app-menu')) {
 			closeMenu();
 		}
 	});
@@ -107,12 +157,12 @@ const currentPath = Astro.url.pathname;
 			return;
 		}
 
-		// Focus trap. The overlay is aria-modal, so focus must not escape it
-		// while it's open — without this, tabbing past the last link lands on
-		// browser chrome or page content the user can't see.
+		// Focus trap. The panel is aria-modal, so focus must not escape it while
+		// it's open — without this, tabbing past the last link lands on browser
+		// chrome or page content the user can't see.
 		if (e.key !== 'Tab') return;
 
-		const items = Array.from(menu.querySelectorAll<HTMLAnchorElement>('.menu-item'));
+		const items = Array.from(menu.querySelectorAll<HTMLAnchorElement>('a'));
 		if (items.length === 0) return;
 
 		const first = items[0];
@@ -130,78 +180,90 @@ const currentPath = Astro.url.pathname;
 </script>
 
 <style>
-	/* Sticky so the nav stays reachable on long pages. A hairline bottom
-	   border rather than a shadow — the header sits in the page, it doesn't
-	   float above it. */
-	.site-header {
+	/* --- Floating shell ---------------------------------------------------- */
+
+	.header-shell {
 		position: sticky;
-		top: 0;
+		top: var(--space-4);
 		z-index: 41;
-		background: var(--surface-page);
-		border-bottom: 1px solid var(--border-hairline);
-		padding-top: env(safe-area-inset-top);
+		margin-top: var(--space-4);
+		padding-inline: var(--space-5);
+	}
+
+	/* Anchors the dropdown panel: it's positioned against this, not against the
+	   bar, so it spans the bar's full width regardless of the bar's padding. */
+	.header-inner {
+		position: relative;
+		max-width: var(--content-width);
+		margin-inline: auto;
+	}
+
+	.site-header {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		align-items: center;
+		gap: var(--space-4);
+		padding: var(--space-3);
+		border-radius: var(--radius-pill);
+		background: color-mix(in srgb, var(--tint-cream) 88%, transparent);
+		-webkit-backdrop-filter: saturate(180%) blur(16px);
+		backdrop-filter: saturate(180%) blur(16px);
+		box-shadow: var(--shadow-md);
 		/* Excluded from the page cross-fade — see global.css. */
 		view-transition-name: site-header;
 	}
 
-	/* Scroll-aware header: at the top it sits flush in the page, and once the
-	   page moves under it, it separates with a translucent fill and a shadow.
-
-	   Driven by a scroll timeline rather than a scroll listener — no JS, and it
-	   runs off the main thread. @supports keeps it from applying at all in
-	   browsers without it, where the header just stays in its resting state.
-
-	   The blur is set unconditionally rather than animated: at rest the fill is
-	   opaque so there's nothing to see through, and animating backdrop-filter
-	   on and off is visibly steppy. */
+	/* Floating over content, the bar's only separation is its own shadow — so
+	   it deepens as the page scrolls under it rather than changing fill.
+	   Longhands, not the `animation` shorthand: the shorthand resets
+	   animation-timeline to auto, and the minifier may reorder declarations so
+	   the reset lands last. */
 	@supports (animation-timeline: scroll()) {
 		@media (prefers-reduced-motion: no-preference) {
-			/* Longhands, not the `animation` shorthand: the shorthand resets
-			   animation-timeline to auto, and the CSS minifier is free to
-			   reorder declarations — which silently put the reset after the
-			   timeline and killed this entirely. Longhands can't collide. */
 			.site-header {
-				-webkit-backdrop-filter: saturate(180%) blur(12px);
-				backdrop-filter: saturate(180%) blur(12px);
-				animation-name: header-separate;
+				animation-name: header-lift;
 				animation-timing-function: linear;
 				animation-fill-mode: both;
 				animation-timeline: scroll(root block);
 				animation-range: 0 96px;
 			}
 
-			@keyframes header-separate {
+			@keyframes header-lift {
 				to {
-					background: var(--overlay-chip);
-					border-bottom-color: var(--border-default);
-					box-shadow: var(--shadow-sm);
+					box-shadow: var(--shadow-lg);
 				}
 			}
 		}
 	}
 
-	.site-header-inner {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: var(--space-6);
-		padding-block: var(--space-4);
-	}
-
 	.site-logo {
+		/* Explicit row on every child: with grid-column set but the row left to
+		   auto-placement, an item asking for column 1 after one already placed
+		   in column 2 gets pushed to a second row rather than moving the cursor
+		   backwards. Pinning the row keeps the bar one line tall. */
+		grid-row: 1;
+		grid-column: 2;
+		justify-self: center;
 		font-family: var(--font-heading);
 		font-weight: var(--weight-medium);
-		font-size: var(--text-h4);
+		font-size: var(--text-h5);
 		letter-spacing: var(--tracking-snug);
 		text-transform: lowercase;
 		color: var(--color-text);
 		text-decoration: none;
 		white-space: nowrap;
+		padding-inline: var(--space-2);
 	}
 
-	/* --- Desktop nav ------------------------------------------------------ */
+	.header-cta {
+		grid-row: 1;
+		grid-column: 3;
+		justify-self: end;
+	}
 
-	/* Hidden by default and revealed at the breakpoint, so the mobile overlay
+	/* --- Desktop nav ------------------------------------------------------- */
+
+	/* Hidden by default and revealed at the breakpoint, so the mobile panel
 	   stays the baseline experience rather than a fallback. */
 	.desktop-nav {
 		display: none;
@@ -254,20 +316,31 @@ const currentPath = Astro.url.pathname;
 		transform: scaleX(1);
 	}
 
-	/* --- Hamburger toggle ------------------------------------------------- */
+	/* --- Menu button ------------------------------------------------------- */
 
-	/* Two bars that animate into an X on open — the same elements in both
-	   states, so there's no icon swap. */
+	/* A filled disc rather than bare bars, so it reads as a control at the same
+	   weight as the CTA opposite it. Two bars that rotate into an X — the same
+	   elements in both states, so there's no icon swap. */
 	.menu-toggle {
+		grid-row: 1;
+		grid-column: 1;
+		justify-self: start;
 		position: relative;
-		width: 38px;
-		height: 38px;
+		width: 2.5rem;
+		height: 2.5rem;
 		border: none;
-		background: transparent;
+		border-radius: 50%;
+		background: var(--color-ink);
 		padding: 0;
 		cursor: pointer;
 		-webkit-tap-highlight-color: transparent;
-		transition: transform var(--duration-fast) var(--ease-out);
+		transition:
+			background-color var(--duration-fast) var(--ease-out),
+			transform var(--duration-fast) var(--ease-out);
+	}
+
+	.menu-toggle:hover {
+		background: var(--color-ink-hover);
 	}
 
 	.menu-toggle:active {
@@ -276,50 +349,56 @@ const currentPath = Astro.url.pathname;
 
 	.menu-toggle .bar {
 		position: absolute;
-		left: 8px;
-		width: 22px;
-		height: 2px;
+		left: 50%;
+		width: 16px;
+		margin-left: -8px;
+		height: 1.5px;
 		border-radius: 2px;
-		background: var(--color-text);
+		background: var(--color-ink-contrast);
 		transition:
 			top var(--duration-base) var(--ease-out),
 			transform var(--duration-base) var(--ease-out);
 	}
 
 	.menu-toggle .bar-top {
-		top: 14px;
+		top: 17px;
 	}
 
 	.menu-toggle .bar-bottom {
-		top: 22px;
+		top: 23px;
 	}
 
 	.menu-toggle.open .bar-top {
-		top: 18px;
+		top: 20px;
 		transform: rotate(45deg);
 	}
 
 	.menu-toggle.open .bar-bottom {
-		top: 18px;
+		top: 20px;
 		transform: rotate(-45deg);
 	}
 
-	/* --- Mobile overlay --------------------------------------------------- */
+	/* --- Mobile panel ------------------------------------------------------ */
 
-	/* Full-screen overlay menu. Sits just below the header in z-index so the
-	   header stays visible with no seam. Visibility is delayed on close so the
-	   hidden panel can't intercept clicks. */
+	/* A floating card hung under the bar, not a full-screen takeover. The page
+	   stays visible and blurred behind it, so the menu reads as a layer over
+	   the site rather than a different screen. */
 	.app-menu {
-		position: fixed;
-		inset: 0;
-		z-index: 40;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: var(--surface-page);
+		position: absolute;
+		top: calc(100% + var(--space-3));
+		left: 0;
+		right: 0;
+		z-index: 1;
+		padding: var(--space-5);
+		border-radius: var(--radius-xl);
+		background: color-mix(in srgb, var(--tint-cream) 94%, transparent);
+		-webkit-backdrop-filter: saturate(180%) blur(16px);
+		backdrop-filter: saturate(180%) blur(16px);
+		box-shadow: var(--shadow-lg);
 		opacity: 0;
 		visibility: hidden;
-		transform: translateY(6px);
+		transform: translateY(-8px) scale(0.98);
+		transform-origin: top center;
 		transition:
 			opacity var(--duration-base) var(--ease-out),
 			transform var(--duration-base) var(--ease-out),
@@ -329,7 +408,7 @@ const currentPath = Astro.url.pathname;
 	.app-menu.open {
 		opacity: 1;
 		visibility: visible;
-		transform: translateY(0);
+		transform: translateY(0) scale(1);
 		transition:
 			opacity var(--duration-base) var(--ease-out),
 			transform var(--duration-base) var(--ease-out),
@@ -342,28 +421,25 @@ const currentPath = Astro.url.pathname;
 		padding: 0;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		gap: var(--space-6);
 	}
 
-	/* Items start low and faded, then rise in one after another as the overlay
-	   opens. The stagger is what turns "a panel appeared" into something that
-	   reads as deliberate — 40ms apart, so six items finish inside a quarter
-	   second and it never feels like waiting.
+	/* Items rise in one after another as the panel opens — 40ms apart, so six
+	   finish inside a quarter second and it never feels like waiting.
 
-	   --i is set per item in the markup; using nth-child instead would cap the
-	   effect at however many rules were written, and NAV_LINKS is client-edited. */
+	   --i is set per item in the markup; nth-child rules would cap the effect
+	   at however many were written, and NAV_LINKS is client-edited. */
 	.menu-item {
-		display: inline-block;
+		display: block;
 		font-family: var(--font-heading);
-		font-size: var(--text-h3);
+		font-size: var(--text-h4);
 		font-weight: var(--weight-medium);
 		letter-spacing: var(--tracking-snug);
-		color: var(--color-text-secondary);
+		color: var(--color-text);
 		text-decoration: none;
+		padding-block: var(--space-3);
 		-webkit-tap-highlight-color: transparent;
 		opacity: 0;
-		transform: translateY(12px);
+		transform: translateY(8px);
 		transition:
 			color var(--duration-fast) var(--ease-out),
 			opacity var(--duration-base) var(--ease-out),
@@ -376,6 +452,38 @@ const currentPath = Astro.url.pathname;
 		transition-delay: calc(var(--i, 0) * 40ms);
 	}
 
+	/* Scoped to .app-menu.open so it outranks the stagger rule above, which
+	   would otherwise hold transform at translateY(0) and swallow the press. */
+	.app-menu.open .menu-item:active {
+		transform: translateY(0) scale(0.98);
+	}
+
+	.menu-item[aria-current='page'] {
+		text-decoration: underline;
+		text-underline-offset: 0.3em;
+	}
+
+	.menu-footer {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+		margin-top: var(--space-5);
+		padding-top: var(--space-5);
+		/* Derived from the panel's own text colour — --border-hairline is tuned
+		   for the page surface and disappears on this fill. */
+		border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+	}
+
+	.menu-contact {
+		font-size: var(--text-small);
+		color: var(--color-text-secondary);
+		text-decoration: none;
+	}
+
+	.menu-contact:hover {
+		color: var(--color-text);
+	}
+
 	/* Duration is already near-zero under reduced motion, but the delay isn't —
 	   without this the last item would still wait a quarter second to appear. */
 	@media (prefers-reduced-motion: reduce) {
@@ -384,44 +492,50 @@ const currentPath = Astro.url.pathname;
 		}
 	}
 
-	/* Color, not weight. Changing font-weight on hover reflows the text and
-	   nudges every sibling — a layout shift triggered by pointer movement. */
-	.menu-item:hover {
-		color: var(--color-text);
+	/* --- Backdrop ---------------------------------------------------------- */
+
+	.menu-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 40;
+		background: color-mix(in srgb, var(--color-ink) 12%, transparent);
+		-webkit-backdrop-filter: blur(6px);
+		backdrop-filter: blur(6px);
+		opacity: 0;
+		transition: opacity var(--duration-base) var(--ease-out);
 	}
 
-	.menu-item[aria-current='page'] {
-		color: var(--color-text);
-		text-decoration: underline;
-		text-underline-offset: 0.3em;
+	.menu-backdrop.open {
+		opacity: 1;
 	}
 
-	/* Scoped to .app-menu.open so it outranks the stagger rule above, which
-	   would otherwise hold transform at translateY(0) and swallow the press. */
-	.app-menu.open .menu-item:active {
-		transform: translateY(0) scale(0.97);
-	}
+	/* --- Desktop ----------------------------------------------------------- */
 
-	@media (max-width: 480px) {
-		.app-menu ul {
-			gap: var(--space-4);
-		}
-	}
-
-	/* Swap the overlay for the inline nav. Both are removed from the
+	/* Swap the panel for the inline nav. Both are removed from the
 	   accessibility tree when not in use, so exactly one "Primary" navigation
 	   landmark is ever exposed. */
 	@media (min-width: 860px) {
+		.site-header {
+			grid-template-columns: auto 1fr auto;
+			padding-inline: var(--space-5);
+		}
+
 		.site-logo {
-			font-size: var(--text-h3);
+			grid-column: 1;
+			justify-self: start;
+			padding-inline: 0;
 		}
 
 		.desktop-nav {
 			display: block;
+			grid-row: 1;
+			grid-column: 2;
+			justify-self: center;
 		}
 
 		.menu-toggle,
-		.app-menu {
+		.app-menu,
+		.menu-backdrop {
 			display: none;
 		}
 	}
