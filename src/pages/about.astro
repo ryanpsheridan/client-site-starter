@@ -33,6 +33,9 @@ const story = {
 	image: { src: '/images/gallery/placeholder-3.svg', alt: 'Replace with a real photo showing the work being done' },
 };
 
+// Tints cycle across the value cards, same pattern as the homepage services.
+const valueTints = ['--tint-lavender', '--tint-mint', '--tint-sky'];
+
 const values = {
 	eyebrow: 'What we stand for',
 	heading: 'How we work',
@@ -86,9 +89,9 @@ const schema = {
 		</div>
 	</section>
 
-	<section class="stat-bar" aria-label="By the numbers">
+	<section class="section-tight" aria-label="By the numbers">
 		<div class="container">
-			<ul class="grid-auto stat-grid">
+			<ul class="stat-band">
 				{stats.map((stat) => (
 					<li>
 						<span class="stat-value">{stat.value}</span>
@@ -116,17 +119,17 @@ const schema = {
 		</div>
 	</section>
 
-	<section class="section section-sunken">
+	<section class="section">
 		<div class="container">
-			<div class="section-header">
+			<div class="section-header section-header-center">
 				<div class="section-header-text">
 					<p class="eyebrow">{values.eyebrow}</p>
 					<h2>{values.heading}</h2>
 				</div>
 			</div>
 			<ul class="grid-auto">
-				{values.items.map((item) => (
-					<li class="topline">
+				{values.items.map((item, i) => (
+					<li class="card card-tint" style={`--card-tint: var(${valueTints[i % valueTints.length]});`}>
 						<h3>{item.title}</h3>
 						<p class="text-secondary">{item.description}</p>
 					</li>
@@ -135,7 +138,7 @@ const schema = {
 		</div>
 	</section>
 
-	<section class="section">
+	<section class="section-loose section-brand">
 		<div class="container">
 			<blockquote class="quote quote-feature">
 				<p>{quote.text}</p>
@@ -152,7 +155,7 @@ const schema = {
 				<h2>{cta.heading}</h2>
 				<p class="cta-lead">{cta.lead}</p>
 				<div class="cta-actions">
-					<a href={cta.primary.href} class="btn btn-inverse btn-lg">{cta.primary.label}</a>
+					<a href={cta.primary.href} class="btn btn-inverse btn-lg btn-arrow">{cta.primary.label}</a>
 					<a href={cta.secondary.href} class="link-arrow cta-link">{cta.secondary.label}</a>
 				</div>
 			</div>
@@ -165,24 +168,19 @@ const schema = {
 		max-width: var(--measure);
 	}
 
-	/* Stats sit in a full-bleed rule between the intro and the story, the same
-	   device the homepage uses for its trust bar — one pattern, two pages. */
-	.stat-bar {
-		padding-block: var(--space-7);
-		border-block: 1px solid var(--border-hairline);
-	}
-
-	.stat-grid {
-		--grid-min: 200px;
-		gap: var(--space-6) var(--space-7);
-	}
-
-	.topline h3 {
+	.card h3 {
 		font-size: var(--text-h4);
 	}
 
+	/* On the brand band the quote carries the whole section, so it loses the
+	   left rule and centres — a 2px marker pinned to one side of a full-bleed
+	   colour field reads as a stray mark rather than a quote. */
 	.quote-feature {
 		max-width: var(--measure-wide);
+		margin-inline: auto;
+		padding-left: 0;
+		border-left: 0;
+		text-align: center;
 	}
 
 	.quote-feature p {

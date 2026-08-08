@@ -169,6 +169,7 @@ Shared classes live in `src/styles/global.css`. Reach for these before writing a
 - `.btn-arrow` adds the inverted disc inside the pill's right edge. It's a navigation signal — reserve it for links that go somewhere, not for submit buttons.
 - Section headers: `.section-header` wrapping a `.section-header-text` (eyebrow + heading + lead), with an optional `.link-arrow` action pinned to the opposite end. Use this rather than stranding a button under the grid. Add `.section-header-center` when there's no action to pin opposite.
 - Saturated bands: `.cta-band` (ink) for a full-bleed closing call to action with `.btn-inverse` inside it, and `.section-brand` (brand color) for a full-bleed highlight band. **One of each per page at most** — each works by being the only thing on the page that inverts or saturates, so a second costs the first its impact.
+- `.card-tint` and `.section-brand` re-point `--color-text-secondary` / `--color-text-tertiary` (and `--color-text`, on the brand band) to tint-safe tones on themselves. So a page's scoped CSS can keep referencing those tokens normally inside either one — don't add per-page color overrides for muted text on a tint, and don't reach for a raw palette value to work around it.
 - Text: `.display`, `.eyebrow` (a tinted pill, tuned with `--eyebrow-tint`; `.eyebrow-plain` drops the pill), `.lead`, `.text-secondary`, `.text-tertiary`, `.measure` / `.measure-narrow` / `.measure-wide`
 
 Two shared Astro components sit alongside the CSS layer:

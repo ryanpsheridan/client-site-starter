@@ -329,11 +329,13 @@ svg {
 .section-brand {
 	background: var(--color-brand);
 	color: var(--color-brand-contrast);
-}
-
-.section-brand .lead,
-.section-brand .text-secondary {
-	color: color-mix(in srgb, var(--color-brand-contrast) 78%, transparent);
+	/* Same token re-pointing as .card-tint, but derived from the band's own
+	   contrast colour rather than --color-text — so a client whose brand colour
+	   is dark (contrast flipped to white) gets a correctly inverted band with
+	   no further edits. */
+	--color-text: var(--color-brand-contrast);
+	--color-text-secondary: color-mix(in srgb, var(--color-brand-contrast) 78%, transparent);
+	--color-text-tertiary: color-mix(in srgb, var(--color-brand-contrast) 68%, transparent);
 }
 
 /* The eyebrow pill's default lavender disappears on a saturated band; on one,
@@ -561,11 +563,12 @@ svg {
 	background: var(--card-tint, var(--tint-cream));
 	border-color: transparent;
 	color: var(--color-text);
-}
-
-.card-tint .text-secondary,
-.card-tint .text-tertiary {
-	color: color-mix(in srgb, var(--color-text) 76%, transparent);
+	/* Re-point the muted text tokens rather than overriding a list of classes.
+	   Anything inside — including a page's own scoped CSS reaching for
+	   --color-text-secondary — then lands on a tint-safe tone automatically,
+	   instead of every page having to remember to override it. */
+	--color-text-secondary: color-mix(in srgb, var(--color-text) 76%, transparent);
+	--color-text-tertiary: color-mix(in srgb, var(--color-text) 66%, transparent);
 }
 
 .card-interactive {

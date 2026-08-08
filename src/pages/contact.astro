@@ -47,31 +47,33 @@ const schema = {
 					<h1>{intro.heading}</h1>
 					<p class="lead">{intro.lead}</p>
 
-					<dl class="contact-list">
-						<dt>Phone</dt>
-						<dd><a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a></dd>
+					<div class="card card-tint details-card" style="--card-tint: var(--tint-cream);">
+						<dl class="contact-list">
+							<dt>Phone</dt>
+							<dd><a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a></dd>
 
-						<dt>Email</dt>
-						<dd><a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a></dd>
+							<dt>Email</dt>
+							<dd><a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a></dd>
 
-						{SITE_ADDRESS && (
-							<>
-								<dt>Address</dt>
-								<dd>{SITE_ADDRESS}</dd>
-							</>
-						)}
-					</dl>
+							{SITE_ADDRESS && (
+								<>
+									<dt>Address</dt>
+									<dd>{SITE_ADDRESS}</dd>
+								</>
+							)}
+						</dl>
 
-					<div class="hours">
-						<h2 class="hours-heading">Hours</h2>
-						<ul>
-							{hours.map((row) => (
-								<li>
-									<span class="hours-days">{row.days}</span>
-									<span class="hours-time">{row.time}</span>
-								</li>
-							))}
-						</ul>
+						<div class="hours">
+							<h2 class="hours-heading">Hours</h2>
+							<ul>
+								{hours.map((row) => (
+									<li>
+										<span class="hours-days">{row.days}</span>
+										<span class="hours-time">{row.time}</span>
+									</li>
+								))}
+							</ul>
+						</div>
 					</div>
 				</div>
 
@@ -90,10 +92,18 @@ const schema = {
 		max-width: var(--measure);
 	}
 
+	/* Details sit in a tinted card so the page isn't two plain columns of text.
+	   The card re-points the muted text tokens, so the dt/hours styling below
+	   lands on tint-safe tones without any override here. */
+	.details-card {
+		margin-top: var(--space-7);
+		padding: var(--space-6);
+	}
+
 	/* Definition list rather than paragraphs — phone/email/address are labelled
 	   pairs, and the markup should say so for anyone using a screen reader. */
 	.contact-list {
-		margin: var(--space-7) 0 0;
+		margin: 0;
 		display: grid;
 		grid-template-columns: auto 1fr;
 		gap: var(--space-3) var(--space-6);
@@ -111,10 +121,12 @@ const schema = {
 		font-size: var(--text-large);
 	}
 
+	/* Rule derived from the card's own text colour — --border-hairline is a
+	   neutral tuned for the page surface and disappears on a tint. */
 	.hours {
-		margin-top: var(--space-7);
+		margin-top: var(--space-6);
 		padding-top: var(--space-5);
-		border-top: 1px solid var(--border-hairline);
+		border-top: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
 	}
 
 	.hours-heading {

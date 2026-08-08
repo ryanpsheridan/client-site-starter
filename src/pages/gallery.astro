@@ -26,6 +26,15 @@ const images = [
 	{ src: '/images/gallery/placeholder-5.svg', alt: 'Replace with a real, descriptive alt text for this photo', caption: 'Replace with a short caption — what this is, and where.' },
 	{ src: '/images/gallery/placeholder-6.svg', alt: 'Replace with a real, descriptive alt text for this photo', caption: 'Replace with a short caption — what this is, and where.' },
 ];
+
+// Without this the page dead-ends: a visitor who just browsed the work has
+// nowhere to go, which is the one place on the site they're most likely to act.
+const cta = {
+	heading: 'Like what you see?',
+	lead: 'Replace with a closing line that ties the work above to the next step.',
+	primary: { label: 'Get in touch', href: '/contact/' },
+	secondary: { label: 'See our services', href: '/services/' },
+};
 ---
 
 <BaseLayout title="Gallery" description="A look at our work.">
@@ -127,6 +136,19 @@ const images = [
 						<img src={image.src} alt={image.alt} loading="lazy" />
 					</button>
 				))}
+			</div>
+		</div>
+	</section>
+
+	<section class="section cta-band">
+		<div class="container">
+			<div class="cta-inner">
+				<h2>{cta.heading}</h2>
+				<p class="cta-lead">{cta.lead}</p>
+				<div class="cta-actions">
+					<a href={cta.primary.href} class="btn btn-inverse btn-lg btn-arrow">{cta.primary.label}</a>
+					<a href={cta.secondary.href} class="link-arrow cta-link">{cta.secondary.label}</a>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -312,10 +334,12 @@ const images = [
 	/* Raised rather than inheriting .media-frame's sunken fill — the stage sits
 	   on a sunken band, so a sunken surface on a sunken surface has no edge to
 	   read against and the whole carousel dissolves into the section. */
+	/* .media-frame no longer carries a border, so the stage draws its own —
+	   without it the raised panel has no edge at all against the sunken band. */
 	.carousel-stage {
 		position: relative;
 		background: var(--surface-raised);
-		border-color: var(--border-default);
+		border: 1px solid var(--border-default);
 		box-shadow: var(--shadow-sm);
 	}
 
@@ -509,6 +533,28 @@ const images = [
 		}
 	}
 
+	/* Closing CTA */
+	.cta-inner {
+		max-width: var(--measure);
+	}
+
+	.cta-lead {
+		font-size: var(--text-large);
+		margin-bottom: var(--space-6);
+	}
+
+	.cta-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--space-5);
+		flex-wrap: wrap;
+	}
+
+	.cta-link,
+	.cta-link:hover {
+		color: var(--color-ink-contrast);
+	}
+
 	/* Masonry */
 	.masonry {
 		margin-top: 0;
@@ -521,7 +567,9 @@ const images = [
 		width: 100%;
 		margin-bottom: var(--space-4);
 		break-inside: avoid;
-		border-radius: var(--radius-md);
+		/* Matches .media-frame, so the three layouts on this page read as one
+		   gallery rather than three different corner treatments. */
+		border-radius: var(--radius-xl);
 		overflow: hidden;
 	}
 

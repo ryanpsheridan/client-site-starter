@@ -498,8 +498,11 @@ const measures = [
 			<p class="text-secondary measure">
 				<code>.card-tint</code> drops the border entirely and fills the card with a tint set
 				per instance via <code>--card-tint</code> — a saturated field doesn't need an edge
-				drawn around it. Muted copy inside is derived from the primary text colour, because
-				the secondary role isn't guaranteed AA on a tint.
+				drawn around it. It also re-points <code>--color-text-secondary</code> and
+				<code>--color-text-tertiary</code> to tint-safe tones, so anything inside — including
+				a page's own scoped CSS reaching for those tokens — lands on a safe value without
+				needing an override. <code>.section-brand</code> does the same from
+				<code>--color-brand-contrast</code>.
 			</p>
 			<ul class="grid-auto demo-grid">
 				{tints.slice(1, 4).map((t) => (
