@@ -188,7 +188,9 @@ Shared classes live in `src/styles/global.css`. Reach for these before writing a
 
 ### Navigation
 
-`Header.astro` is a floating pill that sticks below the top edge — frosted (`backdrop-filter`) over a cream fill, with the logo, links, and `NAV_CTA` on one row. A few constraints worth keeping:
+`Header.astro` is a floating pill that sticks below the top edge — frosted (`backdrop-filter`) over a mostly-opaque white fill with a hairline border, carrying the logo, links, and `NAV_CTA` on one row. A few constraints worth keeping:
+
+- The fill is **translucent white, not solid**. Solid would remove the thing the `backdrop-filter` blurs, so the glass effect would vanish. The hairline carries the edge definition instead, which is why the shadow only needs to be a hint of lift.
 
 - The shell stays **in normal flow and sticks**; it is not `position: fixed`. Fixed would make every page responsible for reserving matching top padding, and any page that forgot would hide its own first heading under the bar.
 - Every direct child of the bar sets an explicit `grid-row: 1`. With only `grid-column` set, an item asking for column 1 after one already placed in column 2 wraps to a second row instead of moving the cursor backwards.

@@ -205,10 +205,20 @@ const currentPath = Astro.url.pathname;
 		gap: var(--space-4);
 		padding: var(--space-3);
 		border-radius: var(--radius-pill);
-		background: color-mix(in srgb, var(--tint-cream) 88%, transparent);
+		/* White rather than cream: on the warm off-white page a cream fill has
+		   almost nothing to separate it and reads as a smudge instead of a
+		   surface. Held translucent rather than solid because the blur needs
+		   something to see through — at 85% it still reads as white while the
+		   page stays visible moving underneath it.
+
+		   The hairline now does the edge definition, so the shadow can drop
+		   back to a hint of lift. A border and a heavy shadow both drawing the
+		   same edge is what made this feel heavy. */
+		background: color-mix(in srgb, var(--surface-raised) 85%, transparent);
+		border: 1px solid var(--border-hairline);
 		-webkit-backdrop-filter: saturate(180%) blur(16px);
 		backdrop-filter: saturate(180%) blur(16px);
-		box-shadow: var(--shadow-md);
+		box-shadow: var(--shadow-sm);
 		/* Excluded from the page cross-fade — see global.css. */
 		view-transition-name: site-header;
 	}
@@ -230,7 +240,7 @@ const currentPath = Astro.url.pathname;
 
 			@keyframes header-lift {
 				to {
-					box-shadow: var(--shadow-lg);
+					box-shadow: var(--shadow-md);
 				}
 			}
 		}
@@ -391,7 +401,10 @@ const currentPath = Astro.url.pathname;
 		z-index: 1;
 		padding: var(--space-5);
 		border-radius: var(--radius-xl);
-		background: color-mix(in srgb, var(--tint-cream) 94%, transparent);
+		/* Matches the bar, so the panel reads as the same surface extended
+		   rather than a second material hanging off it. */
+		background: color-mix(in srgb, var(--surface-raised) 92%, transparent);
+		border: 1px solid var(--border-hairline);
 		-webkit-backdrop-filter: saturate(180%) blur(16px);
 		backdrop-filter: saturate(180%) blur(16px);
 		box-shadow: var(--shadow-lg);
