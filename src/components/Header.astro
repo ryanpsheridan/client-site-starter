@@ -42,8 +42,8 @@ const currentPath = Astro.url.pathname;
 <div id="app-menu" class="app-menu" role="dialog" aria-modal="true" aria-label="Menu">
 	<nav aria-label="Primary">
 		<ul>
-			{NAV_LINKS.map((link) => (
-				<li>
+			{NAV_LINKS.map((link, i) => (
+				<li style={`--i: ${i};`}>
 					<a
 						href={link.href}
 						class="menu-item"
@@ -140,6 +140,44 @@ const currentPath = Astro.url.pathname;
 		background: var(--surface-page);
 		border-bottom: 1px solid var(--border-hairline);
 		padding-top: env(safe-area-inset-top);
+		/* Excluded from the page cross-fade — see global.css. */
+		view-transition-name: site-header;
+	}
+
+	/* Scroll-aware header: at the top it sits flush in the page, and once the
+	   page moves under it, it separates with a translucent fill and a shadow.
+
+	   Driven by a scroll timeline rather than a scroll listener — no JS, and it
+	   runs off the main thread. @supports keeps it from applying at all in
+	   browsers without it, where the header just stays in its resting state.
+
+	   The blur is set unconditionally rather than animated: at rest the fill is
+	   opaque so there's nothing to see through, and animating backdrop-filter
+	   on and off is visibly steppy. */
+	@supports (animation-timeline: scroll()) {
+		@media (prefers-reduced-motion: no-preference) {
+			/* Longhands, not the `animation` shorthand: the shorthand resets
+			   animation-timeline to auto, and the CSS minifier is free to
+			   reorder declarations — which silently put the reset after the
+			   timeline and killed this entirely. Longhands can't collide. */
+			.site-header {
+				-webkit-backdrop-filter: saturate(180%) blur(12px);
+				backdrop-filter: saturate(180%) blur(12px);
+				animation-name: header-separate;
+				animation-timing-function: linear;
+				animation-fill-mode: both;
+				animation-timeline: scroll(root block);
+				animation-range: 0 96px;
+			}
+
+			@keyframes header-separate {
+				to {
+					background: var(--overlay-chip);
+					border-bottom-color: var(--border-default);
+					box-shadow: var(--shadow-sm);
+				}
+			}
+		}
 	}
 
 	.site-header-inner {
@@ -308,6 +346,13 @@ const currentPath = Astro.url.pathname;
 		gap: var(--space-6);
 	}
 
+	/* Items start low and faded, then rise in one after another as the overlay
+	   opens. The stagger is what turns "a panel appeared" into something that
+	   reads as deliberate — 40ms apart, so six items finish inside a quarter
+	   second and it never feels like waiting.
+
+	   --i is set per item in the markup; using nth-child instead would cap the
+	   effect at however many rules were written, and NAV_LINKS is client-edited. */
 	.menu-item {
 		display: inline-block;
 		font-family: var(--font-heading);
@@ -317,9 +362,26 @@ const currentPath = Astro.url.pathname;
 		color: var(--color-text-secondary);
 		text-decoration: none;
 		-webkit-tap-highlight-color: transparent;
+		opacity: 0;
+		transform: translateY(12px);
 		transition:
 			color var(--duration-fast) var(--ease-out),
-			transform var(--duration-fast) var(--ease-out);
+			opacity var(--duration-base) var(--ease-out),
+			transform var(--duration-base) var(--ease-out);
+	}
+
+	.app-menu.open .menu-item {
+		opacity: 1;
+		transform: translateY(0);
+		transition-delay: calc(var(--i, 0) * 40ms);
+	}
+
+	/* Duration is already near-zero under reduced motion, but the delay isn't —
+	   without this the last item would still wait a quarter second to appear. */
+	@media (prefers-reduced-motion: reduce) {
+		.app-menu.open .menu-item {
+			transition-delay: 0s;
+		}
 	}
 
 	/* Color, not weight. Changing font-weight on hover reflows the text and
@@ -334,8 +396,10 @@ const currentPath = Astro.url.pathname;
 		text-underline-offset: 0.3em;
 	}
 
-	.menu-item:active {
-		transform: scale(0.97);
+	/* Scoped to .app-menu.open so it outranks the stagger rule above, which
+	   would otherwise hold transform at translateY(0) and swallow the press. */
+	.app-menu.open .menu-item:active {
+		transform: translateY(0) scale(0.97);
 	}
 
 	@media (max-width: 480px) {

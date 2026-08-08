@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import StatBand from '../components/StatBand.astro';
 import { SITE_TITLE } from '../consts';
 
 // ---------------------------------------------------------------------------
@@ -91,14 +92,7 @@ const schema = {
 
 	<section class="section-tight" aria-label="By the numbers">
 		<div class="container">
-			<ul class="stat-band">
-				{stats.map((stat) => (
-					<li>
-						<span class="stat-value">{stat.value}</span>
-						<span class="stat-label">{stat.label}</span>
-					</li>
-				))}
-			</ul>
+			<StatBand stats={stats} />
 		</div>
 	</section>
 

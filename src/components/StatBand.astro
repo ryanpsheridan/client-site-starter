@@ -1,0 +1,97 @@
+---
+// Row of headline figures on a sunken panel, with the numbers counting up the
+// first time the band scrolls into view.
+//
+// The count-up is the one piece of scroll-triggered motion in the system, and
+// it's deliberately not a reveal: the finished numbers are in the HTML, so
+// nothing is hidden waiting on a scroll position. Without JS, with reduced
+// motion, or if the band is already on screen at load, the real values are
+// simply there — the animation is decoration on top of content that already
+// rendered, never a gate in front of it.
+
+interface Props {
+	stats: { value: string; label: string }[];
+	/** Column count at desktop. Defaults to 3. */
+	cols?: number;
+}
+
+const { stats, cols = 3 } = Astro.props;
+---
+
+<ul class="stat-band" style={`--stat-cols: ${cols};`}>
+	{stats.map((stat) => (
+		<li>
+			<span class="stat-value" data-countup>{stat.value}</span>
+			<span class="stat-label">{stat.label}</span>
+		</li>
+	))}
+</ul>
+
+<script>
+	const targets = document.querySelectorAll<HTMLElement>('.stat-value[data-countup]');
+	const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (targets.length && !reduced && 'IntersectionObserver' in window) {
+		// Splits "500+" or "$1.2M" into prefix / number / suffix so only the
+		// numeric part animates and any decoration around it survives.
+		const parse = (text: string) => {
+			const match = text.match(/^(\D*?)([\d,]+(?:\.\d+)?)(.*)$/s);
+			if (!match) return null;
+			const [, prefix, digits, suffix] = match;
+			const decimals = digits.includes('.') ? digits.split('.')[1].length : 0;
+			const value = Number(digits.replace(/,/g, ''));
+			if (!Number.isFinite(value)) return null;
+			// Whether the original used thousands separators, so the animated
+			// frames are formatted the way the final value is written.
+			return { prefix, suffix, value, decimals, grouped: digits.includes(',') };
+		};
+
+		const run = (el: HTMLElement) => {
+			const parsed = parse(el.textContent || '');
+			if (!parsed) return;
+
+			const { prefix, suffix, value, decimals, grouped } = parsed;
+			const format = (n: number) =>
+				prefix +
+				n.toLocaleString(undefined, {
+					minimumFractionDigits: decimals,
+					maximumFractionDigits: decimals,
+					useGrouping: grouped,
+				}) +
+				suffix;
+
+			const duration = 1100;
+			let start: number | null = null;
+
+			const step = (now: number) => {
+				if (start === null) start = now;
+				const progress = Math.min((now - start) / duration, 1);
+				// Ease-out cubic: fast off the mark, long settle — the same
+				// shape as --ease-out, so it matches everything else on the page.
+				const eased = 1 - Math.pow(1 - progress, 3);
+				el.textContent = format(value * eased);
+				if (progress < 1) requestAnimationFrame(step);
+				// Restore the exact original string at the end rather than a
+				// re-formatted one, so nothing drifts from what was authored.
+				else el.textContent = format(value);
+			};
+
+			requestAnimationFrame(step);
+		};
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					// Once only — a number that re-animates every time it
+					// scrolls past stops reading as information.
+					observer.unobserve(entry.target);
+					run(entry.target as HTMLElement);
+				}
+			},
+			{ threshold: 0.5 }
+		);
+
+		targets.forEach((el) => observer.observe(el));
+	}
+</script>

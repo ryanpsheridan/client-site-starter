@@ -493,16 +493,46 @@ const serviceSchema = {
 		display: none;
 	}
 
+	/* Rotating a + into an x rather than swapping the glyph for a minus: the
+	   character swap jumps, this reads as the same mark turning. */
 	.faq-item summary::before {
 		content: '+';
 		flex-shrink: 0;
 		width: 1em;
 		font-weight: var(--weight-normal);
 		color: var(--color-text-tertiary);
+		transition: transform var(--duration-base) var(--ease-out);
 	}
 
 	.faq-item[open] summary::before {
-		content: '\2212';
+		transform: rotate(135deg);
+	}
+
+	/* Smooth open/close. <details> snaps by default because it animates from a
+	   height of 0 to `auto`, which isn't interpolatable — interpolate-size
+	   makes that keyword animatable, and allow-discrete carries the
+	   content-visibility flip along with it.
+
+	   Guarded by @supports: where ::details-content isn't implemented the
+	   accordion just snaps open exactly as it does today. Nothing is hidden
+	   behind the animation, so there's no failure mode where content is
+	   unreachable. */
+	@supports (interpolate-size: allow-keywords) {
+		.faq-list {
+			interpolate-size: allow-keywords;
+		}
+
+		.faq-item::details-content {
+			block-size: 0;
+			overflow: hidden;
+			transition:
+				block-size var(--duration-base) var(--ease-out),
+				content-visibility var(--duration-base) allow-discrete;
+		}
+
+		.faq-item[open]::details-content {
+			block-size: auto;
+		}
 	}
 
 	.faq-item p {

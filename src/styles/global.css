@@ -47,6 +47,54 @@ html {
 	}
 }
 
+/* ----------------------------------------------------------------------------
+   Cross-page transitions
+
+   Native CSS view transitions — no router, no JS, no library. Pages cross-fade
+   with a slight rise instead of hard-cutting, which is most of what makes a
+   multi-page site feel like one continuous thing rather than a stack of
+   documents. Browsers without support simply navigate as before.
+
+   The header opts out by name: it's visually identical across pages, so
+   fading it out and back in is motion that draws attention to nothing.
+   ---------------------------------------------------------------------------- */
+
+@view-transition {
+	navigation: auto;
+}
+
+::view-transition-old(root) {
+	animation: vt-fade-out var(--duration-fast) var(--ease-out) both;
+}
+
+::view-transition-new(root) {
+	animation: vt-rise-in var(--duration-base) var(--ease-out) both;
+}
+
+@keyframes vt-fade-out {
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes vt-rise-in {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+}
+
+/* The global reduced-motion block below targets `*`, which does NOT match the
+   ::view-transition pseudo-element tree — so these need switching off
+   explicitly or they'd be the one animation that ignores the preference. */
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-group(*),
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation: none !important;
+	}
+}
+
 body {
 	margin: 0;
 	font-family: var(--font-sans);
@@ -584,8 +632,19 @@ svg {
 	transform: translateY(-2px);
 }
 
+/* A tinted card is a flat field with no border and nothing to cast a shadow
+   from, so the default lift barely registers on it. It deepens its own fill
+   instead — the tint itself becomes the hover signal. */
+.card-tint.card-interactive {
+	transition:
+		background-color var(--duration-base) var(--ease-out),
+		transform var(--duration-base) var(--ease-out);
+}
+
 .card-tint.card-interactive:hover {
 	border-color: transparent;
+	box-shadow: none;
+	background: color-mix(in srgb, var(--card-tint, var(--tint-cream)) 88%, var(--color-text));
 }
 
 /* ----------------------------------------------------------------------------
@@ -829,6 +888,9 @@ svg {
 .stat-value {
 	display: block;
 	font-family: var(--font-heading);
+	/* Fixed-width digits so a counting number doesn't jitter its own width
+	   as it runs, and so a row of figures stays optically aligned. */
+	font-variant-numeric: tabular-nums;
 	font-size: var(--text-h1);
 	font-weight: var(--weight-semibold);
 	line-height: var(--leading-tight);

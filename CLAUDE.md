@@ -139,6 +139,20 @@ Recommended option: **Decap CMS** (free, open-source, git-based — formerly Net
 - Setup isn't as turnkey as Formspree/Calendly/Stripe: Decap CMS needs an OAuth backend to authenticate the client against GitHub, and since this template deploys to Vercel (not Netlify, where Decap's auth is native), that backend has to be a small serverless function added to the project. Research the current recommended approach for wiring Decap CMS's GitHub OAuth flow on Vercel before implementing this for a real client — the ecosystem around this shifts, so verify rather than assuming the setup is a five-minute account signup like the other decision trees.
 - Access to `/admin` should be gated to the client (and the developer) — never left open to the public.
 
+## Motion
+
+The site's motion budget is deliberately small: roughly 10% surprise-and-delight on top of 90% functionality. Everything below is CSS-first and adds no third-party bytes — **never add an animation library** (GSAP, Framer Motion, AOS). The whole build is currently ~500KB including the font and images, with zero external JS or CSS files; one animation library would be a bigger download than the entire site.
+
+Rules for any new motion:
+
+- **CSS before JS.** Prefer native features — view transitions, scroll-driven animations (`animation-timeline`), `::details-content` with `interpolate-size` — over a scroll listener or a library. Wrap anything not yet universal in `@supports` so unsupported browsers get the static state, never a broken one.
+- **Animate `transform` and `opacity`** where possible; they're the only properties that stay off the main thread.
+- **Respect `prefers-reduced-motion`.** `global.css` disables transitions/animations globally via a `*` selector — but that does **not** reach the `::view-transition` pseudo-element tree (handled explicitly in `global.css`) and does not reach JS-driven motion, which must check `matchMedia` itself.
+- **Never gate content behind motion.** No fade-up-on-scroll: content is in the HTML and visible immediately. The one scroll-triggered exception is the `StatBand` count-up, and even there the finished numbers are in the markup — the animation only replaces text that already rendered.
+- **Don't use the `animation` shorthand with a scroll timeline.** It resets `animation-timeline` to `auto`, and the CSS minifier may reorder declarations so the reset lands last. Use longhands (see `Header.astro`).
+
+What's in place: cross-page view transitions; scroll-aware sticky header; staggered mobile-menu reveal; tinted cards deepening their fill on hover; the arrow-badge nudge on `.btn-arrow`; tap-to-copy on the contact details; a smooth FAQ accordion; and the `StatBand` count-up.
+
 ## Design Tokens
 
 Use CSS variables from `src/styles/tokens.css` for all styling — never hardcode a color, spacing value, duration, or font. `/style-guide` renders every token and component class below; if something isn't on that page, it isn't in the system.

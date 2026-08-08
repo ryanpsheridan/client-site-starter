@@ -2,6 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import Testimonial from '../components/Testimonial.astro';
+import StatBand from '../components/StatBand.astro';
+
+const demoStats = [
+	{ value: '20+', label: 'Years in business' },
+	{ value: '500+', label: 'Projects completed' },
+	{ value: '4.9', label: 'Average rating' },
+];
 
 // Living reference for the design system. Every token group and every shared
 // component class in global.css must be represented here — if something isn't
@@ -424,6 +431,29 @@ const measures = [
 				</div>
 			</div>
 
+			<h3>Micro-interactions</h3>
+			<p class="text-secondary measure">
+				The site's motion budget is small on purpose, and all of it is CSS-first — no
+				animation library, which would outweigh the entire rest of the build. Each of these
+				degrades to its static state where the feature isn't supported, and all of them stop
+				under <code>prefers-reduced-motion</code>.
+			</p>
+			<ul class="plain-list">
+				<li><code>@view-transition</code><span class="swatch-note"> cross-page fade and rise; the header opts out by name</span></li>
+				<li><code>animation-timeline: scroll()</code><span class="swatch-note"> sticky header gains blur, border, and shadow once scrolled</span></li>
+				<li><code>--i</code> stagger<span class="swatch-note"> mobile menu items rise in 40ms apart</span></li>
+				<li><code>.card-tint:hover</code><span class="swatch-note"> deepens its own fill instead of casting a shadow</span></li>
+				<li><code>.btn-arrow:hover</code><span class="swatch-note"> the badge nudges up and to the right</span></li>
+				<li><code>::details-content</code><span class="swatch-note"> FAQ accordion opens smoothly; the + rotates rather than swapping glyph</span></li>
+				<li><code>StatBand</code><span class="swatch-note"> figures count up once, the first time they scroll into view</span></li>
+				<li>Tap-to-copy<span class="swatch-note"> contact details copy on click, with an announced confirmation</span></li>
+			</ul>
+			<p class="swatch-note measure">
+				Deliberately absent: fade-up-on-scroll. Content is in the HTML and visible
+				immediately — the count-up is the sole scroll-triggered effect, and even it only
+				re-animates text that already rendered.
+			</p>
+
 			<h2>Layout</h2>
 			<p class="text-secondary measure">
 				<code>.container</code> sets the page gutter; the measure tokens cap line length for
@@ -624,24 +654,14 @@ const measures = [
 				</li>
 			</ul>
 			<p class="swatch-note">
-				<code>.stat-band</code> groups the same figures into a sunken panel split by
-				hairlines, and collapses to a single column below 720px where the vertical rules
-				would be dividing nothing. Tune the column count with <code>--stat-cols</code>.
+				The <code>StatBand</code> component groups the same figures into a sunken panel
+				split by hairlines, and collapses to a single column below 720px where the vertical
+				rules would be dividing nothing. Tune the column count with the <code>cols</code>
+				prop. The numbers count up the first time the band scrolls into view — once only,
+				skipped entirely under reduced motion, and the finished values are in the HTML so
+				nothing is hidden waiting on a scroll position.
 			</p>
-			<ul class="stat-band">
-				<li>
-					<span class="stat-value">20+</span>
-					<span class="stat-label">Years in business</span>
-				</li>
-				<li>
-					<span class="stat-value">500+</span>
-					<span class="stat-label">Projects completed</span>
-				</li>
-				<li>
-					<span class="stat-value">4.9</span>
-					<span class="stat-label">Average rating</span>
-				</li>
-			</ul>
+			<StatBand stats={demoStats} />
 
 			<h3>Tag</h3>
 			<div class="component-row">

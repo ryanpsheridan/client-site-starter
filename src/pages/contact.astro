@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactForm from '../components/ContactForm.astro';
+import Icon from '../components/Icon.astro';
 import { SITE_TITLE, SITE_EMAIL, SITE_PHONE, SITE_ADDRESS } from '../consts';
 
 // ---------------------------------------------------------------------------
@@ -50,10 +51,22 @@ const schema = {
 					<div class="card card-tint details-card" style="--card-tint: var(--tint-cream);">
 						<dl class="contact-list">
 							<dt>Phone</dt>
-							<dd><a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a></dd>
+							<dd>
+								<a href={`tel:${SITE_PHONE.replace(/[^\d+]/g, '')}`}>{SITE_PHONE}</a>
+								<button type="button" class="copy-btn" data-copy={SITE_PHONE} aria-label={`Copy phone number ${SITE_PHONE}`}>
+									<span class="copy-icon copy-icon-idle"><Icon name="copy" size={16} /></span>
+									<span class="copy-icon copy-icon-done"><Icon name="check" size={16} /></span>
+								</button>
+							</dd>
 
 							<dt>Email</dt>
-							<dd><a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a></dd>
+							<dd>
+								<a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
+								<button type="button" class="copy-btn" data-copy={SITE_EMAIL} aria-label={`Copy email address ${SITE_EMAIL}`}>
+									<span class="copy-icon copy-icon-idle"><Icon name="copy" size={16} /></span>
+									<span class="copy-icon copy-icon-done"><Icon name="check" size={16} /></span>
+								</button>
+							</dd>
 
 							{SITE_ADDRESS && (
 								<>
@@ -62,6 +75,10 @@ const schema = {
 								</>
 							)}
 						</dl>
+
+						{/* Confirmation is announced rather than left as a purely visual
+						    icon swap — the check alone says nothing to a screen reader. */}
+						<p class="visually-hidden" role="status" aria-live="polite" id="copy-status"></p>
 
 						<div class="hours">
 							<h2 class="hours-heading">Hours</h2>
@@ -86,6 +103,34 @@ const schema = {
 		</div>
 	</section>
 </BaseLayout>
+
+<script>
+	// Tap-to-copy on the phone and email. Progressive enhancement: the buttons
+	// are inert without JS, and the values stay selectable links either way.
+	const status = document.getElementById('copy-status');
+
+	document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
+		btn.addEventListener('click', async () => {
+			const value = btn.dataset.copy;
+			if (!value) return;
+
+			try {
+				await navigator.clipboard.writeText(value);
+			} catch {
+				// Clipboard access can be refused (insecure context, denied
+				// permission). Saying nothing would look like a dead button.
+				if (status) status.textContent = 'Copy failed — select the text to copy it manually.';
+				return;
+			}
+
+			btn.classList.add('copied');
+			if (status) status.textContent = `Copied ${value} to clipboard.`;
+			// Long enough to register, short enough that it's back to normal
+			// before anyone tries a second copy.
+			setTimeout(() => btn.classList.remove('copied'), 1600);
+		});
+	});
+</script>
 
 <style>
 	.contact-info {
@@ -119,6 +164,77 @@ const schema = {
 	.contact-list dd {
 		margin: 0;
 		font-size: var(--text-large);
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+	}
+
+	/* Copy button. Sits quiet until the row is hovered or it's focused, so the
+	   contact details read as text rather than as a toolbar. It stays fully
+	   visible on touch, where there's no hover to reveal it. */
+	.copy-btn {
+		display: inline-grid;
+		place-items: center;
+		flex-shrink: 0;
+		width: 1.75rem;
+		height: 1.75rem;
+		padding: 0;
+		border: 0;
+		border-radius: var(--radius-sm);
+		background: none;
+		color: var(--color-text-tertiary);
+		cursor: pointer;
+		opacity: 0;
+		-webkit-tap-highlight-color: transparent;
+		transition:
+			opacity var(--duration-fast) var(--ease-out),
+			color var(--duration-fast) var(--ease-out),
+			background-color var(--duration-fast) var(--ease-out);
+	}
+
+	.contact-list dd:hover .copy-btn,
+	.copy-btn:focus-visible {
+		opacity: 1;
+	}
+
+	@media (hover: none) {
+		.copy-btn {
+			opacity: 1;
+		}
+	}
+
+	.copy-btn:hover {
+		color: var(--color-text);
+		background: color-mix(in srgb, var(--color-text) 8%, transparent);
+	}
+
+	/* Both icons occupy the same cell, so swapping them can't reflow the row. */
+	.copy-icon {
+		grid-area: 1 / 1;
+		display: grid;
+		transition:
+			opacity var(--duration-fast) var(--ease-out),
+			transform var(--duration-fast) var(--ease-out);
+	}
+
+	.copy-icon-done {
+		opacity: 0;
+		transform: scale(0.6);
+	}
+
+	.copy-btn.copied {
+		opacity: 1;
+		color: var(--color-accent-positive);
+	}
+
+	.copy-btn.copied .copy-icon-idle {
+		opacity: 0;
+		transform: scale(0.6);
+	}
+
+	.copy-btn.copied .copy-icon-done {
+		opacity: 1;
+		transform: scale(1);
 	}
 
 	/* Rule derived from the card's own text colour — --border-hairline is a
