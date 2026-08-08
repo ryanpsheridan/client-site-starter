@@ -25,21 +25,41 @@
 	   --surface-sunken, which puts a hard floor around #707070. Anything
 	   lighter reads as "muted" but fails, so the ramp has no #999-class step.
 	   ------------------------------------------------------------------------ */
-	--gray-0: #FFFFFF;
-	--gray-50: #F8F8F8;   /* recessed section bands */
-	--gray-100: #F1F1F1;  /* inline code, subtle fills */
-	--gray-200: #EFEFEF;  /* hairline dividers */
-	--gray-300: #E5E5E5;  /* default borders */
-	--gray-400: #D4D4D4;  /* emphasised / hover borders */
-	--gray-500: #707070;  /* tertiary text — 4.95:1 on page, 4.70:1 on sunken */
-	--gray-600: #5C5C5C;  /* secondary text — 6.69:1 on page, 6.35:1 on sunken */
-	--gray-900: #242424;  /* primary text — 15.5:1 on page */
+	--gray-0: #FFFFFF;    /* cards and raised surfaces */
+	--gray-25: #FBFAF9;   /* page — warm off-white, not pure white */
+	--gray-50: #F4F2EE;   /* recessed section bands */
+	--gray-100: #EFEDE8;  /* inline code, subtle fills */
+	--gray-200: #E7E4DE;  /* hairline dividers */
+	--gray-300: #DCD8D1;  /* default borders */
+	--gray-400: #C6C2B9;  /* emphasised / hover borders */
+	--gray-500: #666B75;  /* tertiary text — 5.13:1 on page, 4.78:1 on sunken */
+	--gray-600: #575D68;  /* secondary text — 6.36:1 on page, 5.93:1 on sunken */
+	--gray-900: #081122;  /* primary text — 18.9:1 on page */
 
-	--ink-900: #1A1A1A;
-	--ink-950: #000000;
+	--ink-900: #081122;
+	--ink-950: #030812;
+
+	/* ------------------------------------------------------------------------
+	   Tints. Saturated-but-light fields, used as whole card and whole section
+	   backgrounds rather than as small accents — this is the one part of the
+	   palette that carries personality.
+
+	   --color-text clears AA on every tint by a wide margin (13.4:1 on the
+	   worst, sky). --color-text-secondary technically clears it too, but only
+	   just — 4.72:1 on sky, 4.74:1 on lavender — so it fails the moment a
+	   client re-themes a tint even slightly darker. That margin is too thin to
+	   build on, which is why .card-tint and .section-brand re-derive their
+	   muted tone from --color-text via color-mix (7.2:1 at the same worst
+	   case) rather than reaching for the secondary role.
+	   ------------------------------------------------------------------------ */
+	--tint-lime: #F5FE90;
+	--tint-mint: #BCFFB0;
+	--tint-sky: #B0E0FF;
+	--tint-lavender: #DAD6FF;
+	--tint-cream: #F4F1EA;
 
 	/* Shadow base, kept neutral so no elevation ever inherits a brand hue. */
-	--shadow-rgb: 24, 24, 24;
+	--shadow-rgb: 8, 17, 34;
 
 	/* ------------------------------------------------------------------------
 	   2. BRAND — the re-theme surface. Swap these per client; everything
@@ -53,12 +73,24 @@
 	   monochromatic while a client's brand color still shows up where it
 	   carries meaning. Check any new accent against AA before shipping.
 	   ------------------------------------------------------------------------ */
-	--color-bg: var(--gray-0);
+	--color-bg: var(--gray-25);
 	--color-bg-subtle: var(--gray-50);
 
-	--color-accent: #2952CC;        /* 6.56:1 on white */
-	--color-accent-hover: #1F3FA3;
+	--color-accent: #2447BE;        /* 7.42:1 on white */
+	--color-accent-hover: #1B3691;
 	--color-accent-contrast: #FFFFFF;
+
+	/* The highlight. Unlike --color-accent (which is link-only and must clear
+	   AA as text), this is a *field* color: it is only ever a background, with
+	   --color-brand-contrast on top. That inversion is what lets it be far more
+	   saturated than anything else in the system without failing contrast.
+
+	   Re-theming per client: this is usually the client's actual brand color.
+	   If theirs is dark rather than light, swap --color-brand-contrast to white
+	   and re-check the pairing. */
+	--color-brand: var(--tint-lime);
+	--color-brand-hover: #EBF873;
+	--color-brand-contrast: var(--ink-900);
 
 	--color-ink: var(--ink-900);
 	--color-ink-hover: var(--ink-950);
@@ -76,7 +108,9 @@
 	   reads as raised via contrast. One class, both contexts.
 	   ------------------------------------------------------------------------ */
 	--surface-page: var(--color-bg);
-	--surface-raised: var(--color-bg);
+	/* White, while the page itself is warm off-white — so a card lifts by being
+	   cleaner than its background rather than by borrowing a shadow. */
+	--surface-raised: var(--gray-0);
 	--surface-sunken: var(--color-bg-subtle);
 	--surface-fill: var(--gray-100);
 
@@ -109,12 +143,16 @@
 	/* ------------------------------------------------------------------------
 	   4a. TYPOGRAPHY
 
-	   DM Sans for everything. Hierarchy comes from size, weight, tracking, and
-	   leading — never from a second typeface. Three weights total; semibold is
-	   the ceiling, there is no 700.
+	   Aspekta for everything. Hierarchy comes from size, tracking, and leading
+	   — never from a second typeface, and barely from weight: the whole scale
+	   sits at medium (500), with size and tracking doing the separating. That
+	   is why the headings can be this large without the page shouting.
+
+	   Three weights are defined, but semibold is a rarely-needed emphasis
+	   step, not the heading default. There is no 700.
 	   ------------------------------------------------------------------------ */
-	--font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
-	--font-heading: 'DM Sans', system-ui, -apple-system, sans-serif;
+	--font-sans: 'Aspekta Variable', system-ui, -apple-system, sans-serif;
+	--font-heading: 'Aspekta Variable', system-ui, -apple-system, sans-serif;
 
 	/* Body scale — large for lead paragraphs, body as the default, small for
 	   captions and fine print. Eyebrow is the uppercase overline label. */
@@ -132,12 +170,12 @@
 	   instead of eating a 375px screen. Display's lower bound is held well
 	   clear of h1's so the two don't converge at mid-size viewports — a
 	   display headline that lands on the same size as an h1 is just an h1. */
-	--text-h5: 1rem;
-	--text-h4: 1.25rem;
-	--text-h3: clamp(1.375rem, 1.2rem + 0.9vw, 1.625rem);
-	--text-h2: clamp(1.625rem, 1.3rem + 1.6vw, 2.125rem);
-	--text-h1: clamp(2rem, 1.5rem + 2.5vw, 2.75rem);
-	--text-display: clamp(2.5rem, 1.6rem + 4.5vw, 3.75rem);
+	--text-h5: 1.25rem;                                      /* 20px */
+	--text-h4: clamp(1.375rem, 1.25rem + 0.6vw, 1.5rem);     /* →24px */
+	--text-h3: clamp(1.625rem, 1.35rem + 1.4vw, 2rem);       /* →32px */
+	--text-h2: clamp(2rem, 1.5rem + 2.4vw, 2.625rem);        /* →42px */
+	--text-h1: clamp(2.5rem, 1.75rem + 3.6vw, 3.5rem);       /* →56px */
+	--text-display: clamp(3rem, 1.8rem + 5.6vw, 4.5rem);     /* →72px */
 
 	--weight-normal: 400;
 	--weight-medium: 500;
@@ -146,17 +184,18 @@
 	/* Tracking. Large type set at default tracking reads loose and generic;
 	   pulling it in is most of what separates a display headline from a big
 	   paragraph. Small uppercase type needs the opposite treatment. */
-	--tracking-tight: -0.022em;   /* display */
-	--tracking-snug: -0.014em;    /* h1, h2 */
-	--tracking-normal: 0;         /* body and below */
+	--tracking-tight: -0.024em;   /* display */
+	--tracking-snug: -0.02em;     /* h1-h5, and buttons */
+	--tracking-body: -0.01em;     /* lead paragraphs at 20px */
+	--tracking-normal: 0;         /* body at 16px and below */
 	--tracking-caps: 0.06em;      /* eyebrows, uppercase labels */
 
 	/* Leading. Tighter as type gets larger — a 3.75rem headline at 1.2 has
 	   caverns between its lines, while a 1rem label at 1.2 is cramped. */
-	--leading-display: 1.05;
-	--leading-tight: 1.15;
-	--leading-snug: 1.3;
-	--leading-body: 1.6;
+	--leading-display: 1.08;
+	--leading-tight: 1.12;
+	--leading-snug: 1.25;
+	--leading-body: 1.5;
 
 	/* ------------------------------------------------------------------------
 	   4b. SPACING — 4px grid.
@@ -190,9 +229,10 @@
 	   reads as a grey smudge; two layers at 4% read as a surface sitting
 	   above another surface. All neutral, so elevation never picks up a hue.
 	   ------------------------------------------------------------------------ */
-	--radius-sm: 4px;
-	--radius-md: 8px;
-	--radius-lg: 12px;
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--radius-lg: 16px;
+	--radius-xl: 24px;
 	--radius-pill: 999px;
 
 	--shadow-xs: 0 1px 2px rgba(var(--shadow-rgb), 0.04);
@@ -234,7 +274,7 @@
 	   length for running text: past roughly 75 characters the eye loses the
 	   line return, so prose gets a measure even when the container is wider.
 	   ------------------------------------------------------------------------ */
-	--content-width: 1120px;
+	--content-width: 1200px;
 	--measure-narrow: 34rem;  /* 544px — forms, tight single-column pages */
 	--measure: 40rem;         /* 640px — lead paragraphs, section intros */
 	--measure-wide: 45rem;    /* 720px — long-form body copy, FAQ lists */

@@ -33,7 +33,7 @@ Design tokens live in `src/styles/tokens.css`. Site-wide values (business name, 
 2. Replace placeholder copy in `src/pages/index.astro`, `about.astro`, `services.astro` with the client's real content.
 3. Update `astro.config.mjs`'s `site` value to the client's real domain once known.
 4. Once the client has real branding/a logo, replace the auto-generated favicon: delete `src/pages/favicon.svg.ts` and add a real static file at `public/favicon.svg` (or `.ico`/`.png`, updating the `<link>` in `BaseHead.astro` accordingly). Also replace `public/images/og-default.png`.
-5. Re-theme `src/styles/tokens.css` — swap `--color-accent*` and `--color-bg*` for the client's brand colors. Everything else in the site reads from these tokens, so a full re-skin should only require editing this one file (also update the hardcoded fill in `favicon.svg.ts` to match, until it's replaced per step 4).
+5. Re-theme `src/styles/tokens.css` — swap `--color-accent*`, `--color-brand*`, the `--tint-*` set, and `--color-bg*` for the client's brand colors. `--color-brand` is usually the client's actual brand color, since it's the one that appears as a large field; check any new tint against `--color-text` for AA before shipping it. Everything else in the site reads from these tokens, so a full re-skin should only require editing this one file (also update the hardcoded fill in `favicon.svg.ts` to match, until it's replaced per step 4).
 6. `src/pages/setup.astro` (`/setup`) is your own reference page — not linked anywhere on the site, not shown to the client. Use it while pitching/building; see "Before Launch" below for when to remove it.
 
 ## Before Launch
@@ -55,8 +55,10 @@ Set up once the site is live on its real domain:
 
 ## Typography
 
-- Font: **DM Sans** for both body and headings (`--font-sans` / `--font-heading` in `tokens.css`), loaded via Google Fonts in `BaseHead.astro`.
-- Don't introduce a second typeface without updating both the token and the Google Fonts `<link>` together.
+- Font: **Aspekta** for both body and headings (`--font-sans` / `--font-heading` in `tokens.css`), **self-hosted** — one 30KB variable file at `public/fonts/AspektaVF.woff2` covering weights 100–900, `@font-face` in `global.css`, preloaded in `BaseHead.astro`. No Google Fonts request, no third-party connection.
+- Licensed OFL 1.1; the licence ships alongside the font at `public/fonts/Aspekta-OFL-LICENSE.txt` and must stay there.
+- The whole scale sits at **medium (500)**, including headings. Hierarchy comes from size and tracking, not weight — that's what lets headings run this large without shouting. Semibold is a rare emphasis step, not the heading default.
+- Don't introduce a second typeface without updating the token, the `@font-face`, and the preload together.
 
 ## Accessibility — Non-Negotiable Defaults
 
@@ -146,14 +148,15 @@ Use CSS variables from `src/styles/tokens.css` for all styling — never hardcod
 - Surfaces: `--surface-page`, `--surface-raised`, `--surface-sunken`, `--surface-fill`
 - Borders: `--border-hairline`, `--border-default`, `--border-strong`
 - Text: `--color-text`, `--color-text-secondary`, `--color-text-tertiary`
-- Brand (the per-client re-theme surface): `--color-accent` (+ `-hover`/`-contrast`) for inline links only, `--color-ink` (+ `-hover`/`-contrast`) for primary buttons. `--color-bg` / `--color-bg-subtle` feed the surface tokens.
+- Brand (the per-client re-theme surface): `--color-accent` (+ `-hover`/`-contrast`) for inline links only, `--color-ink` (+ `-hover`/`-contrast`) for primary buttons, `--color-brand` (+ `-hover`/`-contrast`) for saturated fields. `--color-bg` / `--color-bg-subtle` feed the surface tokens.
+- Tints: `--tint-lime`, `--tint-mint`, `--tint-sky`, `--tint-lavender`, `--tint-cream` — whole-field colors for tinted cards, eyebrow pills, and brand bands. **These are backgrounds only.** `--color-text` clears AA on all of them comfortably (13.4:1 at worst). `--color-text-secondary` clears it by as little as 0.2, which is too thin to build on — so anything on a tint takes primary text, or a muted tone mixed down from it via `color-mix`, never the secondary/tertiary roles.
 - Semantic accents (use sparingly, only for actual state — positive/caution/critical/info): `--color-accent-positive`, `--color-accent-caution`, `--color-accent-critical`, `--color-accent-info` (each with a matching `-bg` variant)
 - Spacing: `--space-1` through `--space-10`, on a 4px grid. Roughly: 1–4 inside components, 5–7 between components, 8–10 between sections.
 - Typography: `--text-eyebrow`/`-small`/`-body`/`-large`, `--text-h5` through `--text-h1`, `--text-display`
-- Tracking: `--tracking-tight`/`-snug`/`-normal`/`-caps` — large type needs negative tracking, uppercase labels need positive
+- Tracking: `--tracking-tight`/`-snug`/`-body`/`-normal`/`-caps` — large type needs negative tracking, uppercase labels need positive
 - Leading: `--leading-display`/`-tight`/`-snug`/`-body`
 - Weights: `--weight-normal`, `--weight-medium`, `--weight-semibold` (no 700 — semibold is the ceiling)
-- Radius/elevation: `--radius-sm`/`-md`/`-lg`/`-pill`, `--shadow-xs`/`-sm`/`-md`/`-lg`, `--ring`
+- Radius/elevation: `--radius-sm`/`-md`/`-lg`/`-xl`/`-pill`, `--shadow-xs`/`-sm`/`-md`/`-lg`, `--ring`
 - Motion: `--duration-fast`/`-base`/`-slow`, `--ease-out`/`--ease-in-out`
 - Layout: `--content-width`, `--measure-narrow`/`--measure`/`--measure-wide`
 
@@ -162,10 +165,11 @@ Use CSS variables from `src/styles/tokens.css` for all styling — never hardcod
 Shared classes live in `src/styles/global.css`. Reach for these before writing anything in a page's scoped `<style>` block — a page block should hold genuinely page-specific layout, never a re-implementation of a shared pattern.
 
 - Layout: `.container` (+ `.container-narrow`), `.section` / `.section-tight` / `.section-loose` / `.section-hero`, `.section-sunken`, `.grid-auto` (tune with `--grid-min`), `.split` (+ `.split-reverse`, `.split-top`, tune with `--split-cols`), `.stack`, `.divider`
-- Components: `.card` (+ `.card-interactive`), `.btn` with `.btn-primary`/`.btn-secondary`/`.btn-inverse` and `.btn-sm`/`.btn-lg`, `.field` (+ `.field-hint`, `.field-error`, `.field-invalid`), `.media-frame` (tune with `--media-ratio`), `.topline`, `.tag`, `.quote`, `.stat-value`/`.stat-label`
-- Section headers: `.section-header` wrapping a `.section-header-text` (eyebrow + heading + lead), with an optional `.link-arrow` action pinned to the opposite end. Use this rather than stranding a button under the grid.
-- Inverted CTA: `.cta-band` for a full-bleed closing call to action, with `.btn-inverse` inside it. One per page at most — its whole job is to be the only thing that inverts.
-- Text: `.display`, `.eyebrow`, `.lead`, `.text-secondary`, `.text-tertiary`, `.measure` / `.measure-narrow` / `.measure-wide`
+- Components: `.card` (+ `.card-interactive`, `.card-tint` tuned with `--card-tint`), `.btn` with `.btn-primary`/`.btn-brand`/`.btn-secondary`/`.btn-inverse`, `.btn-sm`/`.btn-lg`, and `.btn-arrow`, `.field` (+ `.field-hint`, `.field-error`, `.field-invalid`), `.media-frame` (tune with `--media-ratio`), `.topline`, `.tag`, `.quote`, `.stat-value`/`.stat-label`, `.stat-band` (tune with `--stat-cols`)
+- `.btn-arrow` adds the inverted disc inside the pill's right edge. It's a navigation signal — reserve it for links that go somewhere, not for submit buttons.
+- Section headers: `.section-header` wrapping a `.section-header-text` (eyebrow + heading + lead), with an optional `.link-arrow` action pinned to the opposite end. Use this rather than stranding a button under the grid. Add `.section-header-center` when there's no action to pin opposite.
+- Saturated bands: `.cta-band` (ink) for a full-bleed closing call to action with `.btn-inverse` inside it, and `.section-brand` (brand color) for a full-bleed highlight band. **One of each per page at most** — each works by being the only thing on the page that inverts or saturates, so a second costs the first its impact.
+- Text: `.display`, `.eyebrow` (a tinted pill, tuned with `--eyebrow-tint`; `.eyebrow-plain` drops the pill), `.lead`, `.text-secondary`, `.text-tertiary`, `.measure` / `.measure-narrow` / `.measure-wide`
 
 Two shared Astro components sit alongside the CSS layer:
 

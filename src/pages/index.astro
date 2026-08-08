@@ -38,6 +38,11 @@ const servicesSection = {
 	action: { label: 'All services', href: '/services/' },
 };
 
+// Tints cycle across the service cards in order. Swap or reorder to change
+// which card gets which colour; add a fourth entry and a fourth card picks it
+// up automatically rather than repeating the first.
+const serviceTints = ['--tint-mint', '--tint-sky', '--tint-lavender'];
+
 const services = [
 	{ title: 'Service one', description: 'Replace with a real description of what this includes.' },
 	{ title: 'Service two', description: 'Replace with a real description of what this includes.' },
@@ -110,7 +115,7 @@ const schema = {
 					<h1 class="display">{hero.headline}</h1>
 					<p class="lead hero-sub">{hero.sub}</p>
 					<div class="hero-actions">
-						<a href={hero.primaryCta.href} class="btn btn-primary btn-lg">{hero.primaryCta.label}</a>
+						<a href={hero.primaryCta.href} class="btn btn-brand btn-lg btn-arrow">{hero.primaryCta.label}</a>
 						<a href={hero.secondaryCta.href} class="btn btn-secondary btn-lg">{hero.secondaryCta.label}</a>
 					</div>
 				</div>
@@ -145,11 +150,11 @@ const schema = {
 					<h2>{servicesSection.heading}</h2>
 					<p class="lead">{servicesSection.lead}</p>
 				</div>
-				<a href={servicesSection.action.href} class="link-arrow">{servicesSection.action.label}</a>
+				<a href={servicesSection.action.href} class="btn btn-primary btn-arrow">{servicesSection.action.label}</a>
 			</div>
 			<ul class="grid-auto">
-				{services.map((service) => (
-					<li class="card card-interactive">
+				{services.map((service, i) => (
+					<li class="card card-tint card-interactive" style={`--card-tint: var(${serviceTints[i % serviceTints.length]});`}>
 						<h3>{service.title}</h3>
 						<p class="text-secondary">{service.description}</p>
 					</li>
@@ -158,9 +163,9 @@ const schema = {
 		</div>
 	</section>
 
-	<section class="section section-sunken">
+	<section class="section-loose section-brand">
 		<div class="container">
-			<div class="section-header">
+			<div class="section-header section-header-center">
 				<div class="section-header-text">
 					<p class="eyebrow">{benefitsSection.eyebrow}</p>
 					<h2>{benefitsSection.heading}</h2>
@@ -186,7 +191,7 @@ const schema = {
 					<h2>{workSection.heading}</h2>
 					<p class="lead">{workSection.lead}</p>
 				</div>
-				<a href={workSection.action.href} class="link-arrow">{workSection.action.label}</a>
+				<a href={workSection.action.href} class="btn btn-primary btn-arrow">{workSection.action.label}</a>
 			</div>
 			<ul class="work-grid">
 				{galleryPreview.map((image) => (

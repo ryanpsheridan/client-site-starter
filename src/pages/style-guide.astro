@@ -32,6 +32,15 @@ const brand = [
 	{ name: '--color-accent-hover', label: 'Accent hover', note: '' },
 	{ name: '--color-ink', label: 'Ink', note: 'Primary buttons' },
 	{ name: '--color-ink-hover', label: 'Ink hover', note: '' },
+	{ name: '--color-brand', label: 'Brand', note: 'Field colour — background only, never text' },
+];
+
+const tints = [
+	{ name: '--tint-lime', label: 'Lime' },
+	{ name: '--tint-mint', label: 'Mint' },
+	{ name: '--tint-sky', label: 'Sky' },
+	{ name: '--tint-lavender', label: 'Lavender' },
+	{ name: '--tint-cream', label: 'Cream' },
 ];
 
 const semanticSwatches = [
@@ -195,9 +204,11 @@ const measures = [
 
 			<h3>Brand</h3>
 			<p class="text-secondary measure">
-				The only two tokens a client re-theme should need to touch. Accent is for inline links
-				and nothing else; ink carries primary buttons, which is what keeps the site
-				monochromatic while still showing brand color where it means something.
+				The tokens a client re-theme touches. Accent is for inline links and nothing else;
+				ink carries primary buttons. Brand is different in kind from both — it is a
+				<em>field</em> colour, only ever a background with <code>--color-brand-contrast</code>
+				on top, which is what lets it be far more saturated than anything that has to pass
+				contrast as text.
 			</p>
 			<ul class="grid-auto swatch-grid">
 				{brand.map((c) => (
@@ -206,6 +217,25 @@ const measures = [
 						<p class="swatch-label">{c.label}</p>
 						<code>{c.name}</code>
 						{c.note && <p class="swatch-note">{c.note}</p>}
+					</li>
+				))}
+			</ul>
+
+			<h3>Tints</h3>
+			<p class="text-secondary measure">
+				Whole-field colours for tinted cards (<code>.card-tint</code>), eyebrow pills, and
+				brand bands. <code>--color-text</code> clears AA on every tint with room to spare
+				(13.4:1 on the worst). <code>--color-text-secondary</code> clears it too, but by as
+				little as 0.2 — so it breaks the moment a tint is re-themed a shade darker, which is
+				why <code>.card-tint</code> mixes its muted tone down from the primary text colour
+				instead of reaching for the secondary role.
+			</p>
+			<ul class="grid-auto swatch-grid">
+				{tints.map((c) => (
+					<li>
+						<div class="swatch" style={`background:var(${c.name});`}></div>
+						<p class="swatch-label">{c.label}</p>
+						<code>{c.name}</code>
 					</li>
 				))}
 			</ul>
@@ -302,11 +332,26 @@ const measures = [
 
 			<h3>Eyebrow</h3>
 			<p class="text-secondary measure">
-				Uppercase overline label. Adds a level of hierarchy above a heading without spending
-				another type size — see <code>.eyebrow</code> above every section on this page.
+				Uppercase overline label, set in a tinted pill. Adds a level of hierarchy above a
+				heading without spending another type size — as plain grey caps it disappears next to
+				headings at this scale. Set the fill with <code>--eyebrow-tint</code>; text stays
+				<code>--color-text</code>, since the tints are only guaranteed AA against it.
 			</p>
 			<div class="demo-block">
 				<p class="eyebrow">Section label</p>
+				<h4>The heading it sits above</h4>
+			</div>
+			<div class="component-row">
+				{tints.slice(0, 4).map((t) => (
+					<span class="eyebrow" style={`--eyebrow-tint: var(${t.name}); margin: 0;`}>{t.label}</span>
+				))}
+			</div>
+			<p class="swatch-note">
+				<code>.eyebrow-plain</code> drops the pill for places it's too loud — inside a card,
+				or stacked directly above another label.
+			</p>
+			<div class="demo-block">
+				<p class="eyebrow eyebrow-plain">Plain variant</p>
 				<h4>The heading it sits above</h4>
 			</div>
 
@@ -405,6 +450,7 @@ const measures = [
 			<h3>Buttons</h3>
 			<div class="component-row">
 				<button type="button" class="btn btn-primary">Primary</button>
+				<button type="button" class="btn btn-brand">Brand</button>
 				<button type="button" class="btn btn-secondary">Secondary</button>
 			</div>
 			<div class="component-row">
@@ -416,6 +462,19 @@ const measures = [
 				Medium weight rather than semibold — at button size on a filled pill, semibold reads
 				heavy, and semibold is also the heading weight. Hover, press, and focus states are all
 				live above.
+			</p>
+
+			<h4>Arrow badge</h4>
+			<div class="component-row">
+				<button type="button" class="btn btn-brand btn-arrow">Brand</button>
+				<button type="button" class="btn btn-primary btn-arrow">Primary</button>
+				<button type="button" class="btn btn-secondary btn-arrow">Secondary</button>
+			</div>
+			<p class="swatch-note">
+				<code>.btn-arrow</code> adds an inverted disc inside the pill's right edge — the detail
+				that makes a button read as a destination rather than a form control. Each variant
+				supplies its own badge colours, so the disc is always the button inverted. Reserve it
+				for navigation; a submit button shouldn't imply it takes you somewhere.
 			</p>
 
 			<h3>Cards</h3>
@@ -433,6 +492,22 @@ const measures = [
 					<h4>Interactive card</h4>
 					<p class="text-secondary">Adds <code>.card-interactive</code>. Hover it: border, shadow, and a 2px lift.</p>
 				</li>
+			</ul>
+
+			<h4>Tinted cards</h4>
+			<p class="text-secondary measure">
+				<code>.card-tint</code> drops the border entirely and fills the card with a tint set
+				per instance via <code>--card-tint</code> — a saturated field doesn't need an edge
+				drawn around it. Muted copy inside is derived from the primary text colour, because
+				the secondary role isn't guaranteed AA on a tint.
+			</p>
+			<ul class="grid-auto demo-grid">
+				{tints.slice(1, 4).map((t) => (
+					<li class="card card-tint" style={`--card-tint: var(${t.name});`}>
+						<h4>{t.label}</h4>
+						<p class="text-secondary"><code>--card-tint: var({t.name})</code></p>
+					</li>
+				))}
 			</ul>
 
 			<h3>Grid</h3>
@@ -463,6 +538,20 @@ const measures = [
 						<p class="lead">The lead paragraph, capped at <code>--measure</code>.</p>
 					</div>
 					<a href="/style-guide/" class="link-arrow">Action link</a>
+				</div>
+			</div>
+			<p class="swatch-note">
+				Add <code>.section-header-center</code> for sections with no action link — a lone
+				left-aligned header above a symmetrical grid leaves the whole right half of the row
+				empty.
+			</p>
+			<div class="demo-block">
+				<div class="section-header section-header-center">
+					<div class="section-header-text">
+						<p class="eyebrow">Eyebrow</p>
+						<h4>Centred section heading</h4>
+						<p class="lead">Used when nothing is pinned opposite the heading.</p>
+					</div>
 				</div>
 			</div>
 
@@ -518,6 +607,25 @@ const measures = [
 
 			<h3>Stats</h3>
 			<ul class="grid-auto demo-grid" style="--grid-min: 180px;">
+				<li>
+					<span class="stat-value">20+</span>
+					<span class="stat-label">Years in business</span>
+				</li>
+				<li>
+					<span class="stat-value">500+</span>
+					<span class="stat-label">Projects completed</span>
+				</li>
+				<li>
+					<span class="stat-value">4.9</span>
+					<span class="stat-label">Average rating</span>
+				</li>
+			</ul>
+			<p class="swatch-note">
+				<code>.stat-band</code> groups the same figures into a sunken panel split by
+				hairlines, and collapses to a single column below 720px where the vertical rules
+				would be dividing nothing. Tune the column count with <code>--stat-cols</code>.
+			</p>
+			<ul class="stat-band">
 				<li>
 					<span class="stat-value">20+</span>
 					<span class="stat-label">Years in business</span>
@@ -593,6 +701,20 @@ const measures = [
 					<a href="/style-guide/" class="btn btn-inverse">Primary action</a>
 					<a href="/style-guide/" class="link-arrow demo-cta-link">Secondary</a>
 				</div>
+			</div>
+
+			<h3>Brand band</h3>
+			<p class="text-secondary measure">
+				<code>.section-brand</code> is the same idea in the brand colour rather than ink —
+				a full-bleed saturated band, once per page at most. Text stays primary, since the
+				brand tint only clears AA against <code>--color-text</code>; the eyebrow pill and any
+				hairlines inside it re-derive from the band's own contrast colour so they don't
+				vanish into the field.
+			</p>
+			<div class="section-brand demo-cta">
+				<p class="eyebrow">Why us</p>
+				<h4>A full-bleed brand band</h4>
+				<p class="lead">Uses <code>.section-brand</code>.</p>
 			</div>
 
 			<h3>Form fields</h3>

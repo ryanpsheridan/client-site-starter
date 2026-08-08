@@ -1,5 +1,16 @@
 @import './tokens.css';
 
+/* Aspekta Variable — OFL 1.1, Ivo Dolenc. https://github.com/ivodolenc/aspekta
+   Self-hosted from /public/fonts; preloaded in BaseHead.astro. font-display
+   swap so copy is readable during the font load rather than invisible. */
+@font-face {
+	font-family: 'Aspekta Variable';
+	font-weight: 100 900;
+	font-display: swap;
+	font-style: normal;
+	src: url('/fonts/AspektaVF.woff2') format('woff2');
+}
+
 /* ============================================================================
    GLOBAL STYLESHEET
 
@@ -40,6 +51,9 @@ body {
 	margin: 0;
 	font-family: var(--font-sans);
 	font-size: var(--text-body);
+	/* Medium, not regular. Aspekta's 400 reads thin and its word spaces close
+	   up at body size; 500 is the weight the whole scale is designed around. */
+	font-weight: var(--weight-medium);
 	line-height: var(--leading-body);
 	letter-spacing: var(--tracking-normal);
 	color: var(--color-text);
@@ -61,28 +75,29 @@ body {
    is most of what makes large type read as deliberate.
    ---------------------------------------------------------------------------- */
 
+/* Medium, not semibold. At these sizes semibold reads as shouting; the scale
+   is large enough that weight doesn't need to carry any of the hierarchy. */
 h1,
 h2,
 h3,
 h4,
 h5 {
 	font-family: var(--font-heading);
-	font-weight: var(--weight-semibold);
+	font-weight: var(--weight-medium);
 	color: var(--color-text);
+	letter-spacing: var(--tracking-snug);
 	margin: 0 0 var(--space-4);
 	text-wrap: balance;
 }
 
 h1 {
 	font-size: var(--text-h1);
-	line-height: var(--leading-tight);
-	letter-spacing: var(--tracking-snug);
+	line-height: var(--leading-display);
 }
 
 h2 {
 	font-size: var(--text-h2);
 	line-height: var(--leading-tight);
-	letter-spacing: var(--tracking-snug);
 }
 
 h3 {
@@ -97,7 +112,6 @@ h4 {
 
 h5 {
 	font-size: var(--text-h5);
-	font-weight: var(--weight-medium);
 	line-height: var(--leading-snug);
 }
 
@@ -136,23 +150,51 @@ a:hover {
 /* Uppercase overline label. Does more work than anything else in this
    aesthetic — it gives a section a second level of hierarchy above its
    heading without spending another type size. */
+/* Now a tinted pill rather than loose grey text. The pill is what lets a
+   section label register at a glance next to a 42px heading — as plain grey
+   caps it just disappears against type that large.
+
+   --eyebrow-tint is the knob: any of the --tint-* values, defaulting to
+   lavender. Text stays --color-text, because the tints are only guaranteed
+   AA against the primary text role. */
 .eyebrow {
-	display: block;
+	display: inline-flex;
+	align-items: center;
 	font-size: var(--text-eyebrow);
 	font-weight: var(--weight-medium);
 	line-height: var(--leading-snug);
 	letter-spacing: var(--tracking-caps);
 	text-transform: uppercase;
+	color: var(--color-text);
+	background: var(--eyebrow-tint, var(--tint-lavender));
+	padding: var(--space-1) var(--space-3);
+	border-radius: var(--radius-sm);
+	margin: 0 0 var(--space-4);
+}
+
+/* Escape hatch for places a pill is too loud — inside a card, or stacked
+   directly above another label. */
+.eyebrow-plain {
+	display: block;
+	background: none;
+	padding: 0;
 	color: var(--color-text-tertiary);
-	margin: 0 0 var(--space-3);
 }
 
 /* Lead paragraph — the sentence directly under a page or section heading. */
 .lead {
 	font-size: var(--text-large);
 	line-height: var(--leading-body);
+	letter-spacing: var(--tracking-body);
 	color: var(--color-text-secondary);
 	max-width: var(--measure);
+}
+
+/* Bold defaults to 700, which the scale doesn't have — semibold is the
+   ceiling, so inline emphasis lands there instead. */
+strong,
+b {
+	font-weight: var(--weight-semibold);
 }
 
 .text-secondary {
@@ -280,6 +322,39 @@ svg {
 	background: var(--surface-sunken);
 }
 
+/* Full-bleed band in the brand colour. Like .cta-band, this is a once-per-page
+   device — it works by being the only saturated thing on the page, so a second
+   one costs the first its impact. Text stays primary, with muted copy mixed
+   down from it, for the same re-theme-safety reason as .card-tint. */
+.section-brand {
+	background: var(--color-brand);
+	color: var(--color-brand-contrast);
+}
+
+.section-brand .lead,
+.section-brand .text-secondary {
+	color: color-mix(in srgb, var(--color-brand-contrast) 78%, transparent);
+}
+
+/* The eyebrow pill's default lavender disappears on a saturated band; on one,
+   it inverts to ink instead. */
+.section-brand .eyebrow {
+	background: var(--color-brand-contrast);
+	color: var(--color-brand);
+}
+
+/* Neutral rules vanish against a saturated field — redraw them from the band's
+   own contrast colour so they stay visible without going solid. */
+.section-brand .topline,
+.section-brand .divider {
+	border-color: color-mix(in srgb, var(--color-brand-contrast) 22%, transparent);
+}
+
+.section-brand a:focus-visible,
+.section-brand button:focus-visible {
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand-contrast) 70%, transparent);
+}
+
 /* Responsive grid with the minimum track exposed as a custom property, so
    callers tune density without redeclaring the template. The min() guard stops
    a fixed minimum from overflowing viewports narrower than the track. */
@@ -321,7 +396,8 @@ svg {
 	font-family: var(--font-sans);
 	font-weight: var(--weight-medium);
 	font-size: var(--text-body);
-	line-height: 1.2;
+	line-height: 1.5;
+	letter-spacing: var(--tracking-snug);
 	padding: var(--space-3) var(--space-5);
 	border-radius: var(--radius-pill);
 	border: 1px solid transparent;
@@ -374,6 +450,87 @@ svg {
 	color: var(--color-text);
 }
 
+/* The highlight button. --color-brand is a field color, never text, so this
+   variant is the main place it appears at button scale. */
+.btn-brand {
+	background: var(--color-brand);
+	color: var(--color-brand-contrast);
+	--badge-bg: var(--color-brand-contrast);
+	--badge-glyph: var(--glyph-arrow-light);
+}
+
+.btn-brand:hover {
+	background: var(--color-brand-hover);
+	color: var(--color-brand-contrast);
+}
+
+/* Arrow badge. An inverted disc pinned inside the pill's right edge — the
+   detail that makes a button read as a destination rather than a form control.
+
+   The glyph is a mask rather than a text character: the arrow in a webfont is
+   a fallback-font lottery, and at this size a substituted glyph lands visibly
+   off-centre and off-weight. A mask inherits currentColor and always matches.
+
+   Each variant supplies --badge-bg / --badge-fg as its own inverse. Variants
+   that don't (btn-secondary) fall back to ink-on-page, which is correct on any
+   light surface. */
+/* The two arrow glyphs the badge picks between. Stroke colour has to be baked
+   into a data URI, so these are the whole set: one for a dark badge, one for a
+   light one. Kept next to their only consumer rather than in tokens.css —
+   they're assets, not design decisions. */
+:root {
+	--glyph-arrow-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FBFAF9' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7M8 7h9v9'/%3E%3C/svg%3E");
+	--glyph-arrow-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081122' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7M8 7h9v9'/%3E%3C/svg%3E");
+}
+
+.btn-arrow {
+	padding-right: var(--space-2);
+	gap: var(--space-4);
+}
+
+/* The disc, drawn as a background colour with the arrow sitting on it as a
+   background image.
+
+   The arrow is an image rather than a text glyph because an arrow character in
+   a webfont is a fallback lottery — a substituted glyph lands visibly
+   off-centre and off-weight at this size. Its stroke colour has to be baked
+   into the data URI, so there are exactly two: one for a dark badge, one for a
+   light one. Every variant's badge resolves to one or the other, so two is the
+   whole set rather than an arbitrary pair. */
+.btn-arrow::after {
+	content: '';
+	flex-shrink: 0;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	background:
+		var(--badge-glyph, var(--glyph-arrow-light)) center / 0.875rem 0.875rem no-repeat,
+		var(--badge-bg, var(--color-ink));
+	transition: transform var(--duration-base) var(--ease-out);
+}
+
+.btn-arrow:hover::after {
+	transform: translate(2px, -2px);
+}
+
+/* Each variant's badge is its own inverse: a dark button gets a light badge
+   with a dark arrow, a light or brand button gets a dark badge with a light
+   arrow. */
+.btn-primary {
+	--badge-bg: var(--color-ink-contrast);
+	--badge-glyph: var(--glyph-arrow-dark);
+}
+
+.btn-inverse {
+	--badge-bg: var(--color-ink);
+	--badge-glyph: var(--glyph-arrow-light);
+}
+
+.btn-secondary {
+	--badge-bg: var(--color-ink);
+	--badge-glyph: var(--glyph-arrow-light);
+}
+
 /* ----------------------------------------------------------------------------
    Cards
 
@@ -383,13 +540,32 @@ svg {
 
 .card {
 	background: var(--surface-raised);
-	border: 1px solid var(--border-default);
-	border-radius: var(--radius-lg);
+	border: 1px solid var(--border-hairline);
+	border-radius: var(--radius-xl);
 	padding: var(--space-6);
 }
 
 .card > :last-child {
 	margin-bottom: 0;
+}
+
+/* Tinted card. The border goes away entirely — a saturated field doesn't need
+   an edge drawn around it, and a hairline on top of one reads as a mistake.
+
+   Set the fill per instance: <li class="card card-tint" style="--card-tint:
+   var(--tint-mint)">. Muted copy is derived from --color-text rather than
+   using --color-text-secondary: that role does clear AA on the current tints,
+   but by as little as 0.2, so it breaks as soon as a tint is re-themed a shade
+   darker. See the tint block in tokens.css. */
+.card-tint {
+	background: var(--card-tint, var(--tint-cream));
+	border-color: transparent;
+	color: var(--color-text);
+}
+
+.card-tint .text-secondary,
+.card-tint .text-tertiary {
+	color: color-mix(in srgb, var(--color-text) 76%, transparent);
 }
 
 .card-interactive {
@@ -400,9 +576,13 @@ svg {
 }
 
 .card-interactive:hover {
-	border-color: var(--border-strong);
+	border-color: var(--border-default);
 	box-shadow: var(--shadow-md);
 	transform: translateY(-2px);
+}
+
+.card-tint.card-interactive:hover {
+	border-color: transparent;
 }
 
 /* ----------------------------------------------------------------------------
@@ -506,6 +686,23 @@ svg {
 	max-width: var(--measure);
 }
 
+/* Centred variant. Used where a section has no action link to pin opposite
+   the heading — a lone left-aligned header above a symmetrical grid leaves the
+   whole right half of the row empty. */
+.section-header-center {
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+.section-header-center .section-header-text {
+	max-width: var(--measure-wide);
+}
+
+.section-header-center .lead {
+	margin-inline: auto;
+}
+
 .section-header-text > :last-child {
 	margin-bottom: 0;
 }
@@ -571,10 +768,9 @@ svg {
 .media-frame {
 	position: relative;
 	aspect-ratio: var(--media-ratio, 4 / 3);
-	border-radius: var(--radius-lg);
+	border-radius: var(--radius-xl);
 	overflow: hidden;
 	background: var(--surface-sunken);
-	border: 1px solid var(--border-hairline);
 }
 
 .media-frame img {
@@ -598,6 +794,34 @@ svg {
 /* ----------------------------------------------------------------------------
    Content components
    ---------------------------------------------------------------------------- */
+
+/* Row of headline figures, split by hairlines on a sunken panel. Stacks to one
+   column on narrow screens, where the vertical rules would otherwise be
+   dividing nothing. */
+.stat-band {
+	list-style: none;
+	margin: 0;
+	padding: var(--space-6);
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--space-5);
+	background: var(--surface-sunken);
+	border-radius: var(--radius-xl);
+}
+
+@media (min-width: 720px) {
+	.stat-band {
+		grid-template-columns: repeat(var(--stat-cols, 3), 1fr);
+		gap: 0;
+		padding: var(--space-7) var(--space-6);
+	}
+
+	.stat-band > * + * {
+		border-left: 1px solid var(--border-default);
+		padding-left: var(--space-6);
+		margin-left: var(--space-6);
+	}
+}
 
 .stat-value {
 	display: block;

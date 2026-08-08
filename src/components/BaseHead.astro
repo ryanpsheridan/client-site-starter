@@ -26,9 +26,17 @@ const ogImage = new URL(image, Astro.site).toString();
 <meta name="generator" content={Astro.generator} />
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+<!--
+	Aspekta, self-hosted. One 30KB variable file covers weights 100-900, which
+	is smaller than the three static DM Sans cuts it replaced and costs no
+	third-party connection — so there's no preconnect/DNS round trip before
+	text can paint, and no Google Fonts request in the privacy story.
+
+	Preloaded because the @font-face lives in global.css: without this the
+	browser can't discover the file until the stylesheet has parsed.
+	Licence: OFL 1.1, shipped alongside at /fonts/Aspekta-OFL-LICENSE.txt.
+-->
+<link rel="preload" href="/fonts/AspektaVF.woff2" as="font" type="font/woff2" crossorigin />
 
 <link rel="canonical" href={canonicalURL} />
 
